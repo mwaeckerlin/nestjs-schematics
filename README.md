@@ -33,6 +33,13 @@ Usage:
 
     nest new -c @mwaeckerlin/schematics [options] [name]
 
+Example:
+
+    nest new -c @mwaeckerlin/schematics -p npm -l ts test
+    cd test
+    npm install
+    npm run start:debug
+
 
 ## Description
 
