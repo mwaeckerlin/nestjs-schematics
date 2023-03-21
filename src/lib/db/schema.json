@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsNestDB",
+  "title": "Nest Database Options Schema",
+  "type": "object",
+  "properties": {
+    "orm": {
+      "type": "string",
+      "description": "The ORM to use (only MikroORM).",
+      "default": "MikroOrm",
+      "enum": [
+        "MikroOrm",
+      ],
+      "x-prompt": {
+        "message": "What ORM do you use?",
+        "type": "list",
+        "items": [
+          {
+            "value": "MikroORM",
+            "label": "MikroORM"
+          },
+        ]
+      }
+    },
+    "type": {
+      "type": "string",
+      "description": "The Database Type.",
+      "default": "postgres",
+      "enum": [
+        "postgres",
+        "mysql",
+        "sqlite"
+      ],
+      "x-prompt": {
+        "message": "What database type do you use?",
+        "type": "list",
+        "items": [
+          {
+            "value": "postgres",
+            "label": "PostgreSQL"
+          },
+          {
+            "value": "mysql",
+            "label": "MySQL / MariaDB"
+          },
+          {
+            "value": "sqlite",
+            "label": "SQLite"
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "orm",
+    "type"
+  ]
+}

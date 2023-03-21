@@ -1,6 +1,6 @@
 {
-  "name": "@nestjs/schematics",
-  "version": "9.0.4",
+  "name": "@mwaeckerlin/schematics",
+  "version": "0.0.1",
   "description": "Nest - modern, fast, powerful node.js web framework (@schematics)",
   "main": "dist/index.js",
   "files": [
@@ -28,18 +28,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nestjs/schematics.git"
+    "url": "git+https://github.com/mwaeckerlin/schematics.git"
   },
   "contributors": [
     "ThomRick",
     "Kamil Mysliwiec",
-    "John Biundo"
+    "John Biundo",
+    "Marc Wäckerlin"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nestjs/schematics/issues"
+    "url": "https://github.com/mwaeckerlin/schematics/issues"
   },
-  "homepage": "https://github.com/nestjs/schematics#readme",
+  "homepage": "https://github.com/mwaeckerlin/schematics#readme",
   "dependencies": {
     "@angular-devkit/core": "15.1.5",
     "@angular-devkit/schematics": "15.1.5",

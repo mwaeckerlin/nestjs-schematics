@@ -14,6 +14,22 @@
   <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
   <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
 
+## Changes to Original
+
+The origin of this project is: https://github.com/nestjs/schematics
+
+The application files have been adapted according to the descriptions [in my blog]().
+
+Additional generators:
+
+ - `db`: add database connection (unfinished)
+ - `kafka`: add kafka connection (not started yet)
+
+Usage:
+
+    nest new -c mwaeckerlin/schematics [options] [name]
+
+
 ## Description
 
 The Nest CLI is a command-line interface tool that helps you to initialize, develop, and maintain your Nest applications. It assists in multiple ways, including scaffolding the project, serving it in development mode, and building and bundling the application for production distribution. It embodies best-practice architectural patterns to encourage well-structured apps. Read more [here](https://docs.nestjs.com/cli/overview).

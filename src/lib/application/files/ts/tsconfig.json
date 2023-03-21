@@ -5,6 +5,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
@@ -16,6 +17,7 @@
     "noImplicitAny": <%= strict %>,
     "strictBindCallApply": <%= strict %>,
     "forceConsistentCasingInFileNames": <%= strict %>,
-    "noFallthroughCasesInSwitch": <%= strict %>
+    "noFallthroughCasesInSwitch": <%= strict %>,
+    "resolveJsonModule": true
   }
 }
