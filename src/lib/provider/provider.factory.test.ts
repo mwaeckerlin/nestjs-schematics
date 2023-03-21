@@ -146,14 +146,12 @@ describe('Provider Factory', () => {
       .toPromise();
     expect(tree.readContent(normalize('/src/app.module.ts'))).toEqual(
       "import { Module } from '@nestjs/common';\n" +
-        "import { AppController } from './app.controller';\n" +
-        "import { AppService } from './app.service';\n" +
         "import { Foo } from './foo';\n" +
         '\n' +
         '@Module({\n' +
         '  imports: [],\n' +
-        '  controllers: [AppController],\n' +
-        '  providers: [AppService, Foo],\n' +
+        '  controllers: [],\n' +
+        '  providers: [Foo],\n' +
         '})\n' +
         'export class AppModule {}\n',
     );

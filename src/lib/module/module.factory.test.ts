@@ -200,14 +200,12 @@ describe('Module Factory', () => {
     tree = await runner.runSchematicAsync('module', options, tree).toPromise();
     expect(tree.readContent(normalize('/src/app.module.ts'))).toEqual(
       "import { Module } from '@nestjs/common';\n" +
-        "import { AppController } from './app.controller';\n" +
-        "import { AppService } from './app.service';\n" +
         "import { FooModule } from './foo/foo.module';\n" +
         '\n' +
         '@Module({\n' +
         '  imports: [FooModule],\n' +
-        '  controllers: [AppController],\n' +
-        '  providers: [AppService],\n' +
+        '  controllers: [],\n' +
+        '  providers: [],\n' +
         '})\n' +
         'export class AppModule {}\n',
     );
