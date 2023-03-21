@@ -22,12 +22,16 @@ The application files have been adapted according to the descriptions [in my blo
 
 Additional generators:
 
- - `db`: add database connection (unfinished)
+ - `db`: add database connection (not started yet)
  - `kafka`: add kafka connection (not started yet)
+
+Install:
+
+    npm i -g @mwaeckerlin/schematics
 
 Usage:
 
-    nest new -c mwaeckerlin/schematics [options] [name]
+    nest new -c @mwaeckerlin/schematics [options] [name]
 
 
 ## Description
@@ -37,10 +41,16 @@ The Nest CLI is a command-line interface tool that helps you to initialize, deve
 ## Installation
 
 ```bash
-$ npm install -g @nestjs/schematics
+$ npm install -g @mwaeckerlin/schematics
 ```
 
 ## Usage
+
+To use `@mwaeckerlin/schematics`, you need to explicitly refere to it:
+
+```bash
+$ nest new -c @mwaeckerlin/schematics [options] [name]
+```
 
 Learn more in the [official documentation](https://docs.nestjs.com/).
 
