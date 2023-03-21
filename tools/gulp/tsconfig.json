@@ -3,7 +3,7 @@
     "experimentalDecorators": true,
     "noUnusedParameters": false,
     "noUnusedLocals": false,
-    "lib": ["es2015", "dom", "es2016.array.include"],
+    "lib": ["es6", "dom", "es6.array.include"],
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "../../dist/tools/gulp",

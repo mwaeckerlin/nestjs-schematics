@@ -2,7 +2,6 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { name, version, description } from '../package.json'
-//import { MikroORM } from '@mikro-orm/core'
 import { ValidationPipe } from '@nestjs/common'
 import { AllExceptionFilter } from './exception-filter'
 
@@ -14,7 +13,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app.useGlobalPipes(new ValidationPipe())
   app.useGlobalFilters(new AllExceptionFilter(app.get(HttpAdapterHost)))
-  //app.get(MikroORM).getMigrator().up()
   const options = new DocumentBuilder()
     .setTitle(Name + ' API definition')
     .setDescription(description)

@@ -114,9 +114,15 @@
     },
     "resource": {
       "factory": "./lib/resource/resource.factory#main",
-      "description": "Create a Nest resource.",
+      "description": "Create a Nest CRUD resource.",
       "schema": "./lib/resource/schema.json",
       "aliases": ["res"]
+    },
+    "database": {
+      "factory": "./lib/database/database.factory#main",
+      "description": "Connect a Nest application to a database.",
+      "schema": "./lib/database/schema.json",
+      "aliases": ["db", "sql"]
     }
   }
 }
