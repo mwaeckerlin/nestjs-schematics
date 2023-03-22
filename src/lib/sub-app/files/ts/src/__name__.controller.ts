@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { <%= classify(name) %>Service } from './<%= name %>.service';
+import { Controller, Get } from '@nestjs/common'
+import { <%= classify(name) %>Service } from './<%= name %>.service'
 
 @Controller()
 export class <%= classify(name) %>Controller {
@@ -7,6 +7,6 @@ export class <%= classify(name) %>Controller {
 
   @Get()
   getHello(): string {
-    return this.<%= camelize(name) %>Service.getHello();
+    return this.<%= camelize(name) %>Service.getHello()
   }
 }

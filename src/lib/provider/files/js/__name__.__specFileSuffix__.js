@@ -1,18 +1,18 @@
-import { Test } from '@nestjs/testing';
-import { <%= classify(className) %> } from './<%= name %>';
+import { Test } from '@nestjs/testing'
+import { <%= classify(className) %> } from './<%= name %>'
 
 describe('<%= classify(className) %>', () => {
-  let provider;
+  let provider
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [<%= classify(className) %>],
-    }).compile();
+    }).compile()
 
-    provider = module.get(<%= classify(className) %>);
-  });
+    provider = module.get(<%= classify(className) %>)
+  })
 
   it('should be defined', () => {
-    expect(provider).toBeDefined();
-  });
-});
+    expect(provider).toBeDefined()
+  })
+})

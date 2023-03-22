@@ -4,6 +4,11 @@
     "title": "Nest Controller Options Schema",
     "type": "object",
     "properties": {
+      "type": {
+        "type": "string",
+        "default": "sqlite",
+        "description": "Database type, sqlite, mysql, postgres, ..."
+      },
       "path": {
         "type": "string",
         "format": "path",
@@ -11,36 +16,17 @@
       },
       "language": {
         "type": "string",
+        "default": "ts",
         "description": "Nest controller language (ts/js)."
       },
       "sourceRoot": {
         "type": "string",
         "description": "Nest controller source root directory."
       },
-      "skipImport": {
-        "type": "boolean",
-        "description": "Flag to skip the module import.",
-        "default": false
-      },
       "module": {
         "type": "string",
         "description": "Allows specification of the declaring module."
       },
-      "flat": {
-        "type": "boolean",
-        "default": false,
-        "description": "Flag to indicate if a directory is created."
-      },
-      "spec": {
-        "type": "boolean",
-        "default": true,
-        "description": "Specifies if a spec file is generated."
-      },
-      "specFileSuffix": {
-        "type": "string",
-        "default": "spec",
-        "description": "Specifies the file suffix of spec files."
-      }
     },
     "required": []
   }

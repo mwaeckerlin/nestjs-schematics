@@ -1,4 +1,4 @@
-import { Catch } from '@nestjs/common';
+import { Catch } from '@nestjs/common'
 
 @Catch()
 export class <%= classify(name) %>Filter {

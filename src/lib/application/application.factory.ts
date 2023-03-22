@@ -41,14 +41,9 @@ function transform(options: ApplicationOptions): ApplicationOptions {
   target.name = resolvePackageName(target.name.toString());
   target.version = !!target.version ? target.version : DEFAULT_VERSION;
 
-  target.packageManager =
-    !target.packageManager || target.packageManager === 'undefined'
-      ? 'npm'
-      : target.packageManager;
-  target.dependencies = !!target.dependencies ? target.dependencies : '';
-  target.devDependencies = !!target.devDependencies
-    ? target.devDependencies
-    : '';
+  target.packageManager ??= 'npm'
+  target.dependencies ??= '';
+  target.devDependencies ??= '';
   return target;
 }
 

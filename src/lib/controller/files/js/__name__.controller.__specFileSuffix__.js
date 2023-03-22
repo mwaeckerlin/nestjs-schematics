@@ -1,18 +1,18 @@
-import { Test } from '@nestjs/testing';
-import { <%= classify(name) %>Controller } from './<%= name %>.controller';
+import { Test } from '@nestjs/testing'
+import { <%= classify(name) %>Controller } from './<%= name %>.controller'
 
 describe('<%= classify(name) %> Controller', () => {
-  let controller;
+  let controller
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       controllers: [<%= classify(name) %>Controller],
-    }).compile();
+    }).compile()
 
-    controller = module.get(<%= classify(name) %>Controller);
-  });
+    controller = module.get(<%= classify(name) %>Controller)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+    expect(controller).toBeDefined()
+  })
+})

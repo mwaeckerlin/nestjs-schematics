@@ -18,27 +18,267 @@
 
 The origin of this project is: https://github.com/nestjs/schematics
 
-The application files have been adapted according to the descriptions [in my blog]().
+The application files have been adapted according to the descriptions [in my blog](https://marc.wäckerlin.ch/computer/nestjs-mikroorm).
 
 Additional generators:
 
- - `db`: add database connection (not started yet)
+ - `database` or `db`: add MikroORM based database connection
+   - `type` defines the default database type, e.g. `sqlite`
  - `kafka`: add kafka connection (not started yet)
 
-Install:
+### Install:
 
     npm i -g @mwaeckerlin/schematics
 
-Usage:
+### Usage:
 
     nest new -c @mwaeckerlin/schematics [options] [name]
 
-Example:
+### Example:
 
     nest new -c @mwaeckerlin/schematics -p npm -l ts test
     cd test
     npm install
     npm run start:debug
+
+### Real Live Example
+
+Let's implement [the MikroORM example from my Blog](https://marc.wäckerlin.ch/computer/nestjs-mikroorm): A databse with Author, Publisher and Book, where the Book refers to any number of Authors and Publishers, while there is no reference from Author or Publisher to the Book (unidirectional).
+
+#### Setup Basics
+
+```bash
+nest new -c @mwaeckerlin/schematics -p npm test
+cd test
+nest g -c @mwaeckerlin/schematics db
+nest g -c @mwaeckerlin/schematics res author
+nest g -c @mwaeckerlin/schematics res punlisher
+nest g -c @mwaeckerlin/schematics res book
+```
+
+#### Entities
+
+First we define the entities (the database schema).
+
+Please note that comments are automatically added to the return value description in the generated API documentation.
+
+##### Author
+
+Just add the properties:
+
+```typescript
+import { Entity, Property } from '@mikro-orm/core'
+import { Base } from '../../base/entities/base.entity'
+import { CreateAuthorDto } from '../dto/create-author.dto'
+
+@Entity()
+export class Author extends Base {
+  constructor(createAuthorDto: CreateAuthorDto) {
+    super()
+    Object.assign(this, createAuthorDto)
+  }
+
+  /* author's first name(s) */
+  @Property()
+  first_names?: string[]
+
+  /* author's family name(s) */
+  @Property()
+  last_names!: string[]
+
+  /* date of birth of the author */
+  @Property()
+  born?: Date
+
+  /* date of death of the author, if applicable */
+  @Property()
+  died?: Date
+}
+```
+
+##### Publisher
+
+Just add the properties:
+
+```typescript
+import { Entity, Property } from '@mikro-orm/core'
+import { Base } from '../../base/entities/base.entity'
+import { CreatePublisherDto } from '../dto/create-publisher.dto'
+
+@Entity()
+export class Publisher extends Base {
+  constructor(createPublisherDto: CreatePublisherDto) {
+    super()
+    Object.assign(this, createPublisherDto)
+  }
+
+  /* name(s) of the publisher */
+  @Property()
+  publisher_names!: string[]
+
+  /* full address of the publisher, may contain several lines */
+  @Property()
+  publisher_address_lines?: string[]
+
+}
+```
+
+##### Book
+
+The book is a little bit more complex, since it refers to Author and Publisher:
+
+```typescript
+import { Collection, Entity, ManyToMany, Property } from '@mikro-orm/core'
+import { Author } from 'src/author/entities/author.entity'
+import { Publisher } from 'src/publisher/entities/publisher.entity'
+import { Base } from '../../base/entities/base.entity'
+import { CreateBookDto } from '../dto/create-book.dto'
+
+@Entity()
+export class Book extends Base {
+  constructor(createBookDto: CreateBookDto, authors?: Author[], publishers?: Publisher[]) {
+    super()
+    Object.assign(this, {...createBookDto, authors, publishers})
+  }
+
+  /* title(s) of the book */
+  @Property()
+  titles!: string[]
+
+  /* full structure of the author(s) of the book */
+  @ManyToMany()
+  authors =  new Collection<Author>(this)
+
+  /* full structure of the publisher(s) of the book */
+  @ManyToMany()
+  publishers = new Collection<Publisher>(this)
+
+  /* ISBN is available */
+  @Property()
+  isbn?: string
+
+}
+```
+
+#### Creation DTOs
+
+The update DTOs are generic, but in the creation DTOs you need to set the values that will be passed thriough the REST API.
+
+Please note that comments are automatically added to the interface description.
+
+##### Author
+
+```typescript
+export class CreateAuthorDto {
+  /* author's first name(s) */
+  first_names?: string[]
+  /* author's family name(s) */
+  last_names!: string[]
+  /* date of birth of the author */
+  born?: Date
+  /* date of death of the author, if applicable */
+  died?: Date
+}```
+
+##### Publisher
+
+```typescript
+export class CreatePublisherDto {
+  /* name(s) of the publisher */
+  publisher_names?: string[]
+  /* full address of the publisher, may contain several lines */
+  publisher_address_lines?: string[]
+}
+```
+
+##### Book
+
+At creation, authors and publishers are referenced as ids.
+
+```typescript
+export class CreateBookDto {
+  /* title(s) of the book */
+  titles?: string[]
+  /* database id(s) of the author(s) of the book */
+  authors?: string[]
+  /* database id(s) of the publisher(s) of the book */
+  publishers?: string[]
+  /* ISBN is available */
+  isbn?: string
+}
+```
+
+#### Book Service
+
+Only the Book service needs changes because the Book needs to refer to Author and Publisher. All controlers and the services of Author and Publisher remain unchanged.
+
+```typescript
+import { Injectable, Logger, NotFoundException } from '@nestjs/common'
+import { Book } from './entities/book.entity'
+import { CreateBookDto } from './dto/create-book.dto'
+import { UpdateBookDto } from './dto/update-book.dto'
+import { EntityManager } from '@mikro-orm/core'
+import { Publisher } from '../publisher/entities/publisher.entity'
+import { Author } from '../author/entities/author.entity'
+
+@Injectable()
+export class BookService {
+  private readonly logger = new Logger(BookService.name)
+  constructor(private readonly em: EntityManager) { }
+
+  async create(createBookDto: CreateBookDto): Promise<Book> {
+    return await this.em.transactional(async (em) => {
+      const authors = await em.find(Author, { id: { $in: createBookDto.authors ?? [] } })
+      if ((authors?.length ?? 0) !== (createBookDto?.authors?.length ?? 0)) throw new NotFoundException('author not found')
+      const publishers = await em.find(Publisher, { id: { $in: createBookDto.publishers ?? [] } })
+      if ((publishers?.length ?? 0) !== (createBookDto?.publishers?.length ?? 0)) throw new NotFoundException('publisher not found')
+      const book = new Book(createBookDto, authors, publishers)
+      await em.persistAndFlush(book)
+      return book
+    })
+  }
+
+  async findAll(query: Object = {}): Promise<Book[]> {
+    return this.em.find(Book, query, { populate: ['authors', 'publishers'] })
+  }
+
+  async findOne(id: string): Promise<Book> {
+    return this.em.findOneOrFail(Book, id, { populate: ['authors', 'publishers'] })
+  }
+
+  async update(id: string, updateBookDto: UpdateBookDto): Promise<Book> {
+    return await this.em.transactional(async (em) => {
+      const authors = await em.find(Author, { id: { $in: updateBookDto.authors ?? [] } })
+      if ((authors?.length ?? 0) !== (updateBookDto?.authors?.length ?? 0)) throw new NotFoundException('author not found')
+      const publishers = await em.find(Publisher, { id: { $in: updateBookDto.publishers ?? [] } })
+      if ((publishers?.length ?? 0) !== (updateBookDto?.publishers?.length ?? 0)) throw new NotFoundException('publisher not found')
+      const book = await em.findOneOrFail(Book, { id })
+      Object.assign(book, {
+        ...updateBookDto,
+        authors: updateBookDto.authors === null ? book.authors : authors,
+        publishers: updateBookDto.publishers === null ? book.publishers : publishers
+      })
+      await em.persistAndFlush(book)
+      return book
+    })
+  }
+
+  async remove(id: string): Promise<Book> {
+    const book = await this.em.findOneOrFail(Book, id)
+    await this.em.removeAndFlush(book)
+    return book
+  }
+}
+```
+
+#### Run
+
+That's it, run it:
+
+    npm i
+    npm start
+
+Then browse to [http://localhost:4000/api] and play with the API!
 
 
 ## Description

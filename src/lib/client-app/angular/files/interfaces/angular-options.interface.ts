@@ -3,12 +3,12 @@ export interface AngularModuleOptions {
    * Static files root directory.
    * Default: "client/dist"
    */
-  rootPath?: string;
+  rootPath?: string
   /**
    * Path to render Angular app.
    * Default: * (wildcard - all paths)
    */
-  renderPath?: string;
+  renderPath?: string
   /**
    * Serve static options (static files)
    * Passed down to the underlying either `express.static` or `fastify-static.send`
@@ -18,7 +18,7 @@ export interface AngularModuleOptions {
      * Enable or disable setting Cache-Control response header, defaults to true.
      * Disabling this will ignore the immutable and maxAge options.
      */
-    cacheControl?: boolean;
+    cacheControl?: boolean
 
     /**
      * Set how "dotfiles" are treated when encountered. A dotfile is a file or directory that begins with a dot (".").
@@ -30,12 +30,12 @@ export interface AngularModuleOptions {
      * 'deny' Send a 403 for any request for a dotfile
      * 'ignore' Pretend like the dotfile does not exist and call next()
      */
-    dotfiles?: string;
+    dotfiles?: string
 
     /**
      * Enable or disable etag generation, defaults to true.
      */
-    etag?: boolean;
+    etag?: boolean
 
     /**
      * Set file extension fallbacks. When set, if a file is not found, the given extensions
@@ -43,7 +43,7 @@ export interface AngularModuleOptions {
      * The first that exists will be served. Example: ['html', 'htm'].
      * The default value is false.
      */
-    extensions?: string[];
+    extensions?: string[]
 
     /**
      * Enable or disable the immutable directive in the Cache-Control response header.
@@ -51,29 +51,29 @@ export interface AngularModuleOptions {
      * The immutable directive will prevent supported clients from making conditional
      * requests during the life of the maxAge option to check if the file has changed.
      */
-    immutable?: boolean;
+    immutable?: boolean
 
     /**
      * By default this module will send "index.html" files in response to a request on a directory.
      * To disable this set false or to supply a new index pass a string or an array in preferred order.
      */
-    index?: boolean | string | string[];
+    index?: boolean | string | string[]
 
     /**
      * Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.
      */
-    lastModified?: boolean;
+    lastModified?: boolean
 
     /**
      * Provide a max-age in milliseconds for http caching, defaults to 0.
      * This can also be a string accepted by the ms module.
      */
-    maxAge?: number | string;
+    maxAge?: number | string
 
     /**
      * Redirect to trailing "/" when the pathname is a dir. Defaults to true.
      */
-    redirect?: boolean;
+    redirect?: boolean
 
     /**
      * Function to set custom headers on response. Alterations to the headers need to occur synchronously.
@@ -82,6 +82,6 @@ export interface AngularModuleOptions {
      * path the file path that is being sent
      * stat the stat object of the file that is being sent
      */
-    setHeaders?: (res: any, path: string, stat: any) => any;
-  };
+    setHeaders?: (res: any, path: string, stat: any) => any
+  }
 }
