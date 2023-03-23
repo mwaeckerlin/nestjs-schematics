@@ -1,6 +1,6 @@
 {
   "name": "@mwaeckerlin/schematics",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Nest - modern, fast, powerful node.js web framework (@schematics)",
   "main": "dist/index.js",
   "files": [
@@ -51,6 +51,7 @@
   "devDependencies": {
     "@commitlint/cli": "17.4.4",
     "@commitlint/config-angular": "17.4.4",
+    "@mikro-orm/cli": "^5.6.15",
     "@types/fs-extra": "11.0.1",
     "@types/jest": "29.5.0",
     "@types/node": "18.15.5",

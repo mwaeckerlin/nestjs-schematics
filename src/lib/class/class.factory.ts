@@ -1,4 +1,4 @@
-import { join, Path, strings } from '@angular-devkit/core';
+import { join, Path, strings } from '@angular-devkit/core'
 import {
   apply,
   chain,
@@ -12,44 +12,44 @@ import {
   Source,
   template,
   url,
-} from '@angular-devkit/schematics';
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting';
-import { Location, NameParser } from '../../utils/name.parser';
-import { mergeSourceRoot } from '../../utils/source-root.helpers';
-import { DEFAULT_LANGUAGE } from '../defaults';
-import { ClassOptions } from './class.schema';
+} from '@angular-devkit/schematics'
+import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
+import { Location, NameParser } from '../../utils/name.parser'
+import { mergeSourceRoot } from '../../utils/source-root.helpers'
+import { DEFAULT_LANGUAGE } from '../defaults'
+import { ClassOptions } from './class.schema'
 
 export function main(options: ClassOptions): Rule {
-  options = transform(options);
-  return chain([mergeSourceRoot(options), mergeWith(generate(options))]);
+  options = transform(options)
+  return chain([mergeSourceRoot(options), mergeWith(generate(options))])
 }
 
 function transform(options: ClassOptions): ClassOptions {
-  const target: ClassOptions = Object.assign({}, options);
+  const target: ClassOptions = Object.assign({}, options)
   if (!target.name) {
-    throw new SchematicsException('Option (name) is required.');
+    throw new SchematicsException('Option (name) is required.')
   }
-  const location: Location = new NameParser().parse(target);
+  const location: Location = new NameParser().parse(target)
 
-  target.name = normalizeToKebabOrSnakeCase(location.name);
+  target.name = normalizeToKebabOrSnakeCase(location.name)
   target.specFileSuffix = normalizeToKebabOrSnakeCase(
     options.specFileSuffix || 'spec',
-  );
+  )
   if (target.name.includes('.')) {
-    target.className = strings.classify(target.name).replace('.', '');
+    target.className = strings.classify(target.name).replace('.', '')
   } else {
-    target.className = target.name;
+    target.className = target.name
   }
 
   target.language =
-    target.language !== undefined ? target.language : DEFAULT_LANGUAGE;
+    target.language !== undefined ? target.language : DEFAULT_LANGUAGE
 
-  target.path = normalizeToKebabOrSnakeCase(location.path);
+  target.path = normalizeToKebabOrSnakeCase(location.path)
   target.path = target.flat
     ? target.path
-    : join(target.path as Path, target.name);
+    : join(target.path as Path, target.name)
 
-  return target;
+  return target
 }
 
 function generate(options: ClassOptions): Source {
@@ -58,14 +58,14 @@ function generate(options: ClassOptions): Source {
       options.spec
         ? noop()
         : filter((path) => {
-            const languageExtension = options.language || 'ts';
-            const suffix = `.__specFileSuffix__.${languageExtension}`;
-            return !path.endsWith(suffix);
+            const languageExtension = options.language || 'ts'
+            const suffix = `.__specFileSuffix__.${languageExtension}`
+            return !path.endsWith(suffix)
           }),
       template({
         ...strings,
         ...options,
       }),
       move(options.path),
-    ])(context);
+    ])(context)
 }

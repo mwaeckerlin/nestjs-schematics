@@ -1,4 +1,4 @@
-import { join, Path, strings } from '@angular-devkit/core';
+import { join, Path, strings } from '@angular-devkit/core'
 import {
   apply,
   chain,
@@ -10,30 +10,30 @@ import {
   Source,
   template,
   url,
-} from '@angular-devkit/schematics';
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting';
-import { Location, NameParser } from '../../utils/name.parser';
-import { mergeSourceRoot } from '../../utils/source-root.helpers';
-import { InterfaceOptions } from './interface.schema';
+} from '@angular-devkit/schematics'
+import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
+import { Location, NameParser } from '../../utils/name.parser'
+import { mergeSourceRoot } from '../../utils/source-root.helpers'
+import { InterfaceOptions } from './interface.schema'
 
 export function main(options: InterfaceOptions): Rule {
-  options = transform(options);
-  return chain([mergeSourceRoot(options), mergeWith(generate(options))]);
+  options = transform(options)
+  return chain([mergeSourceRoot(options), mergeWith(generate(options))])
 }
 
 function transform(options: InterfaceOptions): InterfaceOptions {
-  const target: InterfaceOptions = Object.assign({}, options);
+  const target: InterfaceOptions = Object.assign({}, options)
   if (!target.name) {
-    throw new SchematicsException('Option (name) is required.');
+    throw new SchematicsException('Option (name) is required.')
   }
-  const location: Location = new NameParser().parse(target);
-  target.name = normalizeToKebabOrSnakeCase(location.name);
-  target.path = normalizeToKebabOrSnakeCase(location.path);
+  const location: Location = new NameParser().parse(target)
+  target.name = normalizeToKebabOrSnakeCase(location.name)
+  target.path = normalizeToKebabOrSnakeCase(location.path)
 
   target.path = target.flat
     ? target.path
-    : join(target.path as Path, target.name);
-  return target;
+    : join(target.path as Path, target.name)
+  return target
 }
 
 function generate(options: InterfaceOptions): Source {
@@ -44,5 +44,5 @@ function generate(options: InterfaceOptions): Source {
         ...options,
       }),
       move(options.path),
-    ])(context);
+    ])(context)
 }

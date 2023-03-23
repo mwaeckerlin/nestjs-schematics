@@ -1,43 +1,43 @@
-import { Path } from '@angular-devkit/core';
+import { Path } from '@angular-devkit/core'
 
 export interface ResourceOptions {
   /**
    * The name of the resource.
    */
-  name: string;
+  name: string
   /**
    * The path to create the resource.
    */
-  path?: string | Path;
+  path?: string | Path
   /**
    * The source root path
    */
-  sourceRoot?: string;
+  sourceRoot?: string
   /**
    * Application language.
    */
-  language?: string;
+  language?: string
   /**
    * Specifies if spec files are generated.
    */
-  spec?: boolean;
+  spec?: boolean
   /**
    * Specifies the file suffix of spec files.
    * @default "spec"
    */
-  specFileSuffix?: string;
+  specFileSuffix?: string
   /**
    * The path to insert the module declaration.
    */
-  module?: Path;
+  module?: Path
   /**
    * Metadata name affected by declaration insertion.
    */
-  metadata?: string;
+  metadata?: string
   /**
    * Directive to insert declaration in module.
    */
-  skipImport?: boolean;
+  skipImport?: boolean
   /**
    * The transport layer.
    */
@@ -46,17 +46,17 @@ export interface ResourceOptions {
     | 'graphql-code-first'
     | 'graphql-schema-first'
     | 'microservice'
-    | 'ws';
+    | 'ws'
   /**
    * When true, CRUD entry points are generated.
    */
-  crud?: boolean;
+  crud?: boolean
   /**
    * Flag to indicate if a directory is created.
    */
-  flat?: boolean;
+  flat?: boolean
   /**
    * When true, "@nestjs/swagger" dependency is installed in the project.
    */
-  isSwaggerInstalled?: boolean;
+  isSwaggerInstalled?: boolean
 }

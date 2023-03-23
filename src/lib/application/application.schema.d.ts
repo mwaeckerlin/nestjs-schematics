@@ -3,41 +3,41 @@ export interface ApplicationOptions {
    * Nest application name.
    */
   // NOTE: We could have a `number` here due to this issue: https://github.com/nestjs/nest-cli/issues/1519
-  name: string | number;
+  name: string | number
   /**
    * Nest application author.
    */
-  author?: string;
+  author?: string
   /**
    * Nest application description.
    */
-  description?: string;
+  description?: string
   /**
    * Nest application destination directory.
    */
-  directory?: string;
+  directory?: string
   /**
    * With TypeScript strict mode.
    */
-  strict?: boolean;
+  strict?: boolean
   /**
    * Nest application version.
    */
-  version?: string;
+  version?: string
   /**
    * Application language.
    */
-  language?: string;
+  language?: string
   /**
    * The used package manager.
    */
-  packageManager?: 'npm' | 'yarn' | 'pnpm' | 'undefined';
+  packageManager?: 'npm' | 'yarn' | 'pnpm' | 'undefined'
   /**
    * Nest included production dependencies (comma separated values).
    */
-  dependencies?: string;
+  dependencies?: string
   /**
    * Nest included development dependencies (comma separated values).
    */
-  devDependencies?: string;
+  devDependencies?: string
 }

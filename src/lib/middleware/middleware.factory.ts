@@ -1,4 +1,4 @@
-import { join, Path, strings } from '@angular-devkit/core';
+import { join, Path, strings } from '@angular-devkit/core'
 import {
   apply,
   chain,
@@ -12,34 +12,34 @@ import {
   Source,
   template,
   url,
-} from '@angular-devkit/schematics';
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting';
-import { Location, NameParser } from '../../utils/name.parser';
-import { mergeSourceRoot } from '../../utils/source-root.helpers';
-import { MiddlewareOptions } from './middleware.schema';
+} from '@angular-devkit/schematics'
+import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
+import { Location, NameParser } from '../../utils/name.parser'
+import { mergeSourceRoot } from '../../utils/source-root.helpers'
+import { MiddlewareOptions } from './middleware.schema'
 
 export function main(options: MiddlewareOptions): Rule {
-  options = transform(options);
-  return chain([mergeSourceRoot(options), mergeWith(generate(options))]);
+  options = transform(options)
+  return chain([mergeSourceRoot(options), mergeWith(generate(options))])
 }
 
 function transform(options: MiddlewareOptions): MiddlewareOptions {
-  const target: MiddlewareOptions = Object.assign({}, options);
+  const target: MiddlewareOptions = Object.assign({}, options)
   if (!target.name) {
-    throw new SchematicsException('Option (name) is required.');
+    throw new SchematicsException('Option (name) is required.')
   }
-  const location: Location = new NameParser().parse(target);
-  target.name = normalizeToKebabOrSnakeCase(location.name);
-  target.path = normalizeToKebabOrSnakeCase(location.path);
-  target.language = target.language !== undefined ? target.language : 'ts';
+  const location: Location = new NameParser().parse(target)
+  target.name = normalizeToKebabOrSnakeCase(location.name)
+  target.path = normalizeToKebabOrSnakeCase(location.path)
+  target.language = target.language !== undefined ? target.language : 'ts'
     target.specFileSuffix = normalizeToKebabOrSnakeCase(
     options.specFileSuffix || 'spec',
-  );
+  )
 
   target.path = target.flat
     ? target.path
-    : join(target.path as Path, target.name);
-  return target;
+    : join(target.path as Path, target.name)
+  return target
 }
 
 function generate(options: MiddlewareOptions): Source {
@@ -48,8 +48,8 @@ function generate(options: MiddlewareOptions): Source {
       options.spec 
         ? noop() 
         : filter((path) => {
-            const languageExtension = options.language || 'ts';
-            const suffix = `.__specFileSuffix__.${languageExtension}`;
+            const languageExtension = options.language || 'ts'
+            const suffix = `.__specFileSuffix__.${languageExtension}`
             return !path.endsWith(suffix)
         }),
       template({
@@ -57,5 +57,5 @@ function generate(options: MiddlewareOptions): Source {
         ...options,
       }),
       move(options.path),
-    ])(context);
+    ])(context)
 }

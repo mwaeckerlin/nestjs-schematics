@@ -1,4 +1,4 @@
-import { join, normalize, Path, strings } from '@angular-devkit/core';
+import { join, normalize, Path, strings } from '@angular-devkit/core'
 import {
   apply,
   branchAndMerge,
@@ -11,76 +11,76 @@ import {
   template,
   Tree,
   url,
-} from '@angular-devkit/schematics';
-import { parse } from 'jsonc-parser';
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting';
+} from '@angular-devkit/schematics'
+import { parse } from 'jsonc-parser'
+import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
 import {
   DEFAULT_LANGUAGE,
   DEFAULT_LIB_PATH,
   DEFAULT_PATH_NAME,
   PROJECT_TYPE,
-} from '../defaults';
-import { LibraryOptions } from './library.schema';
+} from '../defaults'
+import { LibraryOptions } from './library.schema'
 
-type UpdateJsonFn<T> = (obj: T) => T | void;
+type UpdateJsonFn<T> = (obj: T) => T | void
 interface TsConfigPartialType {
   compilerOptions: {
-    baseUrl: string;
+    baseUrl: string
     paths: {
-      [key: string]: string[];
-    };
-  };
+      [key: string]: string[]
+    }
+  }
 }
 
 export function main(options: LibraryOptions): Rule {
-  options = transform(options);
+  options = transform(options)
   return chain([
     addLibraryToCliOptions(options.path, options.name),
     updatePackageJson(options),
     updateJestEndToEnd(options),
     updateTsConfig(options.name, options.prefix, options.path),
     branchAndMerge(mergeWith(generate(options))),
-  ]);
+  ])
 }
 
 function transform(options: LibraryOptions): LibraryOptions {
-  const target: LibraryOptions = Object.assign({}, options);
+  const target: LibraryOptions = Object.assign({}, options)
   const defaultSourceRoot =
-    options.rootDir !== undefined ? options.rootDir : DEFAULT_LIB_PATH;
+    options.rootDir !== undefined ? options.rootDir : DEFAULT_LIB_PATH
 
   if (!target.name) {
-    throw new SchematicsException('Option (name) is required.');
+    throw new SchematicsException('Option (name) is required.')
   }
-  target.language = !!target.language ? target.language : DEFAULT_LANGUAGE;
-  target.name = normalizeToKebabOrSnakeCase(target.name);
+  target.language = !!target.language ? target.language : DEFAULT_LANGUAGE
+  target.name = normalizeToKebabOrSnakeCase(target.name)
   target.path =
     target.path !== undefined
       ? join(normalize(defaultSourceRoot), target.path)
-      : normalize(defaultSourceRoot);
+      : normalize(defaultSourceRoot)
 
-  target.prefix = target.prefix || '@app';
-  return target;
+  target.prefix = target.prefix || '@app'
+  return target
 }
 
 function updatePackageJson(options: LibraryOptions) {
   return (host: Tree) => {
     if (!host.exists('package.json')) {
-      return host;
+      return host
     }
-    const distRoot = join(options.path as Path, options.name, 'src');
+    const distRoot = join(options.path as Path, options.name, 'src')
     const packageKey = options.prefix
       ? options.prefix + '/' + options.name
-      : options.name;
+      : options.name
 
     return updateJsonFile(
       host,
       'package.json',
       (packageJson: Record<string, any>) => {
-        updateNpmScripts(packageJson.scripts, options);
-        updateJestConfig(packageJson.jest, options, packageKey, distRoot);
+        updateNpmScripts(packageJson.scripts, options)
+        updateJestConfig(packageJson.jest, options, packageKey, distRoot)
       },
-    );
-  };
+    )
+  }
 }
 
 function updateJestConfig(
@@ -90,28 +90,28 @@ function updateJestConfig(
   distRoot: string,
 ) {
   if (!jestOptions) {
-    return;
+    return
   }
   if (jestOptions.rootDir === DEFAULT_PATH_NAME) {
-    jestOptions.rootDir = '.';
-    jestOptions.coverageDirectory = './coverage';
+    jestOptions.rootDir = '.'
+    jestOptions.coverageDirectory = './coverage'
   }
   const defaultSourceRoot =
-    options.rootDir !== undefined ? options.rootDir : DEFAULT_LIB_PATH;
+    options.rootDir !== undefined ? options.rootDir : DEFAULT_LIB_PATH
 
-  const jestSourceRoot = `<rootDir>/${defaultSourceRoot}/`;
+  const jestSourceRoot = `<rootDir>/${defaultSourceRoot}/`
   if (!jestOptions.roots) {
-    jestOptions.roots = ['<rootDir>/src/', jestSourceRoot];
+    jestOptions.roots = ['<rootDir>/src/', jestSourceRoot]
   } else if (jestOptions.roots.indexOf(jestSourceRoot) < 0) {
-    jestOptions.roots.push(jestSourceRoot);
+    jestOptions.roots.push(jestSourceRoot)
   }
 
   if (!jestOptions.moduleNameMapper) {
-    jestOptions.moduleNameMapper = {};
+    jestOptions.moduleNameMapper = {}
   }
-  const packageKeyRegex = '^' + packageKey + '(|/.*)$';
-  const packageRoot = join('<rootDir>' as Path, distRoot);
-  jestOptions.moduleNameMapper[packageKeyRegex] = join(packageRoot, '$1');
+  const packageKeyRegex = '^' + packageKey + '(|/.*)$'
+  const packageRoot = join('<rootDir>' as Path, distRoot)
+  jestOptions.moduleNameMapper[packageKeyRegex] = join(packageRoot, '$1')
 }
 
 function updateNpmScripts(
@@ -119,11 +119,11 @@ function updateNpmScripts(
   options: LibraryOptions,
 ) {
   if (!scripts) {
-    return;
+    return
   }
-  const defaultFormatScriptName = 'format';
+  const defaultFormatScriptName = 'format'
   if (!scripts[defaultFormatScriptName]) {
-    return;
+    return
   }
 
   if (
@@ -131,38 +131,38 @@ function updateNpmScripts(
     scripts[defaultFormatScriptName].indexOf(DEFAULT_PATH_NAME) >= 0
   ) {
     const defaultSourceRoot =
-      options.rootDir !== undefined ? options.rootDir : DEFAULT_LIB_PATH;
+      options.rootDir !== undefined ? options.rootDir : DEFAULT_LIB_PATH
     scripts[
       defaultFormatScriptName
-    ] = `prettier --write "src/**/*.ts" "test/**/*.ts" "${defaultSourceRoot}/**/*.ts"`;
+    ] = `prettier --write "src/**/*.ts" "test/**/*.ts" "${defaultSourceRoot}/**/*.ts"`
   }
 }
 
 function updateJestEndToEnd(options: LibraryOptions) {
   return (host: Tree) => {
-    const pathToFile = join('test' as Path, 'jest-e2e.json');
+    const pathToFile = join('test' as Path, 'jest-e2e.json')
     if (!host.exists(pathToFile)) {
-      return host;
+      return host
     }
-    const distRoot = join(options.path as Path, options.name, 'src');
+    const distRoot = join(options.path as Path, options.name, 'src')
     const packageKey = options.prefix
       ? options.prefix + '/' + options.name
-      : options.name;
+      : options.name
 
     return updateJsonFile(
       host,
       pathToFile,
       (jestOptions: Record<string, any>) => {
         if (!jestOptions.moduleNameMapper) {
-          jestOptions.moduleNameMapper = {};
+          jestOptions.moduleNameMapper = {}
         }
-        const deepPackagePath = packageKey + '/(.*)';
-        const packageRoot = '<rootDir>/../' + distRoot;
-        jestOptions.moduleNameMapper[deepPackagePath] = packageRoot + '/$1';
-        jestOptions.moduleNameMapper[packageKey] = packageRoot;
+        const deepPackagePath = packageKey + '/(.*)'
+        const packageRoot = '<rootDir>/../' + distRoot
+        jestOptions.moduleNameMapper[deepPackagePath] = packageRoot + '/$1'
+        jestOptions.moduleNameMapper[packageKey] = packageRoot
       },
-    );
-  };
+    )
+  }
 }
 
 function updateJsonFile<T>(
@@ -170,14 +170,14 @@ function updateJsonFile<T>(
   path: string,
   callback: UpdateJsonFn<T>,
 ): Tree {
-  const source = host.read(path);
+  const source = host.read(path)
   if (source) {
-    const sourceText = source.toString('utf-8');
-    const json = parse(sourceText);
-    callback(json as unknown as T);
-    host.overwrite(path, JSON.stringify(json, null, 2));
+    const sourceText = source.toString('utf-8')
+    const json = parse(sourceText)
+    callback(json as unknown as T)
+    host.overwrite(path, JSON.stringify(json, null, 2))
   }
-  return host;
+  return host
 }
 
 function updateTsConfig(
@@ -187,46 +187,46 @@ function updateTsConfig(
 ) {
   return (host: Tree) => {
     if (!host.exists('tsconfig.json')) {
-      return host;
+      return host
     }
-    const distRoot = join(root as Path, packageName, 'src');
+    const distRoot = join(root as Path, packageName, 'src')
     const packageKey = packagePrefix
       ? packagePrefix + '/' + packageName
-      : packageName;
+      : packageName
 
     return updateJsonFile(
       host,
       'tsconfig.json',
       (tsconfig: TsConfigPartialType) => {
         if (!tsconfig.compilerOptions) {
-          tsconfig.compilerOptions = {} as any;
+          tsconfig.compilerOptions = {} as any
         }
         if (!tsconfig.compilerOptions.baseUrl) {
-          tsconfig.compilerOptions.baseUrl = './';
+          tsconfig.compilerOptions.baseUrl = './'
         }
         if (!tsconfig.compilerOptions.paths) {
-          tsconfig.compilerOptions.paths = {};
+          tsconfig.compilerOptions.paths = {}
         }
         if (!tsconfig.compilerOptions.paths[packageKey]) {
-          tsconfig.compilerOptions.paths[packageKey] = [];
+          tsconfig.compilerOptions.paths[packageKey] = []
         }
-        tsconfig.compilerOptions.paths[packageKey].push(distRoot);
+        tsconfig.compilerOptions.paths[packageKey].push(distRoot)
 
-        const deepPackagePath = packageKey + '/*';
+        const deepPackagePath = packageKey + '/*'
         if (!tsconfig.compilerOptions.paths[deepPackagePath]) {
-          tsconfig.compilerOptions.paths[deepPackagePath] = [];
+          tsconfig.compilerOptions.paths[deepPackagePath] = []
         }
-        tsconfig.compilerOptions.paths[deepPackagePath].push(distRoot + '/*');
+        tsconfig.compilerOptions.paths[deepPackagePath].push(distRoot + '/*')
       },
-    );
-  };
+    )
+  }
 }
 
 function addLibraryToCliOptions(
   projectRoot: string,
   projectName: string,
 ): Rule {
-  const rootPath = join(projectRoot as Path, projectName);
+  const rootPath = join(projectRoot as Path, projectName)
   const project = {
     type: PROJECT_TYPE.LIBRARY,
     root: rootPath,
@@ -235,41 +235,41 @@ function addLibraryToCliOptions(
     compilerOptions: {
       tsConfigPath: join(rootPath, 'tsconfig.lib.json'),
     },
-  };
+  }
   return (host: Tree) => {
-    const nestFileExists = host.exists('nest.json');
+    const nestFileExists = host.exists('nest.json')
 
-    let nestCliFileExists = host.exists('nest-cli.json');
+    let nestCliFileExists = host.exists('nest-cli.json')
     if (!nestCliFileExists && !nestFileExists) {
-      host.create('nest-cli.json', '{}');
-      nestCliFileExists = true;
+      host.create('nest-cli.json', '{}')
+      nestCliFileExists = true
     }
     return updateJsonFile(
       host,
       nestCliFileExists ? 'nest-cli.json' : 'nest.json',
       (optionsFile: Record<string, any>) => {
         if (!optionsFile.projects) {
-          optionsFile.projects = {} as any;
+          optionsFile.projects = {} as any
         }
         if (!optionsFile.compilerOptions) {
-          optionsFile.compilerOptions = {};
+          optionsFile.compilerOptions = {}
         }
         if (optionsFile.compilerOptions.webpack === undefined) {
-          optionsFile.compilerOptions.webpack = true;
+          optionsFile.compilerOptions.webpack = true
         }
         if (optionsFile.projects[projectName]) {
           throw new SchematicsException(
             `Project "${projectName}" exists in this workspace already.`,
-          );
+          )
         }
-        optionsFile.projects[projectName] = project;
+        optionsFile.projects[projectName] = project
       },
-    );
-  };
+    )
+  }
 }
 
 function generate(options: LibraryOptions): Source {
-  const path = join(options.path as Path, options.name);
+  const path = join(options.path as Path, options.name)
 
   return apply(url(join('./files' as Path, options.language)), [
     template({
@@ -277,5 +277,5 @@ function generate(options: LibraryOptions): Source {
       ...options,
     }),
     move(path),
-  ]);
+  ])
 }

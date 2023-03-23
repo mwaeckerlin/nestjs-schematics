@@ -1,4 +1,4 @@
-import { join, Path, strings } from '@angular-devkit/core';
+import { join, Path, strings } from '@angular-devkit/core'
 import {
   apply,
   chain,
@@ -10,31 +10,31 @@ import {
   Source,
   template,
   url,
-} from '@angular-devkit/schematics';
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting';
-import { Location, NameParser } from '../../utils/name.parser';
-import { mergeSourceRoot } from '../../utils/source-root.helpers';
-import { DecoratorOptions } from './decorator.schema';
+} from '@angular-devkit/schematics'
+import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
+import { Location, NameParser } from '../../utils/name.parser'
+import { mergeSourceRoot } from '../../utils/source-root.helpers'
+import { DecoratorOptions } from './decorator.schema'
 
 export function main(options: DecoratorOptions): Rule {
-  options = transform(options);
-  return chain([mergeSourceRoot(options), mergeWith(generate(options))]);
+  options = transform(options)
+  return chain([mergeSourceRoot(options), mergeWith(generate(options))])
 }
 
 function transform(options: DecoratorOptions): DecoratorOptions {
-  const target: DecoratorOptions = Object.assign({}, options);
+  const target: DecoratorOptions = Object.assign({}, options)
   if (!target.name) {
-    throw new SchematicsException('Option (name) is required.');
+    throw new SchematicsException('Option (name) is required.')
   }
-  const location: Location = new NameParser().parse(target);
-  target.name = normalizeToKebabOrSnakeCase(location.name);
-  target.path = normalizeToKebabOrSnakeCase(location.path);
-  target.language = target.language !== undefined ? target.language : 'ts';
+  const location: Location = new NameParser().parse(target)
+  target.name = normalizeToKebabOrSnakeCase(location.name)
+  target.path = normalizeToKebabOrSnakeCase(location.path)
+  target.language = target.language !== undefined ? target.language : 'ts'
 
   target.path = target.flat
     ? target.path
-    : join(target.path as Path, target.name);
-  return target;
+    : join(target.path as Path, target.name)
+  return target
 }
 
 function generate(options: DecoratorOptions): Source {
@@ -45,5 +45,5 @@ function generate(options: DecoratorOptions): Source {
         ...options,
       }),
       move(options.path),
-    ])(context);
+    ])(context)
 }

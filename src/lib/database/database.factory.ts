@@ -1,5 +1,5 @@
-import { join, strings } from '@angular-devkit/core';
-import { apply, branchAndMerge, chain, DirEntry, filter, mergeWith, move, noop, Rule, SchematicContext, template, Tree, url } from '@angular-devkit/schematics';
+import { join, strings } from '@angular-devkit/core'
+import { apply, branchAndMerge, chain, DirEntry, filter, mergeWith, move, noop, Rule, SchematicContext, template, Tree, url } from '@angular-devkit/schematics'
 
 export function main(options: any): Rule {
     return (tree: Tree, _context: SchematicContext) =>
@@ -44,7 +44,18 @@ export function change(options: any): Rule {
                 ...content.dependencies
             }
             dependencies["@mikro-orm/" + options.type] ??= "*"
-            tree.overwrite(path, JSON.stringify({ ...content, dependencies }, null, 4))
+            const devDependencies = {
+                ...{ "@mikro-orm/cli": "*" },
+                ...content.devDependencies
+            }
+            const scripts = {
+                ...{
+                    "migration": "mikro-orm migration:create",
+                    "migration:initial": "mikro-orm migration:create --initial"
+                },
+                ...content.scripts
+            }
+            tree.overwrite(path, JSON.stringify({ ...content, dependencies, devDependencies, scripts }, null, 4))
         }
 
         // update app.module.ts, add import
@@ -54,7 +65,7 @@ export function change(options: any): Rule {
             addText(content, 'MikroOrmModule.forRoot(),', /imports:\s*\[/)
             tree.overwrite(path, content.join('\n'))
         }
-        return tree;
+        return tree
     }
 }
 
@@ -100,4 +111,4 @@ const generate = (options: any) =>
                 ...options,
             }),
             move(options.path ?? '')
-        ])(context);
+        ])(context)

@@ -1,4 +1,4 @@
-import { join, normalize, Path, strings } from '@angular-devkit/core';
+import { join, normalize, Path, strings } from '@angular-devkit/core'
 import {
   apply,
   branchAndMerge,
@@ -13,10 +13,10 @@ import {
   template,
   Tree,
   url,
-} from '@angular-devkit/schematics';
-import * as fse from 'fs-extra';
-import { parse } from 'jsonc-parser';
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting';
+} from '@angular-devkit/schematics'
+import * as fse from 'fs-extra'
+import { parse } from 'jsonc-parser'
+import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
 import {
   DEFAULT_APPS_PATH,
   DEFAULT_APP_NAME,
@@ -26,22 +26,22 @@ import {
   DEFAULT_PATH_NAME,
   PROJECT_TYPE,
   TEST_ENV,
-} from '../defaults';
-import { SubAppOptions } from './sub-app.schema';
+} from '../defaults'
+import { SubAppOptions } from './sub-app.schema'
 
-type UpdateJsonFn<T> = (obj: T) => T | void;
+type UpdateJsonFn<T> = (obj: T) => T | void
 interface TsConfigPartialType {
   compilerOptions: {
-    baseUrl: string;
+    baseUrl: string
     paths: {
-      [key: string]: string[];
-    };
-  };
+      [key: string]: string[]
+    }
+  }
 }
 
 export function main(options: SubAppOptions): Rule {
-  const appName = getAppNameFromPackageJson();
-  options = transform(options);
+  const appName = getAppNameFromPackageJson()
+  options = transform(options)
   return chain([
     updateTsConfig(),
     updatePackageJson(options, appName),
@@ -54,58 +54,58 @@ export function main(options: SubAppOptions): Rule {
           ])(tree, context),
     addAppsToCliOptions(options.path, options.name, appName),
     branchAndMerge(mergeWith(generate(options))),
-  ]);
+  ])
 }
 
 function getAppNameFromPackageJson(): string {
   try {
     if (!fse.existsSync('./package.json')) {
-      return DEFAULT_DIR_ENTRY_APP;
+      return DEFAULT_DIR_ENTRY_APP
     }
-    const packageJson = fse.readJsonSync('./package.json');
+    const packageJson = fse.readJsonSync('./package.json')
     if (!packageJson.name) {
-      return DEFAULT_DIR_ENTRY_APP;
+      return DEFAULT_DIR_ENTRY_APP
     }
-    let name = packageJson.name;
-    name = name.replace(/[^\w.]+/g, '-').replace(/\-+/g, '-');
-    return name[0] === '-' ? name.substr(1) : name;
+    let name = packageJson.name
+    name = name.replace(/[^\w.]+/g, '-').replace(/\-+/g, '-')
+    return name[0] === '-' ? name.substr(1) : name
   } catch {
-    return DEFAULT_DIR_ENTRY_APP;
+    return DEFAULT_DIR_ENTRY_APP
   }
 }
 
 function transform(options: SubAppOptions): SubAppOptions {
-  const target: SubAppOptions = Object.assign({}, options);
+  const target: SubAppOptions = Object.assign({}, options)
   const defaultSourceRoot =
-    options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH;
+    options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH
 
   if (!target.name) {
-    target.name = DEFAULT_APP_NAME;
+    target.name = DEFAULT_APP_NAME
   }
-  target.language = !!target.language ? target.language : DEFAULT_LANGUAGE;
-  target.name = normalizeToKebabOrSnakeCase(target.name);
+  target.language = !!target.language ? target.language : DEFAULT_LANGUAGE
+  target.name = normalizeToKebabOrSnakeCase(target.name)
   target.path =
     target.path !== undefined
       ? join(normalize(defaultSourceRoot), target.path)
-      : normalize(defaultSourceRoot);
+      : normalize(defaultSourceRoot)
 
-  return target;
+  return target
 }
 
 function isMonorepo(host: Tree) {
-  const nestFileExists = host.exists('nest.json');
-  const nestCliFileExists = host.exists('nest-cli.json');
+  const nestFileExists = host.exists('nest.json')
+  const nestCliFileExists = host.exists('nest-cli.json')
   if (!nestFileExists && !nestCliFileExists) {
-    return false;
+    return false
   }
-  const filename = nestCliFileExists ? 'nest-cli.json' : 'nest.json';
-  const source = host.read(filename);
+  const filename = nestCliFileExists ? 'nest-cli.json' : 'nest.json'
+  const source = host.read(filename)
   if (!source) {
-    return false;
+    return false
   }
-  const sourceText = source.toString('utf-8');
-  const optionsObj = parse(sourceText) as Record<string, any>;
-  return !!optionsObj.monorepo;
+  const sourceText = source.toString('utf-8')
+  const optionsObj = parse(sourceText) as Record<string, any>
+  return !!optionsObj.monorepo
 }
 
 function updateJsonFile<T>(
@@ -113,53 +113,53 @@ function updateJsonFile<T>(
   path: string,
   callback: UpdateJsonFn<T>,
 ): Tree {
-  const source = host.read(path);
+  const source = host.read(path)
   if (source) {
-    const sourceText = source.toString('utf-8');
-    const json = parse(sourceText);
-    callback(json as unknown as T);
-    host.overwrite(path, JSON.stringify(json, null, 2));
+    const sourceText = source.toString('utf-8')
+    const json = parse(sourceText)
+    callback(json as unknown as T)
+    host.overwrite(path, JSON.stringify(json, null, 2))
   }
-  return host;
+  return host
 }
 
 function updateTsConfig() {
   return (host: Tree) => {
     if (!host.exists('tsconfig.json')) {
-      return host;
+      return host
     }
     return updateJsonFile(
       host,
       'tsconfig.json',
       (tsconfig: TsConfigPartialType) => {
         if (!tsconfig.compilerOptions) {
-          tsconfig.compilerOptions = {} as any;
+          tsconfig.compilerOptions = {} as any
         }
         if (!tsconfig.compilerOptions.baseUrl) {
-          tsconfig.compilerOptions.baseUrl = './';
+          tsconfig.compilerOptions.baseUrl = './'
         }
         if (!tsconfig.compilerOptions.paths) {
-          tsconfig.compilerOptions.paths = {};
+          tsconfig.compilerOptions.paths = {}
         }
       },
-    );
-  };
+    )
+  }
 }
 
 function updatePackageJson(options: SubAppOptions, defaultAppName: string) {
   return (host: Tree) => {
     if (!host.exists('package.json')) {
-      return host;
+      return host
     }
     return updateJsonFile(
       host,
       'package.json',
       (packageJson: Record<string, any>) => {
-        updateNpmScripts(packageJson.scripts, options, defaultAppName);
-        updateJestOptions(packageJson.jest, options);
+        updateNpmScripts(packageJson.scripts, options, defaultAppName)
+        updateJestOptions(packageJson.jest, options)
       },
-    );
-  };
+    )
+  }
 }
 
 function updateNpmScripts(
@@ -168,51 +168,51 @@ function updateNpmScripts(
   defaultAppName: string,
 ) {
   if (!scripts) {
-    return;
+    return
   }
-  const defaultFormatScriptName = 'format';
-  const defaultStartScriptName = 'start:prod';
-  const defaultTestScriptName = 'test:e2e';
+  const defaultFormatScriptName = 'format'
+  const defaultStartScriptName = 'start:prod'
+  const defaultTestScriptName = 'test:e2e'
   if (
     !scripts[defaultTestScriptName] &&
     !scripts[defaultFormatScriptName] &&
     !scripts[defaultStartScriptName]
   ) {
-    return;
+    return
   }
   if (
     scripts[defaultTestScriptName] &&
     scripts[defaultTestScriptName].indexOf(options.path as string) < 0
   ) {
-    const defaultTestDir = 'test';
+    const defaultTestDir = 'test'
     const newTestDir = join(
       options.path as Path,
       defaultAppName,
       defaultTestDir,
-    );
+    )
     scripts[defaultTestScriptName] = (
       scripts[defaultTestScriptName] as string
-    ).replace(defaultTestDir, newTestDir);
+    ).replace(defaultTestDir, newTestDir)
   }
   if (
     scripts[defaultFormatScriptName] &&
     scripts[defaultFormatScriptName].indexOf(DEFAULT_PATH_NAME) >= 0
   ) {
     const defaultSourceRoot =
-      options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH;
+      options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH
     scripts[
       defaultFormatScriptName
-    ] = `prettier --write "${defaultSourceRoot}/**/*.ts" "${DEFAULT_LIB_PATH}/**/*.ts"`;
+    ] = `prettier --write "${defaultSourceRoot}/**/*.ts" "${DEFAULT_LIB_PATH}/**/*.ts"`
   }
   if (
     scripts[defaultStartScriptName] &&
     scripts[defaultStartScriptName].indexOf('dist/main') >= 0
   ) {
     const defaultSourceRoot =
-      options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH;
+      options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH
     scripts[
       defaultStartScriptName
-    ] = `node dist/${defaultSourceRoot}/${defaultAppName}/main`;
+    ] = `node dist/${defaultSourceRoot}/${defaultAppName}/main`
   }
 }
 
@@ -221,25 +221,25 @@ function updateJestOptions(
   options: SubAppOptions,
 ) {
   if (!jestOptions) {
-    return;
+    return
   }
   if (jestOptions.rootDir === DEFAULT_PATH_NAME) {
-    jestOptions.rootDir = '.';
-    jestOptions.coverageDirectory = './coverage';
+    jestOptions.rootDir = '.'
+    jestOptions.coverageDirectory = './coverage'
   }
   const defaultSourceRoot =
-    options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH;
-  const jestSourceRoot = `<rootDir>/${defaultSourceRoot}/`;
+    options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH
+  const jestSourceRoot = `<rootDir>/${defaultSourceRoot}/`
   if (!jestOptions.roots) {
-    jestOptions.roots = [jestSourceRoot];
+    jestOptions.roots = [jestSourceRoot]
   } else if (jestOptions.roots.indexOf(jestSourceRoot) < 0) {
-    jestOptions.roots.push(jestSourceRoot);
+    jestOptions.roots.push(jestSourceRoot)
 
-    const originalSourceRoot = `<rootDir>/src/`;
+    const originalSourceRoot = `<rootDir>/src/`
     const originalSourceRootIndex =
-      jestOptions.roots.indexOf(originalSourceRoot);
+      jestOptions.roots.indexOf(originalSourceRoot)
     if (originalSourceRootIndex >= 0) {
-      (jestOptions.roots as string[]).splice(originalSourceRootIndex, 1);
+      (jestOptions.roots as string[]).splice(originalSourceRootIndex, 1)
     }
   }
 }
@@ -251,15 +251,15 @@ function moveDefaultAppToApps(
 ): Rule {
   return (host: Tree) => {
     if (process.env.NODE_ENV === TEST_ENV) {
-      return host;
+      return host
     }
-    const appDestination = join(projectRoot as Path, appName);
+    const appDestination = join(projectRoot as Path, appName)
 
-    moveDirectoryTo(sourceRoot, appDestination, host);
+    moveDirectoryTo(sourceRoot, appDestination, host)
 
-    moveDirectoryTo('test', appDestination, host);
-    return host;
-  };
+    moveDirectoryTo('test', appDestination, host)
+    return host
+  }
 }
 
 function moveDirectoryTo(
@@ -268,11 +268,11 @@ function moveDirectoryTo(
   tree: Tree,
 ): void {
   tree.getDir(srcDir).visit((filePath: Path, file: Readonly<FileEntry>) => {
-    const newFilePath = join(destination as Path, filePath);
-    tree.create(newFilePath, file.content);
-    tree.delete(filePath);
-  });
-  tree.delete(srcDir);
+    const newFilePath = join(destination as Path, filePath)
+    tree.create(newFilePath, file.content)
+    tree.delete(filePath)
+  })
+  tree.delete(srcDir)
 }
 
 function addAppsToCliOptions(
@@ -280,7 +280,7 @@ function addAppsToCliOptions(
   projectName: string,
   appName: string,
 ): Rule {
-  const rootPath = join(projectRoot as Path, projectName);
+  const rootPath = join(projectRoot as Path, projectName)
   const project = {
     type: PROJECT_TYPE.APPLICATION,
     root: rootPath,
@@ -289,32 +289,32 @@ function addAppsToCliOptions(
     compilerOptions: {
       tsConfigPath: join(rootPath, 'tsconfig.app.json'),
     },
-  };
+  }
   return (host: Tree) => {
-    const nestFileExists = host.exists('nest.json');
+    const nestFileExists = host.exists('nest.json')
 
-    let nestCliFileExists = host.exists('nest-cli.json');
+    let nestCliFileExists = host.exists('nest-cli.json')
     if (!nestCliFileExists && !nestFileExists) {
-      host.create('nest-cli.json', '{}');
-      nestCliFileExists = true;
+      host.create('nest-cli.json', '{}')
+      nestCliFileExists = true
     }
     return updateJsonFile(
       host,
       nestCliFileExists ? 'nest-cli.json' : 'nest.json',
       (optionsFile: Record<string, any>) => {
-        updateMainAppOptions(optionsFile, projectRoot, appName);
+        updateMainAppOptions(optionsFile, projectRoot, appName)
         if (!optionsFile.projects) {
-          optionsFile.projects = {} as any;
+          optionsFile.projects = {} as any
         }
         if (optionsFile.projects[projectName]) {
           throw new SchematicsException(
             `Project "${projectName}" exists in this workspace already.`,
-          );
+          )
         }
-        optionsFile.projects[projectName] = project;
+        optionsFile.projects[projectName] = project
       },
-    );
-  };
+    )
+  }
 }
 
 function updateMainAppOptions(
@@ -323,26 +323,26 @@ function updateMainAppOptions(
   appName: string,
 ) {
   if (optionsFile.monorepo) {
-    return;
+    return
   }
-  const rootFilePath = join(projectRoot as Path, appName);
-  const tsConfigPath = join(rootFilePath, 'tsconfig.app.json');
+  const rootFilePath = join(projectRoot as Path, appName)
+  const tsConfigPath = join(rootFilePath, 'tsconfig.app.json')
 
-  optionsFile.monorepo = true;
-  optionsFile.root = rootFilePath;
+  optionsFile.monorepo = true
+  optionsFile.root = rootFilePath
   optionsFile.sourceRoot = join(
     projectRoot as Path,
     appName,
     optionsFile.sourceRoot || DEFAULT_PATH_NAME,
-  );
+  )
   if (!optionsFile.compilerOptions) {
-    optionsFile.compilerOptions = {};
+    optionsFile.compilerOptions = {}
   }
-  optionsFile.compilerOptions.webpack = true;
-  optionsFile.compilerOptions.tsConfigPath = tsConfigPath;
+  optionsFile.compilerOptions.webpack = true
+  optionsFile.compilerOptions.tsConfigPath = tsConfigPath
 
   if (!optionsFile.projects) {
-    optionsFile.projects = {} as any;
+    optionsFile.projects = {} as any
   }
   optionsFile.projects[appName] = {
     type: PROJECT_TYPE.APPLICATION,
@@ -352,11 +352,11 @@ function updateMainAppOptions(
     compilerOptions: {
       tsConfigPath,
     },
-  };
+  }
 }
 
 function generateWorkspace(options: SubAppOptions, appName: string): Source {
-  const path = join(options.path as Path, appName);
+  const path = join(options.path as Path, appName)
   return apply(url(join('./workspace' as Path, options.language)), [
     template({
       ...strings,
@@ -364,16 +364,16 @@ function generateWorkspace(options: SubAppOptions, appName: string): Source {
       name: appName,
     }),
     move(path),
-  ]);
+  ])
 }
 
 function generate(options: SubAppOptions): Source {
-  const path = join(options.path as Path, options.name);
+  const path = join(options.path as Path, options.name)
   return apply(url(join('./files' as Path, options.language)), [
     template({
       ...strings,
       ...options,
     }),
     move(path),
-  ]);
+  ])
 }

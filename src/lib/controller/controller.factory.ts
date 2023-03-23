@@ -1,4 +1,4 @@
-import { join, Path, strings } from '@angular-devkit/core';
+import { join, Path, strings } from '@angular-devkit/core'
 import {
   apply,
   branchAndMerge,
@@ -12,23 +12,23 @@ import {
   template,
   Tree,
   url,
-} from '@angular-devkit/schematics';
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting';
+} from '@angular-devkit/schematics'
+import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
 import {
   DeclarationOptions,
   ModuleDeclarator,
-} from '../../utils/module.declarator';
-import { ModuleFinder } from '../../utils/module.finder';
-import { Location, NameParser } from '../../utils/name.parser';
-import { mergeSourceRoot } from '../../utils/source-root.helpers';
-import { DEFAULT_LANGUAGE } from '../defaults';
-import { ControllerOptions } from './controller.schema';
+} from '../../utils/module.declarator'
+import { ModuleFinder } from '../../utils/module.finder'
+import { Location, NameParser } from '../../utils/name.parser'
+import { mergeSourceRoot } from '../../utils/source-root.helpers'
+import { DEFAULT_LANGUAGE } from '../defaults'
+import { ControllerOptions } from './controller.schema'
 
-const ELEMENT_METADATA = 'controllers';
-const ELEMENT_TYPE = 'controller';
+const ELEMENT_METADATA = 'controllers'
+const ELEMENT_TYPE = 'controller'
 
 export function main(options: ControllerOptions): Rule {
-  options = transform(options);
+  options = transform(options)
   return (tree: Tree, context: SchematicContext) => {
     return branchAndMerge(
       chain([
@@ -36,29 +36,29 @@ export function main(options: ControllerOptions): Rule {
         mergeWith(generate(options)),
         addDeclarationToModule(options),
       ]),
-    )(tree, context);
-  };
+    )(tree, context)
+  }
 }
 
 function transform(source: ControllerOptions): ControllerOptions {
-  const target: ControllerOptions = Object.assign({}, source);
-  target.metadata = ELEMENT_METADATA;
-  target.type = ELEMENT_TYPE;
+  const target: ControllerOptions = Object.assign({}, source)
+  target.metadata = ELEMENT_METADATA
+  target.type = ELEMENT_TYPE
 
-  const location: Location = new NameParser().parse(target);
-  target.name = normalizeToKebabOrSnakeCase(location.name);
-  target.path = normalizeToKebabOrSnakeCase(location.path);
+  const location: Location = new NameParser().parse(target)
+  target.name = normalizeToKebabOrSnakeCase(location.name)
+  target.path = normalizeToKebabOrSnakeCase(location.path)
   target.language =
-    target.language !== undefined ? target.language : DEFAULT_LANGUAGE;
+    target.language !== undefined ? target.language : DEFAULT_LANGUAGE
 
   target.specFileSuffix = normalizeToKebabOrSnakeCase(
     source.specFileSuffix || 'spec',
-  );
+  )
 
   target.path = target.flat
     ? target.path
-    : join(target.path as Path, target.name);
-  return target;
+    : join(target.path as Path, target.name)
+  return target
 }
 
 function generate(options: ControllerOptions) {
@@ -67,8 +67,8 @@ function generate(options: ControllerOptions) {
       options.spec 
         ? noop() 
         : filter((path) => {
-            const languageExtension = options.language || 'ts';
-            const suffix = `.__specFileSuffix__.${languageExtension}`;
+            const languageExtension = options.language || 'ts'
+            const suffix = `.__specFileSuffix__.${languageExtension}`
             return !path.endsWith(suffix)
         }),
       template({
@@ -76,27 +76,27 @@ function generate(options: ControllerOptions) {
         ...options,
       }),
       move(options.path),
-    ])(context);
+    ])(context)
 }
 
 function addDeclarationToModule(options: ControllerOptions): Rule {
   return (tree: Tree) => {
     if (options.skipImport !== undefined && options.skipImport) {
-      return tree;
+      return tree
     }
     options.module = new ModuleFinder(tree).find({
       name: options.name,
       path: options.path as Path,
-    });
+    })
     if (!options.module) {
-      return tree;
+      return tree
     }
-    const content = tree.read(options.module).toString();
-    const declarator: ModuleDeclarator = new ModuleDeclarator();
+    const content = tree.read(options.module).toString()
+    const declarator: ModuleDeclarator = new ModuleDeclarator()
     tree.overwrite(
       options.module,
       declarator.declare(content, options as DeclarationOptions),
-    );
-    return tree;
-  };
+    )
+    return tree
+  }
 }

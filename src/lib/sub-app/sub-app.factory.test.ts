@@ -1,23 +1,23 @@
 import {
   SchematicTestRunner,
   UnitTestTree,
-} from '@angular-devkit/schematics/testing';
-import * as path from 'path';
-import { SubAppOptions } from './sub-app.schema';
+} from '@angular-devkit/schematics/testing'
+import * as path from 'path'
+import { SubAppOptions } from './sub-app.schema'
 
 describe('SubApp Factory', () => {
   const runner: SchematicTestRunner = new SchematicTestRunner(
     '.',
     path.join(process.cwd(), 'src/collection.json'),
-  );
+  )
   it('should manage name only', async () => {
     const options: SubAppOptions = {
       name: 'project',
-    };
+    }
     const tree: UnitTestTree = await runner
       .runSchematicAsync('sub-app', options)
-      .toPromise();
-    const files: string[] = tree.files;
+      .toPromise()
+    const files: string[] = tree.files
     expect(files.sort()).toEqual([
       '/nest-cli.json',
       '/apps/mwaeckerlin-schematics/tsconfig.app.json',
@@ -29,16 +29,16 @@ describe('SubApp Factory', () => {
       '/apps/project/src/project.service.ts',
       '/apps/project/test/app.e2e-spec.ts',
       '/apps/project/test/jest-e2e.json',
-    ].sort());
-  });
+    ].sort())
+  })
   it('should manage name to normalize', async () => {
     const options: SubAppOptions = {
       name: 'awesomeProject',
-    };
+    }
     const tree: UnitTestTree = await runner
       .runSchematicAsync('sub-app', options)
-      .toPromise();
-    const files: string[] = tree.files;
+      .toPromise()
+    const files: string[] = tree.files
     expect(files.sort()).toEqual([
       '/nest-cli.json',
       '/apps/mwaeckerlin-schematics/tsconfig.app.json',
@@ -50,16 +50,16 @@ describe('SubApp Factory', () => {
       '/apps/awesome-project/src/awesome-project.service.ts',
       '/apps/awesome-project/test/app.e2e-spec.ts',
       '/apps/awesome-project/test/jest-e2e.json',
-    ].sort());
-  });
+    ].sort())
+  })
   it("should keep underscores in sub-app's path and file name", async () => {
     const options: SubAppOptions = {
       name: '_project',
-    };
+    }
     const tree: UnitTestTree = await runner
       .runSchematicAsync('sub-app', options)
-      .toPromise();
-    const files: string[] = tree.files;
+      .toPromise()
+    const files: string[] = tree.files
     expect(files.sort()).toEqual([
       '/nest-cli.json',
       '/apps/mwaeckerlin-schematics/tsconfig.app.json',
@@ -71,17 +71,17 @@ describe('SubApp Factory', () => {
       '/apps/_project/src/_project.service.ts',
       '/apps/_project/test/app.e2e-spec.ts',
       '/apps/_project/test/jest-e2e.json',
-    ].sort());
-  });
+    ].sort())
+  })
   it('should manage javascript files', async () => {
     const options: SubAppOptions = {
       name: 'project',
       language: 'js',
-    };
+    }
     const tree: UnitTestTree = await runner
       .runSchematicAsync('sub-app', options)
-      .toPromise();
-    const files: string[] = tree.files;
+      .toPromise()
+    const files: string[] = tree.files
     expect(files.sort()).toEqual([
       '/nest-cli.json',
       '/apps/mwaeckerlin-schematics/.babelrc',
@@ -97,17 +97,17 @@ describe('SubApp Factory', () => {
       '/apps/project/src/main.js',
       '/apps/project/test/app.e2e-spec.js',
       '/apps/project/test/jest-e2e.json',
-    ].sort());
-  });
+    ].sort())
+  })
   it('should generate spec files with custom suffix', async () => {
     const options: SubAppOptions = {
       name: 'project',
       specFileSuffix: 'test',
-    };
+    }
     const tree: UnitTestTree = await runner
       .runSchematicAsync('sub-app', options)
-      .toPromise();
-    const files: string[] = tree.files;
+      .toPromise()
+    const files: string[] = tree.files
     expect(files.sort()).toEqual([
       '/nest-cli.json',
       '/apps/mwaeckerlin-schematics/tsconfig.app.json',
@@ -119,6 +119,6 @@ describe('SubApp Factory', () => {
       '/apps/project/src/project.service.ts',
       '/apps/project/test/jest-e2e.json',
       '/apps/project/test/app.e2e-test.ts',
-    ].sort());
-  });
-});
+    ].sort())
+  })
+})

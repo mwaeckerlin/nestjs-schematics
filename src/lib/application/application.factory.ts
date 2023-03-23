@@ -1,4 +1,4 @@
-import { join, Path, strings } from '@angular-devkit/core';
+import { join, Path, strings } from '@angular-devkit/core'
 import {
   apply,
   mergeWith,
@@ -7,44 +7,44 @@ import {
   Source,
   template,
   url,
-} from '@angular-devkit/schematics';
-import { basename, parse } from 'path';
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting';
+} from '@angular-devkit/schematics'
+import { basename, parse } from 'path'
+import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
 import {
   DEFAULT_AUTHOR,
   DEFAULT_DESCRIPTION,
   DEFAULT_LANGUAGE,
   DEFAULT_VERSION,
-} from '../defaults';
-import { ApplicationOptions } from './application.schema';
+} from '../defaults'
+import { ApplicationOptions } from './application.schema'
 
 export function main(options: ApplicationOptions): Rule {
-  options.name = normalizeToKebabOrSnakeCase(options.name.toString());
+  options.name = normalizeToKebabOrSnakeCase(options.name.toString())
 
   const path =
     !options.directory || options.directory === 'undefined'
       ? options.name
-      : options.directory;
+      : options.directory
 
-  options = transform(options);
-  return mergeWith(generate(options, path));
+  options = transform(options)
+  return mergeWith(generate(options, path))
 }
 
 function transform(options: ApplicationOptions): ApplicationOptions {
-  const target: ApplicationOptions = Object.assign({}, options);
+  const target: ApplicationOptions = Object.assign({}, options)
 
-  target.author = !!target.author ? target.author : DEFAULT_AUTHOR;
+  target.author = !!target.author ? target.author : DEFAULT_AUTHOR
   target.description = !!target.description
     ? target.description
-    : DEFAULT_DESCRIPTION;
-  target.language = !!target.language ? target.language : DEFAULT_LANGUAGE;
-  target.name = resolvePackageName(target.name.toString());
-  target.version = !!target.version ? target.version : DEFAULT_VERSION;
+    : DEFAULT_DESCRIPTION
+  target.language = !!target.language ? target.language : DEFAULT_LANGUAGE
+  target.name = resolvePackageName(target.name.toString())
+  target.version = !!target.version ? target.version : DEFAULT_VERSION
 
   target.packageManager ??= 'npm'
-  target.dependencies ??= '';
-  target.devDependencies ??= '';
-  return target;
+  target.dependencies ??= ''
+  target.devDependencies ??= ''
+  return target
 }
 
 /**
@@ -58,15 +58,15 @@ function transform(options: ApplicationOptions): ApplicationOptions {
  * have a canonical representation.
  */
 function resolvePackageName(path: string) {
-  const { base: baseFilename, dir: dirname } = parse(path);
+  const { base: baseFilename, dir: dirname } = parse(path)
   if (baseFilename === '.') {
-    return basename(process.cwd());
+    return basename(process.cwd())
   }
   // If is as a package with scope (https://docs.npmjs.com/misc/scope)
   if (dirname.match(/^@[^\s]/)) {
-    return `${dirname}/${baseFilename}`;
+    return `${dirname}/${baseFilename}`
   }
-  return baseFilename;
+  return baseFilename
 }
 
 function generate(options: ApplicationOptions, path: string): Source {
@@ -76,5 +76,5 @@ function generate(options: ApplicationOptions, path: string): Source {
       ...options,
     }),
     move(path),
-  ]);
+  ])
 }

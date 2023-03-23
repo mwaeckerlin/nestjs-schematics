@@ -4,10 +4,10 @@ import { InputType, Field, Int, PartialType } from '@nestjs/graphql'
 @InputType()
 export class Update<%= singular(classify(name)) %>Input extends PartialType(Create<%= singular(classify(name)) %>Input) {
   @Field(() => Int)
-  id: number
+  id: string
 }<% } else { %>
 import { PartialType } from '@nestjs/mapped-types'
 
 export class Update<%= singular(classify(name)) %>Input extends PartialType(Create<%= singular(classify(name)) %>Input) {
-  id: number
+  id: string
 }<% } %>

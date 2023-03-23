@@ -7,10 +7,10 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Tree } from '@angular-devkit/schematics';
-import { JSONFile } from './json-file.util';
+import { Tree } from '@angular-devkit/schematics'
+import { JSONFile } from './json-file.util'
 
-const PKG_JSON_PATH = '/package.json';
+const PKG_JSON_PATH = '/package.json'
 export enum NodeDependencyType {
   Default = 'dependencies',
   Dev = 'devDependencies',
@@ -19,10 +19,10 @@ export enum NodeDependencyType {
 }
 
 export interface NodeDependency {
-  type: NodeDependencyType;
-  name: string;
-  version: string;
-  overwrite?: boolean;
+  type: NodeDependencyType
+  name: string
+  version: string
+  overwrite?: boolean
 }
 
 const ALL_DEPENDENCY_TYPE = [
@@ -30,19 +30,19 @@ const ALL_DEPENDENCY_TYPE = [
   NodeDependencyType.Dev,
   NodeDependencyType.Optional,
   NodeDependencyType.Peer,
-];
+]
 
 export function addPackageJsonDependency(
   tree: Tree,
   dependency: NodeDependency,
   pkgJsonPath = PKG_JSON_PATH,
 ): void {
-  const json = new JSONFile(tree, pkgJsonPath);
+  const json = new JSONFile(tree, pkgJsonPath)
 
-  const { overwrite, type, name, version } = dependency;
-  const path = [type, name];
+  const { overwrite, type, name, version } = dependency
+  const path = [type, name]
   if (overwrite || !json.get(path)) {
-    json.modify(path, version);
+    json.modify(path, version)
   }
 }
 
@@ -51,19 +51,19 @@ export function getPackageJsonDependency(
   name: string,
   pkgJsonPath = PKG_JSON_PATH,
 ): NodeDependency | null {
-  const json = new JSONFile(tree, pkgJsonPath);
+  const json = new JSONFile(tree, pkgJsonPath)
 
   for (const depType of ALL_DEPENDENCY_TYPE) {
-    const version = json.get([depType, name]);
+    const version = json.get([depType, name])
 
     if (typeof version === 'string') {
       return {
         type: depType,
         name: name,
         version,
-      };
+      }
     }
   }
 
-  return null;
+  return null
 }

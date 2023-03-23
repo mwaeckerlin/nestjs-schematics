@@ -273,9 +273,14 @@ export class BookService {
 
 #### Run
 
-That's it, run it:
+That's it, prepare it and generate the first migration:
 
     npm i
+    npm run build
+    npm run migration:initial
+
+Start it:
+
     npm start
 
 Then browse to [http://localhost:4000/api] and play with the API!

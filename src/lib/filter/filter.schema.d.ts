@@ -1,33 +1,33 @@
-import { Path } from '@angular-devkit/core';
+import { Path } from '@angular-devkit/core'
 
 export interface FilterOptions {
   /**
    * The name of the filter.
    */
-  name: string;
+  name: string
   /**
    * The path to create the filter.
    */
-  path?: string | Path;
+  path?: string | Path
   /**
    * Application language.
    */
-  language?: string;
+  language?: string
   /**
    * The source root path
    */
-  sourceRoot?: string;
+  sourceRoot?: string
   /**
    * Specifies if a spec file is generated.
    */
-  spec?: boolean;
+  spec?: boolean
   /**
    * Specifies the file suffix of spec files.
    * @default "spec"
    */
-  specFileSuffix?: string;
+  specFileSuffix?: string
   /**
    * Flag to indicate if a directory is created.
    */
-  flat?: boolean;
+  flat?: boolean
 }

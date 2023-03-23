@@ -1,32 +1,32 @@
-import { Path } from '@angular-devkit/core';
+import { Path } from '@angular-devkit/core'
 
 export interface AngularOptions {
   /**
    * The name of the application.
    */
-  name: string;
+  name: string
   /**
    * The directory of the application.
    */
-  directory?: string;
+  directory?: string
   /**
    * The path to create the module.
    */
-  path?: string;
+  path?: string
   /**
    * The path to insert the module declaration.
    */
-  module?: Path;
+  module?: Path
   /**
    * Flag which indicates if Angular app should be scaffolded
    */
-  initApp?: boolean;
+  initApp?: boolean
   /**
    * Metadata name affected by declaration insertion.
    */
-  metadata?: string;
+  metadata?: string
   /**
    * Nest element type name
    */
-  type?: string;
+  type?: string
 }

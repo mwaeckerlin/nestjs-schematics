@@ -19,7 +19,7 @@ export class <%= classify(name) %>Resolver {
   }
 
   @Query(() => <%= singular(classify(name)) %>, { name: '<%= lowercased(singular(classify(name))) %>' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => Int }) id: string) {
     return this.<%= lowercased(name) %>Service.findOne(id)
   }
 
@@ -29,7 +29,7 @@ export class <%= classify(name) %>Resolver {
   }
 
   @Mutation(() => <%= singular(classify(name)) %>)
-  remove<%= singular(classify(name)) %>(@Args('id', { type: () => Int }) id: number) {
+  remove<%= singular(classify(name)) %>(@Args('id', { type: () => Int }) id: string) {
     return this.<%= lowercased(name) %>Service.remove(id)
   }<% } else if (crud && type === 'graphql-schema-first') {%>
 
@@ -44,7 +44,7 @@ export class <%= classify(name) %>Resolver {
   }
 
   @Query('<%= lowercased(singular(classify(name))) %>')
-  findOne(@Args('id') id: number) {
+  findOne(@Args('id') id: string) {
     return this.<%= lowercased(name) %>Service.findOne(id)
   }
 
@@ -54,7 +54,7 @@ export class <%= classify(name) %>Resolver {
   }
 
   @Mutation('remove<%= singular(classify(name)) %>')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.<%= lowercased(name) %>Service.remove(id)
   }<% } %>
 }

@@ -1,26 +1,26 @@
-import { Path } from '@angular-devkit/core';
+import { Path } from '@angular-devkit/core'
 
 export interface SubAppOptions {
   /**
    * Nest application name.
    */
-  name: string;
+  name: string
   /**
    * Application language.
    */
-  language?: string;
+  language?: string
   /**
    * The path to create the application.
    */
-  path?: string | Path;
+  path?: string | Path
   /**
    * Applications root directory
    */
-  rootDir?: string | Path;
+  rootDir?: string | Path
   /**
    * Specifies the file suffix of spec files.
    * @default "spec"
    */
-  specFileSuffix?: string;
-  sourceRoot?: string;
+  specFileSuffix?: string
+  sourceRoot?: string
 }
