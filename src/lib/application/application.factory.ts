@@ -1,6 +1,7 @@
 import { join, Path, strings } from '@angular-devkit/core'
 import {
   apply,
+  chain,
   mergeWith,
   move,
   Rule,
@@ -27,7 +28,7 @@ export function main(options: ApplicationOptions): Rule {
       : options.directory
 
   options = transform(options)
-  return mergeWith(generate(options, path))
+  return generate(options, path)
 }
 
 function transform(options: ApplicationOptions): ApplicationOptions {
@@ -69,12 +70,21 @@ function resolvePackageName(path: string) {
   return baseFilename
 }
 
-function generate(options: ApplicationOptions, path: string): Source {
-  return apply(url(join('./files' as Path, options.language)), [
-    template({
-      ...strings,
-      ...options,
-    }),
-    move(path),
+function generate(options: ApplicationOptions, path: string): Rule {
+  return chain([
+    mergeWith(apply(url(join('./files' as Path, options.language)), [
+      template({
+        ...strings,
+        ...options,
+      }),
+      move(path),
+    ])),
+    mergeWith(apply(url('./files/common'), [
+      template({
+        ...strings,
+        ...options,
+      }),
+      move(path),
+    ]))
   ])
 }
