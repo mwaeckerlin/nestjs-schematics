@@ -3,7 +3,7 @@ services:
 
   backend:
     build: .
-    env_file:
+    environment:
       DB_TYPE:
       DB_NAME:
       DB_HOST:
@@ -11,4 +11,4 @@ services:
       DB_USER:
       DB_PASSWORD:
     ports:
-      -"4000:4000"
+      - "4000:4000"

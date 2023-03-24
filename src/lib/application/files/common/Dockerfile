@@ -1,14 +1,14 @@
 FROM mwaeckerlin/nodejs-build AS build
-COPY package.json package-lock.json .
-RUN npm i
-COPY . .
+COPY --chown=${BUILD_USER} package.json package-lock.json ./
+RUN npm install
+COPY --chown=${BUILD_USER} . .
 RUN npm run build
 
 FROM mwaeckerlin/nodejs-build AS node-modules
-ENV NODE_ENV "production"
-COPY package.json package-lock.json .
-RUN npm i
+COPY --chown=${BUILD_USER} package.json package-lock.json ./
+RUN npm install
 
-FROM mwaeckerlin/node as production
-COPY --from=build dist .
-COPY --from=node-modules node-modules .
+FROM mwaeckerlin/nodejs as production
+EXPOSE 4000
+COPY --from=build /app/dist /app/dist
+COPY --from=node-modules /app/node_modules node_modules
