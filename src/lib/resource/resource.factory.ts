@@ -54,7 +54,7 @@ function transform(options: ResourceOptions): ResourceOptions {
   const location: Location = new NameParser().parse(target)
   target.name = normalizeToKebabOrSnakeCase(location.name)
   target.path = normalizeToKebabOrSnakeCase(location.path)
-  target.language = target.language !== undefined ? target.language : 'ts'
+  target.language ??= 'ts'
   if (target.language === 'js') {
     throw new Error(
       'The "resource" schematic does not support JavaScript language (only TypeScript is supported).',

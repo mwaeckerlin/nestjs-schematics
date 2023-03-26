@@ -7,8 +7,26 @@
       "type": {
         "type": "string",
         "default": "sqlite",
-        "description": "Database type, sqlite, mysql, postgres, ..."
-      },
+        "description": "Database type.",
+       "enum": [
+        "sqlite",
+        "postgres",
+        "mysql",
+        "mariadb",
+        "mongo"
+      ],
+      "x-prompt": {
+        "message": "What database do you use?",
+        "type": "list",
+        "items": [
+          { "value": "sqlite", "label": "SQLite" },
+          { "value": "postgres", "label": "PostgreSQL" },
+          { "value": "mysql", "label": "MySQL" },
+          { "value": "mariadb", "label": "MariaDB" },
+          { "value": "mongo", "label": "MongoDB" }
+        ]
+      }
+     },
       "path": {
         "type": "string",
         "format": "path",

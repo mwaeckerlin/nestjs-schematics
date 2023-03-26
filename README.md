@@ -26,6 +26,11 @@ Additional generators:
    - `type` defines the default database type, e.g. `sqlite`
  - `kafka`: add kafka connection (not started yet)
 
+Also Generates:
+
+  - `Dockerfile`
+  - `docker-compose.yml`
+
 ### Install:
 
     npm i -g @mwaeckerlin/schematics
@@ -40,6 +45,51 @@ Additional generators:
     cd test
     npm install
     npm run start:debug
+
+Or:
+
+    docker-compose up --build
+
+### Add Database
+
+Create a database, run initial migration (if you don't use SQLitem then you need to run a database with `docker-compose up -d db` for the initial migration):
+
+    nest new -c @mwaeckerlin/schematics -p npm test
+    cd test
+    nest g -c @mwaeckerlin/schematics db
+    nest g -c @mwaeckerlin/schematics res user
+    npm install
+    npm run build
+    docker-compose up -d db
+    npm run migration:initial
+    docker-compose up
+
+If you get:
+
+```
+  code: 'ER_ACCESS_DENIED_ERROR',
+  errno: 1045,
+  sqlState: '28000',
+  sqlMessage: "Access denied for user 'user'@'172.24.0.1' (using password: YES)",
+```
+
+Then you probably still have an old docker volume created with another password:
+
+```
+$ docker volume ls
+DRIVER    VOLUME NAME
+local     test_db-volume
+```
+
+Remove it:
+
+    docker-compose rm -vfs
+    docker volume rm test_db-volume
+
+Or remove everything:
+
+    docker system prune --all --volumes
+
 
 ### Real Live Example
 
