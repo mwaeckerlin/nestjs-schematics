@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsNestOpenAPI",
+  "title": "Nest OpenAPI Options Schema",
+  "type": "object",
+  "properties": {
+    "openapi": {
+      "type": "string",
+      "format": "path",
+      "description": "The OpenAPI file name.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      }
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the OpenAPI controller.",
+      "$default": {
+        "$source": "argv",
+        "index": 1
+      }
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the OpenAPI files."
+    },
+    "language": {
+      "type": "string",
+      "default": "ts",
+      "description": "Nest OpenAPI language (ts/js)."
+    },
+    "sourceRoot": {
+      "type": "string",
+      "description": "Nest OpenAPI source root directory."
+    },
+    "module": {
+      "type": "string",
+      "description": "Allows specification of the declaring module."
+    },
+    "headers": {
+      "type": "boolean",
+      "description": "Add headers to the controller declaration?",
+      "default": false
+    }
+  },
+  "required": []
+}

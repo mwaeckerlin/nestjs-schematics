@@ -46,4 +46,6 @@ export interface ControllerOptions {
    * Flag to indicate if a directory is created.
    */
   flat?: boolean
+
+  functions: any
 }

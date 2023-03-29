@@ -62,14 +62,15 @@ function transform(source: ControllerOptions): ControllerOptions {
 }
 
 function generate(options: ControllerOptions) {
-  return (context: SchematicContext) =>
-    apply(url(join('./files' as Path, options.language)), [
-      options.spec 
-        ? noop() 
+  return (context: SchematicContext) => {
+    return apply(url(join('./files' as Path, options.language)), [
+      options.spec
+        ? noop()
         : filter((path) => {
-            const languageExtension = options.language || 'ts'
-            const suffix = `.__specFileSuffix__.${languageExtension}`
-            return !path.endsWith(suffix)
+          console.log({ path })
+          const languageExtension = options.language || 'ts'
+          const suffix = `.__specFileSuffix__.${languageExtension}`
+          return !path.endsWith(suffix)
         }),
       template({
         ...strings,
@@ -77,6 +78,7 @@ function generate(options: ControllerOptions) {
       }),
       move(options.path),
     ])(context)
+  }
 }
 
 function addDeclarationToModule(options: ControllerOptions): Rule {

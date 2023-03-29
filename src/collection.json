@@ -123,6 +123,12 @@
       "description": "Connect a Nest application to a database.",
       "schema": "./lib/database/schema.json",
       "aliases": ["db", "sql"]
+    },
+    "openapi": {
+      "factory": "./lib/openapi/openapi.factory#main",
+      "description": "Create controller from OpenAPI JSON file.",
+      "schema": "./lib/openapi/schema.json",
+      "aliases": ["api"]
     }
   }
 }
