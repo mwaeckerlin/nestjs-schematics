@@ -24,6 +24,9 @@ Additional generators:
 
  - `database` or `db`: add MikroORM based database connection
    - `type` defines the default database type, e.g. `sqlite`
+ - `openapi` or `api`: Generate a server (Controller + DTO) from a OpenAPI 3 JSON file
+   - first commandline parameter: file name of the OpenAPI JSON
+   - second command line parameter: name of the controller (optional, otherwise, contoler name is taken from first path element)
  - `kafka`: add kafka connection (not started yet)
 
 Also Generates:
