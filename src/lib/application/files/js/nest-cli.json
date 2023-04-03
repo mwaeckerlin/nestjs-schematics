@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "language": "js",
-  "collection": "@mwaeckerlin/schematics",
+  "collection": "@scrypt-swiss/nest-templates",
   "sourceRoot": "src",
   "compilerOptions": {
     "plugins": [

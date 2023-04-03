@@ -36,15 +36,15 @@ Also Generates:
 
 ### Install:
 
-    npm i -g @mwaeckerlin/schematics
+    npm i -g @scrypt-swiss/nest-templates
 
 ### Usage:
 
-    nest new -c @mwaeckerlin/schematics [options] [name]
+    nest new -c @scrypt-swiss/nest-templates [options] [name]
 
 ### Example:
 
-    nest new -c @mwaeckerlin/schematics -p npm -l ts test
+    nest new -c @scrypt-swiss/nest-templates -p npm -l ts test
     cd test
     npm install
     npm run start:debug
@@ -57,10 +57,10 @@ Or:
 
 Create a database, run initial migration (if you don't use SQLitem then you need to run a database with `docker-compose up -d db` for the initial migration):
 
-    nest new -c @mwaeckerlin/schematics -p npm test
+    nest new -c @scrypt-swiss/nest-templates -p npm test
     cd test
-    nest g -c @mwaeckerlin/schematics db
-    nest g -c @mwaeckerlin/schematics res user
+    nest g -c @scrypt-swiss/nest-templates db
+    nest g -c @scrypt-swiss/nest-templates res user
     npm install
     npm run build
     docker-compose up -d db
@@ -101,12 +101,12 @@ Let's implement [the MikroORM example from my Blog](https://marc.wäckerlin.ch/c
 #### Setup Basics
 
 ```bash
-nest new -c @mwaeckerlin/schematics -p npm test
+nest new -c @scrypt-swiss/nest-templates -p npm test
 cd test
-nest g -c @mwaeckerlin/schematics db
-nest g -c @mwaeckerlin/schematics res author
-nest g -c @mwaeckerlin/schematics res punlisher
-nest g -c @mwaeckerlin/schematics res book
+nest g -c @scrypt-swiss/nest-templates db
+nest g -c @scrypt-swiss/nest-templates res author
+nest g -c @scrypt-swiss/nest-templates res punlisher
+nest g -c @scrypt-swiss/nest-templates res book
 ```
 
 #### Entities
@@ -346,15 +346,15 @@ The Nest CLI is a command-line interface tool that helps you to initialize, deve
 ## Installation
 
 ```bash
-$ npm install -g @mwaeckerlin/schematics
+$ npm install -g @scrypt-swiss/nest-templates
 ```
 
 ## Usage
 
-To use `@mwaeckerlin/schematics`, you need to explicitly refere to it:
+To use `@scrypt-swiss/nest-templates`, you need to explicitly refere to it:
 
 ```bash
-$ nest new -c @mwaeckerlin/schematics [options] [name]
+$ nest new -c @scrypt-swiss/nest-templates [options] [name]
 ```
 
 Learn more in the [official documentation](https://docs.nestjs.com/).
