@@ -36,7 +36,7 @@ describe('SubApp Factory', () => {
       "/apps/project/test/app.e2e-spec.ts",
       "/apps/project/test/jest-e2e.json",
       "/apps/project/tsconfig.build.json",
-      "/apps/project/tsconfig.json"].sort())
+      "/apps/project/tsconfig.app.json"].sort())
   })
   it('should manage name to normalize', async () => {
     const options: SubAppOptions = {
@@ -62,7 +62,7 @@ describe('SubApp Factory', () => {
       "/apps/awesome-project/test/app.e2e-spec.ts",
       "/apps/awesome-project/test/jest-e2e.json",
       "/apps/awesome-project/tsconfig.build.json",
-      "/apps/awesome-project/tsconfig.json",
+      "/apps/awesome-project/tsconfig.app.json",
       "/apps/scrypt-swiss-nest-templates/tsconfig.app.json",
       "/nest-cli.json",
     ].sort())
@@ -91,7 +91,7 @@ describe('SubApp Factory', () => {
       "/apps/_project/test/app.e2e-spec.ts",
       "/apps/_project/test/jest-e2e.json",
       "/apps/_project/tsconfig.build.json",
-      "/apps/_project/tsconfig.json",
+      "/apps/_project/tsconfig.app.json",
       "/apps/scrypt-swiss-nest-templates/tsconfig.app.json",
       "/nest-cli.json",].sort())
   })
@@ -153,7 +153,7 @@ describe('SubApp Factory', () => {
       "/apps/project/test/app.e2e-spec.ts",
       "/apps/project/test/jest-e2e.json",
       "/apps/project/tsconfig.build.json",
-      "/apps/project/tsconfig.json",
+      "/apps/project/tsconfig.app.json",
       "/apps/scrypt-swiss-nest-templates/tsconfig.app.json",
       "/nest-cli.json",
     ].sort())

@@ -11,6 +11,11 @@
       "description": "Create a new Angular application.",
       "schema": "./lib/client-app/angular/schema.json"
     },
+    "react-app": {
+      "factory": "./lib/client-app/react/react.factory#main",
+      "description": "Create a new React application.",
+      "schema": "./lib/client-app/react/schema.json"
+    },
     "class": {
       "factory": "./lib/class/class.factory#main",
       "description": "Create a new class.",

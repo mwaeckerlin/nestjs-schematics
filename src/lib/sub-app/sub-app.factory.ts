@@ -49,9 +49,9 @@ export function main(options: SubAppOptions): Rule {
       isMonorepo(tree)
         ? noop()(tree, context)
         : chain([
-            branchAndMerge(mergeWith(generateWorkspace(options, appName))),
-            moveDefaultAppToApps(options.path, appName, options.sourceRoot),
-          ])(tree, context),
+          branchAndMerge(mergeWith(generateWorkspace(options, appName))),
+          moveDefaultAppToApps(options.path, appName, options.sourceRoot),
+        ])(tree, context),
     addAppsToCliOptions(options.path, options.name, appName),
     generate(options),
   ])
@@ -75,6 +75,7 @@ function getAppNameFromPackageJson(): string {
 }
 
 function transform(options: SubAppOptions): SubAppOptions {
+
   const target: SubAppOptions = Object.assign({}, options)
   const defaultSourceRoot =
     options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH
@@ -88,7 +89,9 @@ function transform(options: SubAppOptions): SubAppOptions {
     target.path !== undefined
       ? join(normalize(defaultSourceRoot), target.path)
       : normalize(defaultSourceRoot)
-
+  target.packageManager ??= 'npm'
+  target.author ??= ''
+  target.description ??= ''
   return target
 }
 
