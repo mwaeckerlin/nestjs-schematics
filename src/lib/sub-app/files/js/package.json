@@ -1,0 +1,51 @@
+{
+  "name": "<%= name %>",
+  "version": "<%= version %>",
+  "description": "<%= description %>",
+  "author": "<%= author %>",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "format": "prettier --write \"**/*.js\"",
+    "start": "babel-node index.js",
+    "start:dev": "nodemon",
+    "test": "jest",
+    "test:cov": "jest --coverage",
+    "test:e2e": "jest --config ./test/jest-e2e.json"
+  },
+  "dependencies": {
+    "@nestjs/common": "*",
+    "@nestjs/core": "*",
+    "@nestjs/platform-express": "*",
+    "@nestjs/swagger": "*",
+    "class-transformer": "*",
+    "class-validator": "*",
+    "reflect-metadata": "*",
+    "rxjs": "*"
+
+  },
+  "devDependencies": {
+    "@nestjs/testing": "*",
+    "@scrypt-swiss/nest-templates": "*",
+    "@babel/core": "*",
+    "@babel/node": "*",
+    "@babel/plugin-proposal-decorators": "*",
+    "@babel/plugin-transform-runtime": "*",
+    "@babel/preset-env": "*",
+    "@babel/register": "*",
+    "@babel/runtime": "*",
+    "jest": "*",
+    "nodemon": "*",
+    "prettier": "*",
+    "supertest": "*"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json"
+    ],
+    "rootDir": "src",
+    "testRegex": ".spec.js$",
+    "coverageDirectory": "../coverage"
+  }
+}

@@ -31,6 +31,26 @@
       "type": "string",
       "default": "spec",
       "description": "Specifies the file suffix of spec files."
+    },
+    "packageManager": {
+      "type": "string",
+      "default": "npm",
+      "description": "Package Manager."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "description": "Description."
+    },
+    "author": {
+      "type": "string",
+      "default": "",
+      "description": "Author."
+    },
+    "version": {
+      "type": "string",
+      "default": "0.0.1",
+      "description": "Version."
     }
   },
   "required": ["name"]

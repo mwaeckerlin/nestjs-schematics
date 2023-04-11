@@ -23,4 +23,8 @@ export interface SubAppOptions {
    */
   specFileSuffix?: string
   sourceRoot?: string
+  packageManager?: string
+  description?: string
+  version?: string
+  author?: string
 }

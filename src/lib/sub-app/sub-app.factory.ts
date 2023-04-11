@@ -53,7 +53,7 @@ export function main(options: SubAppOptions): Rule {
             moveDefaultAppToApps(options.path, appName, options.sourceRoot),
           ])(tree, context),
     addAppsToCliOptions(options.path, options.name, appName),
-    branchAndMerge(mergeWith(generate(options))),
+    generate(options),
   ])
 }
 
@@ -367,13 +367,22 @@ function generateWorkspace(options: SubAppOptions, appName: string): Source {
   ])
 }
 
-function generate(options: SubAppOptions): Source {
+function generate(options: SubAppOptions): Rule {
   const path = join(options.path as Path, options.name)
-  return apply(url(join('./files' as Path, options.language)), [
-    template({
-      ...strings,
-      ...options,
-    }),
-    move(path),
+  return chain([
+    mergeWith(apply(url(join('./files' as Path, options.language)), [
+      template({
+        ...strings,
+        ...options,
+      }),
+      move(path),
+    ])),
+    mergeWith(apply(url('./files/common'), [
+      template({
+        ...strings,
+        ...options,
+      }),
+      move(path),
+    ]))
   ])
 }
