@@ -12,7 +12,10 @@
   "scripts": {
     "postbuild": "npm run copy:collection && npm run copy:lib",
     "build": "rm -rf dist && tsc --project tsconfig.lib.json",
-    "clean": "gulp clean:src",
+    "clean": "gulp clean:src && npm run clean:dist",
+    "clean:full": "npm run clean && npm run clean:modules",
+    "clean:modules": "rimraf node_modules",
+    "clean:dist": "rimraf dist",
     "copy:collection": "cpx src/collection.json dist && cpx 'src/lib/**/schema.json' dist/lib",
     "copy:lib": "cpx 'src/lib/**/{files,workspace}/**/{.*,*}' dist/lib",
     "lint": "eslint '{src,test}/**/*.ts' --fix",
