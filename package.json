@@ -1,6 +1,6 @@
 {
   "name": "@scrypt-swiss/nest-templates",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Nest - modern, fast, powerful node.js web framework (@schematics)",
   "main": "dist/index.js",
   "files": [
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mwaeckerlin/schematics.git"
+    "url": "git+https://github.com/scrypt-swiss/nest-templates.git"
   },
   "contributors": [
     "ThomRick",
@@ -38,9 +38,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mwaeckerlin/schematics/issues"
+    "url": "https://github.com/scrypt-swiss/nest-templates/issues"
   },
-  "homepage": "https://github.com/mwaeckerlin/schematics#readme",
+  "homepage": "https://github.com/scrypt-swiss/nest-templates#readme",
   "dependencies": {
     "@angular-devkit/core": "15.2.4",
     "@angular-devkit/schematics": "15.2.4",
