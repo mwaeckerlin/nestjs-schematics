@@ -70,14 +70,14 @@ export function change(options: any): Rule {
                     "DB_HOST": "db",
                     "DB_USER": "user",
                     "DB_PASSWORD": pwgen(),
-                    "DB_PORT": options.type === 'postgres' ? 5432 : options.type === 'mysql' || options.type === 'mariadb' ? 3306 : null
+                    "DB_PORT": options.type === 'postgresql' ? 5432 : options.type === 'mysql' || options.type === 'mariadb' ? 3306 : null
                 },
                 ...content.services.backend.environment
             }
             content.services.backend.networks ??= []
             content.services.backend.networks.push('db-network')
             switch (content.services.backend.environment.DB_TYPE) {
-                case 'postgres':
+                case 'postgresql':
                     content.services.db = {
                         image: content.services.backend.environment.DB_TYPE,
                         ports: [
@@ -180,12 +180,12 @@ export function change(options: any): Rule {
         // set local test environment in .env
         {
             const { path, content } = read(tree, options, /^.env$/)
-            addLine(content, 'DB_TYPE='+config.DB_TYPE, {last: true})
-            addLine(content, 'DB_NAME='+config.DB_NAME, {last: true})
-            addLine(content, 'DB_HOST="127.0.0.1"', {last: true})
-            addLine(content, 'DB_USER='+config.DB_USER, {last: true})
-            addLine(content, 'DB_PASSWORD='+config.DB_PASSWORD, {last: true})
-            addLine(content, 'DB_PORT='+config.DB_PORT, {last: true})
+            addLine(content, 'DB_TYPE=' + config.DB_TYPE, { last: true })
+            addLine(content, 'DB_NAME=' + config.DB_NAME, { last: true })
+            addLine(content, 'DB_HOST="127.0.0.1"', { last: true })
+            addLine(content, 'DB_USER=' + config.DB_USER, { last: true })
+            addLine(content, 'DB_PASSWORD=' + config.DB_PASSWORD, { last: true })
+            addLine(content, 'DB_PORT=' + config.DB_PORT, { last: true })
             tree.overwrite(path, content.join('\n'))
         }
 
