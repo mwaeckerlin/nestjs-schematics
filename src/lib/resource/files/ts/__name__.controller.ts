@@ -26,9 +26,19 @@ export class <%= classify(name) %>Controller {
     return this.<%= lowercased(name) %>Service.findOne(id)
   }
 
+  @Get()
+  findOneQuery(@Query() query?: Record<string, any>) {
+    return this.<%= lowercased(name) %>Service.findOne(query)
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() update<%= singular(classify(name)) %>Dto: Update<%= singular(classify(name)) %>Dto) {
     return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>Dto)
+  }
+
+  @Patch()
+  updateQuery(@Query() query?: Record<string, any>, @Body() update<%= singular(classify(name)) %>Dto: Update<%= singular(classify(name)) %>Dto) {
+    return this.<%= lowercased(name) %>Service.update(query, update<%= singular(classify(name)) %>Dto)
   }
 
   @Delete(':id')
@@ -36,28 +46,33 @@ export class <%= classify(name) %>Controller {
     return this.<%= lowercased(name) %>Service.remove(id)
   }<% } else if (type === 'microservice' && crud) { %>
 
+  @Delete()
+  removeQuery(@Query() query?: Record<string, any>) {
+    return this.<%= lowercased(name) %>Service.remove(query)
+  }<% } else if (type === 'microservice' && crud) { %>
+  
   @MessagePattern('create<%= singular(classify(name)) %>')
   create(@Payload() create<%= singular(classify(name)) %>Dto: Create<%= singular(classify(name)) %>Dto) {
     return this.<%= lowercased(name) %>Service.create(create<%= singular(classify(name)) %>Dto)
   }
 
   @MessagePattern('findAll<%= classify(name) %>')
-  findAll() {
-    return this.<%= lowercased(name) %>Service.findAll()
+  findAll(@Payload query?: Record<string, any>) {
+    return this.<%= lowercased(name) %>Service.findAll(query)
   }
 
   @MessagePattern('findOne<%= singular(classify(name)) %>')
-  findOne(@Payload() id: string) {
+  findOne(@Payload() id: string | Record<string, any>) {
     return this.<%= lowercased(name) %>Service.findOne(id)
   }
 
   @MessagePattern('update<%= singular(classify(name)) %>')
-  update(@Payload() update<%= singular(classify(name)) %>Dto: Update<%= singular(classify(name)) %>Dto) {
-    return this.<%= lowercased(name) %>Service.update(update<%= singular(classify(name)) %>Dto.id, update<%= singular(classify(name)) %>Dto)
+  update(@Payload()id: string | Record<string, any>, @Payload() update<%= singular(classify(name)) %>Dto: Update<%= singular(classify(name)) %>Dto) {
+    return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>Dto)
   }
 
   @MessagePattern('remove<%= singular(classify(name)) %>')
-  remove(@Payload() id: string) {
+  remove(@Payload() id: string | Record<string, any>) {
     return this.<%= lowercased(name) %>Service.remove(id)
   }<% } %>
 }

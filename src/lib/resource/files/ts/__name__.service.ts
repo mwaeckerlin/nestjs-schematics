@@ -23,11 +23,11 @@ export class <%= classify(name) %>Service {<% if (crud) { %>
     return await this.em.find(<%= singular(classify(name)) %>, query)
   }
 
-  async findOne(id: string): Promise<<%= singular(classify(name)) %>> {
+  async findOne(id: string | Record<string, any> = {}): Promise<<%= singular(classify(name)) %>> {
     return this.em.findOneOrFail(<%= singular(classify(name)) %>, id)
   }
 
-  async update(id: string, <% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>update<%= singular(classify(name)) %><%= Naming %>: Update<%= singular(classify(name)) %><%= Naming %><% } else { %>update<%= singular(classify(name)) %>Input: Update<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
+  async update(id: string | Record<string, any> = {}, <% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>update<%= singular(classify(name)) %><%= Naming %>: Update<%= singular(classify(name)) %><%= Naming %><% } else { %>update<%= singular(classify(name)) %>Input: Update<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
     return await this.em.transactional(async (em) => {
       const <%= singular(name) %> = await em.findOneOrFail(<%= singular(classify(name)) %>, id)
       Object.assign(<%= singular(name) %>, update<%= singular(classify(name)) %><%= Naming %>, { merge: true })
@@ -36,7 +36,7 @@ export class <%= classify(name) %>Service {<% if (crud) { %>
     })
   }
 
-  async remove(id: string): Promise<<%= singular(classify(name)) %>> {
+  async remove(id: string | Record<string, any> = {}): Promise<<%= singular(classify(name)) %>> {
     const <%= singular(name) %> = await this.em.findOneOrFail(<%= singular(classify(name)) %>, id)
     await this.em.removeAndFlush(<%= singular(name) %>)
     return <%= singular(name) %>

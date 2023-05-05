@@ -1,59 +1,57 @@
 import { strings } from '@angular-devkit/core'
-import {
-  apply,
-  branchAndMerge,
-  chain,
-  externalSchematic,
-  mergeWith,
-  move,
-  noop,
-  Rule,
-  SchematicContext,
-  template,
-  Tree,
-  url,
-} from '@angular-devkit/schematics'
+import { apply, branchAndMerge, chain, mergeWith, move, Rule, SchematicContext, template, Tree, url } from '@angular-devkit/schematics'
 import { join } from 'path'
 import { Path } from 'typescript'
-import {
-  DeclarationOptions,
-  ModuleDeclarator,
-} from '../../../utils/module.declarator'
+import { DeclarationOptions, ModuleDeclarator } from '../../../utils/module.declarator'
 import { ModuleFinder } from '../../../utils/module.finder'
 import { Location, NameParser } from '../../../utils/name.parser'
 import { mergeSourceRoot } from '../../../utils/source-root.helpers'
-import { ModuleOptions } from '../../module/module.schema'
-import { AngularOptions } from './react.schema'
+import { ReactOptions } from './react.schema'
 
-export function main(options: AngularOptions): Rule {
+/*
+
+Add:
+
+@nestjs/serve-static react @types/react-dom react-redux react-i18next
+npm i -S workbox-core workbox-expiration workbox-precaching workbox-routing workbox-strategies
+@reduxjs/toolkit redux-subscriber
+
+ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+    }),
+
+ */
+
+export function main(options: ReactOptions): Rule {
   options = transform(options)
   return (tree: Tree, context: SchematicContext) => {
     return branchAndMerge(
       chain([
-        createAngularApplication(options),
+        //createReactApplication(options),
         mergeSourceRoot(options),
         addDeclarationToModule(options),
-        addGlobalPrefix(),
+        //addGlobalPrefix(),
         mergeWith(generate(options)),
       ]),
     )(tree, context)
   }
 }
 
-function transform(source: AngularOptions): ModuleOptions {
-  const target: AngularOptions = Object.assign({}, source)
+function transform(source: ReactOptions): ReactOptions {
+  const target: ReactOptions = Object.assign({}, source)
   target.directory = target.name ? strings.dasherize(target.name) : 'client'
-  target.name = 'Angular'
+  target.name = 'ReactFrontend'
   target.metadata = 'imports'
   target.type = 'module'
-
   const location: Location = new NameParser().parse(target)
   target.name = strings.dasherize(location.name)
   target.path = join(strings.dasherize(location.path) as Path, target.name)
+  //target.sourceRoot = target.sourceRoot.replace(/\/src$/, '/'+target.name+'/src')
+  console.log('TRANSFORM: ', { source, location, target })
   return target
 }
 
-function generate(options: AngularOptions) {
+function generate(options: ReactOptions) {
   return (context: SchematicContext) =>
     apply(url('./files' as Path), [
       template({
@@ -64,17 +62,17 @@ function generate(options: AngularOptions) {
     ])(context)
 }
 
-function createAngularApplication(options: AngularOptions): Rule {
+/* function createReactApplication(options: ReactOptions): Rule {
   if (!options.initApp) {
     return noop()
   }
-  return externalSchematic('@schematics/angular', 'ng-new', {
+  return externalSchematic('@schematics/react', 'ng-new', {
     name: options.directory,
     version: '8.0.0',
   })
-}
+} */
 
-function addDeclarationToModule(options: AngularOptions): Rule {
+function addDeclarationToModule(options: ReactOptions): Rule {
   return (tree: Tree) => {
     options.module = new ModuleFinder(tree).find({
       name: options.name,
@@ -105,7 +103,7 @@ function addDeclarationToModule(options: AngularOptions): Rule {
   }
 }
 
-function addGlobalPrefix(): Rule {
+/* function addGlobalPrefix(): Rule {
   return (tree: Tree) => {
     const mainFilePath = 'src/main.ts'
     const fileRef = tree.get(mainFilePath)
@@ -121,6 +119,7 @@ function addGlobalPrefix(): Rule {
     })
     const tsFile = tsProject.addSourceFileAtPath(mainFilePath)
     const bootstrapFunction = tsFile.getFunction('bootstrap')
+    console.log({ tsFile, mainFilePath, bootstrapFunction })
     const listenStatement = bootstrapFunction.getStatement(node =>
       node.getText().includes('listen'),
     )
@@ -138,4 +137,4 @@ function addGlobalPrefix(): Rule {
     tree.overwrite(mainFilePath, tsFile.getFullText())
     return tree
   }
-}
+} */

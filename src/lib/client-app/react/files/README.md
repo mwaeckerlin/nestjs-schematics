@@ -1,3 +1,1 @@
-# <%= name.replace(/-[a-z]/, (g) => '.' + g[1].toUpperCase()).replace(/^[a-z]/, (g) => g.toUpperCase()) %> - <%= slogan %>
-
-<%= description %>
+# <%= name.split('-').map(x => x?.[0]?.toUpperCase()+x.substring(1)).join(' ') %>

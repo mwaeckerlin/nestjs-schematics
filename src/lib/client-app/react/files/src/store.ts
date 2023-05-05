@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import i18next from "i18next"
-import initSubscriber from 'redux-subscriber';
+import initSubscriber from 'redux-subscriber'
 import { optionsReducer, statusReducer, changeLanguage } from '@pacta/components'
 
 export const store = configureStore({
