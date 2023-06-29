@@ -4,6 +4,7 @@
   "collection": "@scrypt-swiss/nest-templates",
   "sourceRoot": "src",
   "compilerOptions": {
+    "webpack": false,
     "plugins": [
       {
         "name": "@nestjs/swagger",

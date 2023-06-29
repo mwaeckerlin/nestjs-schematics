@@ -290,7 +290,7 @@ function addAppsToCliOptions(
     entryFile: 'main',
     sourceRoot: join(rootPath, DEFAULT_PATH_NAME),
     compilerOptions: {
-      tsConfigPath: join(rootPath, 'tsconfig.app.json'),
+      tsConfigPath: join(rootPath, 'tsconfig.json'),
     },
   }
   return (host: Tree) => {
@@ -329,7 +329,7 @@ function updateMainAppOptions(
     return
   }
   const rootFilePath = join(projectRoot as Path, appName)
-  const tsConfigPath = join(rootFilePath, 'tsconfig.app.json')
+  const tsConfigPath = join(rootFilePath, 'tsconfig.json')
 
   optionsFile.monorepo = true
   optionsFile.root = rootFilePath
