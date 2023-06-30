@@ -24,7 +24,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "backends": "*"
+  },
   "jest": {
     "moduleFileExtensions": [
       "js",
