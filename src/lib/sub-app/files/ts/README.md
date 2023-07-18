@@ -1,1 +1,0 @@
-# Scrypt <%= classify(name) %> Backend

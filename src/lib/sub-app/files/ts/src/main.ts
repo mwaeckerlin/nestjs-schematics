@@ -1,4 +1,4 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core'
+import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common'
 import { AllExceptionFilter } from './exception-filter'
@@ -10,7 +10,7 @@ async function bootstrap() {
   app.enableCors()
   app.use(rawBody, requestLogger)
   app.useGlobalPipes(new ValidationPipe())
-  app.useGlobalFilters(new AllExceptionFilter(app.get(HttpAdapterHost)))
+  app.useGlobalFilters(new AllExceptionFilter())
   await app.listen(Number(process.env.PORT ?? 4000), '0.0.0.0')
 }
 bootstrap()

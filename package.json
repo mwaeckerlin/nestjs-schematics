@@ -44,8 +44,8 @@
   },
   "homepage": "https://github.com/scrypt-swiss/nest-templates#readme",
   "dependencies": {
-    "@angular-devkit/core": "16.1.3",
-    "@angular-devkit/schematics": "16.1.3",
+    "@angular-devkit/core": "16.1.4",
+    "@angular-devkit/schematics": "16.1.4",
     "fs-extra": "11.1.1",
     "js-yaml": "4.1.0",
     "jsonc-parser": "3.2.0",
@@ -59,7 +59,7 @@
     "gulp": "4.0.2",
     "gulp-clean": "0.4.0",
     "nyc": "15.1.0",
-    "release-it": "15.11.0"
+    "release-it": "16.1.2"
   },
   "schematics": "./dist/collection.json",
   "nyc": {
