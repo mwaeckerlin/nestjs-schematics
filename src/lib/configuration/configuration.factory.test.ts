@@ -21,7 +21,7 @@ describe('Configuration Factory', () => {
     ).not.toBeUndefined()
     expect(JSON.parse(tree.readContent('/project/nest-cli.json'))).toEqual({
       $schema: 'https://json.schemastore.org/nest-cli',
-      collection: '@mwaeckerlin/schematics',
+      collection: '@scrypt-swiss/nest-templates',
       sourceRoot: 'src',
     })
   })
@@ -38,7 +38,7 @@ describe('Configuration Factory', () => {
     expect(JSON.parse(tree.readContent('/project/nest-cli.json'))).toEqual({
       $schema: 'https://json.schemastore.org/nest-cli',
       language: 'js',
-      collection: '@mwaeckerlin/schematics',
+      collection: '@scrypt-swiss/nest-templates',
       sourceRoot: 'src',
     })
   })

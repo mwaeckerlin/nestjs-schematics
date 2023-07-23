@@ -49,11 +49,11 @@ export function main(options: SubAppOptions): Rule {
       isMonorepo(tree)
         ? noop()(tree, context)
         : chain([
-            branchAndMerge(mergeWith(generateWorkspace(options, appName))),
-            moveDefaultAppToApps(options.path, appName, options.sourceRoot),
-          ])(tree, context),
+          branchAndMerge(mergeWith(generateWorkspace(options, appName))),
+          moveDefaultAppToApps(options.path, appName, options.sourceRoot),
+        ])(tree, context),
     addAppsToCliOptions(options.path, options.name, appName),
-    branchAndMerge(mergeWith(generate(options))),
+    generate(options),
   ])
 }
 
@@ -75,6 +75,7 @@ function getAppNameFromPackageJson(): string {
 }
 
 function transform(options: SubAppOptions): SubAppOptions {
+
   const target: SubAppOptions = Object.assign({}, options)
   const defaultSourceRoot =
     options.rootDir !== undefined ? options.rootDir : DEFAULT_APPS_PATH
@@ -88,7 +89,9 @@ function transform(options: SubAppOptions): SubAppOptions {
     target.path !== undefined
       ? join(normalize(defaultSourceRoot), target.path)
       : normalize(defaultSourceRoot)
-
+  target.packageManager ??= 'npm'
+  target.author ??= ''
+  target.description ??= ''
   return target
 }
 
@@ -287,7 +290,7 @@ function addAppsToCliOptions(
     entryFile: 'main',
     sourceRoot: join(rootPath, DEFAULT_PATH_NAME),
     compilerOptions: {
-      tsConfigPath: join(rootPath, 'tsconfig.app.json'),
+      tsConfigPath: join(rootPath, 'tsconfig.json'),
     },
   }
   return (host: Tree) => {
@@ -326,7 +329,7 @@ function updateMainAppOptions(
     return
   }
   const rootFilePath = join(projectRoot as Path, appName)
-  const tsConfigPath = join(rootFilePath, 'tsconfig.app.json')
+  const tsConfigPath = join(rootFilePath, 'tsconfig.json')
 
   optionsFile.monorepo = true
   optionsFile.root = rootFilePath
@@ -367,13 +370,22 @@ function generateWorkspace(options: SubAppOptions, appName: string): Source {
   ])
 }
 
-function generate(options: SubAppOptions): Source {
+function generate(options: SubAppOptions): Rule {
   const path = join(options.path as Path, options.name)
-  return apply(url(join('./files' as Path, options.language)), [
-    template({
-      ...strings,
-      ...options,
-    }),
-    move(path),
+  return chain([
+    mergeWith(apply(url(join('./files' as Path, options.language)), [
+      template({
+        ...strings,
+        ...options,
+      }),
+      move(path),
+    ])),
+    mergeWith(apply(url('./files/common'), [
+      template({
+        ...strings,
+        ...options,
+      }),
+      move(path),
+    ]))
   ])
 }

@@ -20,16 +20,23 @@ describe('SubApp Factory', () => {
     const files: string[] = tree.files
     expect(files.sort()).toEqual([
       '/nest-cli.json',
-      '/apps/mwaeckerlin-schematics/tsconfig.app.json',
-      '/apps/project/tsconfig.app.json',
-      '/apps/project/src/main.ts',
-      '/apps/project/src/project.controller.spec.ts',
-      '/apps/project/src/project.controller.ts',
-      '/apps/project/src/project.module.ts',
-      '/apps/project/src/project.service.ts',
-      '/apps/project/test/app.e2e-spec.ts',
-      '/apps/project/test/jest-e2e.json',
-    ].sort())
+      '/backends/scrypt-swiss-nest-templates/tsconfig.json',
+      "/backends/project/.dockerignore",
+      "/backends/project/.eslintrc.js",
+      "/backends/project/.gitignore",
+      "/backends/project/.prettierrc",
+      "/backends/project/Dockerfile",
+      "/backends/project/README.md",
+      "/backends/project/docker-compose.yml",
+      "/backends/project/nest-cli.json",
+      "/backends/project/package.json",
+      "/backends/project/src/app.module.ts",
+      "/backends/project/src/exception-filter.ts",
+      "/backends/project/src/main.ts",
+      "/backends/project/test/app.e2e-spec.ts",
+      "/backends/project/test/jest-e2e.json",
+      "/backends/project/tsconfig.build.json",
+      "/backends/project/tsconfig.json"].sort())
   })
   it('should manage name to normalize', async () => {
     const options: SubAppOptions = {
@@ -40,16 +47,24 @@ describe('SubApp Factory', () => {
       .toPromise()
     const files: string[] = tree.files
     expect(files.sort()).toEqual([
-      '/nest-cli.json',
-      '/apps/mwaeckerlin-schematics/tsconfig.app.json',
-      '/apps/awesome-project/tsconfig.app.json',
-      '/apps/awesome-project/src/main.ts',
-      '/apps/awesome-project/src/awesome-project.controller.spec.ts',
-      '/apps/awesome-project/src/awesome-project.controller.ts',
-      '/apps/awesome-project/src/awesome-project.module.ts',
-      '/apps/awesome-project/src/awesome-project.service.ts',
-      '/apps/awesome-project/test/app.e2e-spec.ts',
-      '/apps/awesome-project/test/jest-e2e.json',
+      "/backends/awesome-project/.dockerignore",
+      "/backends/awesome-project/.eslintrc.js",
+      "/backends/awesome-project/.gitignore",
+      "/backends/awesome-project/.prettierrc",
+      "/backends/awesome-project/Dockerfile",
+      "/backends/awesome-project/README.md",
+      "/backends/awesome-project/docker-compose.yml",
+      "/backends/awesome-project/nest-cli.json",
+      "/backends/awesome-project/package.json",
+      "/backends/awesome-project/src/app.module.ts",
+      "/backends/awesome-project/src/exception-filter.ts",
+      "/backends/awesome-project/src/main.ts",
+      "/backends/awesome-project/test/app.e2e-spec.ts",
+      "/backends/awesome-project/test/jest-e2e.json",
+      "/backends/awesome-project/tsconfig.build.json",
+      "/backends/awesome-project/tsconfig.json",
+      "/backends/scrypt-swiss-nest-templates/tsconfig.json",
+      "/nest-cli.json",
     ].sort())
   })
   it("should keep underscores in sub-app's path and file name", async () => {
@@ -61,17 +76,24 @@ describe('SubApp Factory', () => {
       .toPromise()
     const files: string[] = tree.files
     expect(files.sort()).toEqual([
-      '/nest-cli.json',
-      '/apps/mwaeckerlin-schematics/tsconfig.app.json',
-      '/apps/_project/tsconfig.app.json',
-      '/apps/_project/src/main.ts',
-      '/apps/_project/src/_project.controller.spec.ts',
-      '/apps/_project/src/_project.controller.ts',
-      '/apps/_project/src/_project.module.ts',
-      '/apps/_project/src/_project.service.ts',
-      '/apps/_project/test/app.e2e-spec.ts',
-      '/apps/_project/test/jest-e2e.json',
-    ].sort())
+      "/backends/_project/.dockerignore",
+      "/backends/_project/.eslintrc.js",
+      "/backends/_project/.gitignore",
+      "/backends/_project/.prettierrc",
+      "/backends/_project/Dockerfile",
+      "/backends/_project/README.md",
+      "/backends/_project/docker-compose.yml",
+      "/backends/_project/nest-cli.json",
+      "/backends/_project/package.json",
+      "/backends/_project/src/app.module.ts",
+      "/backends/_project/src/exception-filter.ts",
+      "/backends/_project/src/main.ts",
+      "/backends/_project/test/app.e2e-spec.ts",
+      "/backends/_project/test/jest-e2e.json",
+      "/backends/_project/tsconfig.build.json",
+      "/backends/_project/tsconfig.json",
+      "/backends/scrypt-swiss-nest-templates/tsconfig.json",
+      "/nest-cli.json",].sort())
   })
   it('should manage javascript files', async () => {
     const options: SubAppOptions = {
@@ -83,20 +105,27 @@ describe('SubApp Factory', () => {
       .toPromise()
     const files: string[] = tree.files
     expect(files.sort()).toEqual([
-      '/nest-cli.json',
-      '/apps/mwaeckerlin-schematics/.babelrc',
-      '/apps/mwaeckerlin-schematics/index.js',
-      '/apps/mwaeckerlin-schematics/jsconfig.json',
-      '/apps/project/.babelrc',
-      '/apps/project/index.js',
-      '/apps/project/jsconfig.json',
-      '/apps/project/src/app.controller.js',
-      '/apps/project/src/app.controller.spec.js',
-      '/apps/project/src/app.module.js',
-      '/apps/project/src/app.service.js',
-      '/apps/project/src/main.js',
-      '/apps/project/test/app.e2e-spec.js',
-      '/apps/project/test/jest-e2e.json',
+      "/backends/project/.babelrc",
+      "/backends/project/.dockerignore",
+      "/backends/project/.gitignore",
+      "/backends/project/.prettierrc",
+      "/backends/project/Dockerfile",
+      "/backends/project/README.md",
+      "/backends/project/docker-compose.yml",
+      "/backends/project/index.js",
+      "/backends/project/jsconfig.json",
+      "/backends/project/nest-cli.json",
+      "/backends/project/nodemon.json",
+      "/backends/project/package.json",
+      "/backends/project/src/app.module.js",
+      "/backends/project/src/exception-filter.js",
+      "/backends/project/src/main.js",
+      "/backends/project/test/app.e2e-spec.js",
+      "/backends/project/test/jest-e2e.json",
+      "/backends/scrypt-swiss-nest-templates/.babelrc",
+      "/backends/scrypt-swiss-nest-templates/index.js",
+      "/backends/scrypt-swiss-nest-templates/jsconfig.json",
+      "/nest-cli.json",
     ].sort())
   })
   it('should generate spec files with custom suffix', async () => {
@@ -109,16 +138,24 @@ describe('SubApp Factory', () => {
       .toPromise()
     const files: string[] = tree.files
     expect(files.sort()).toEqual([
-      '/nest-cli.json',
-      '/apps/mwaeckerlin-schematics/tsconfig.app.json',
-      '/apps/project/tsconfig.app.json',
-      '/apps/project/src/main.ts',
-      '/apps/project/src/project.controller.test.ts',
-      '/apps/project/src/project.controller.ts',
-      '/apps/project/src/project.module.ts',
-      '/apps/project/src/project.service.ts',
-      '/apps/project/test/jest-e2e.json',
-      '/apps/project/test/app.e2e-test.ts',
+      "/backends/project/.dockerignore",
+      "/backends/project/.eslintrc.js",
+      "/backends/project/.gitignore",
+      "/backends/project/.prettierrc",
+      "/backends/project/Dockerfile",
+      "/backends/project/README.md",
+      "/backends/project/docker-compose.yml",
+      "/backends/project/nest-cli.json",
+      "/backends/project/package.json",
+      "/backends/project/src/app.module.ts",
+      "/backends/project/src/exception-filter.ts",
+      "/backends/project/src/main.ts",
+      "/backends/project/test/app.e2e-spec.ts",
+      "/backends/project/test/jest-e2e.json",
+      "/backends/project/tsconfig.build.json",
+      "/backends/project/tsconfig.json",
+      "/backends/scrypt-swiss-nest-templates/tsconfig.json",
+      "/nest-cli.json",
     ].sort())
   })
 })

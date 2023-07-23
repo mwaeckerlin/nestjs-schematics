@@ -1,51 +1,44 @@
 {
-    "$schema": "http://json-schema.org/schema",
-    "$id": "SchematicsNestDatabase",
-    "title": "Nest Database Options Schema",
-    "type": "object",
-    "properties": {
-      "type": {
-        "type": "string",
-        "default": "sqlite",
-        "description": "Database type.",
-       "enum": [
-        "sqlite",
-        "postgres",
-        "mysql",
-        "mariadb",
-        "mongo"
-      ],
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsNestDatabase",
+  "title": "Nest Database Options Schema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "default": "sqlite",
+      "description": "Database type.",
+      "enum": ["sqlite", "postgresql", "mysql", "mariadb", "mongo"],
       "x-prompt": {
         "message": "What database do you use?",
         "type": "list",
         "items": [
           { "value": "sqlite", "label": "SQLite" },
-          { "value": "postgres", "label": "PostgreSQL" },
+          { "value": "postgresql", "label": "PostgreSQL" },
           { "value": "mysql", "label": "MySQL" },
           { "value": "mariadb", "label": "MariaDB" },
           { "value": "mongo", "label": "MongoDB" }
         ]
       }
-     },
-      "path": {
-        "type": "string",
-        "format": "path",
-        "description": "The path to create the controller."
-      },
-      "language": {
-        "type": "string",
-        "default": "ts",
-        "description": "Nest controller language (ts/js)."
-      },
-      "sourceRoot": {
-        "type": "string",
-        "description": "Nest controller source root directory."
-      },
-      "module": {
-        "type": "string",
-        "description": "Allows specification of the declaring module."
-      },
     },
-    "required": []
-  }
-  
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the controller."
+    },
+    "language": {
+      "type": "string",
+      "default": "ts",
+      "description": "Nest controller language (ts/js)."
+    },
+    "sourceRoot": {
+      "type": "string",
+      "description": "Nest controller source root directory."
+    },
+    "module": {
+      "type": "string",
+      "description": "Allows specification of the declaring module."
+    }
+  },
+  "required": []
+}

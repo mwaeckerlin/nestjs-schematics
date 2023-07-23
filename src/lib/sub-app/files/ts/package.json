@@ -5,10 +5,14 @@
   "author": "<%= author %>",
   "private": true,
   "license": "UNLICENSED",
+  "main": "dist/src/main.js",
   "scripts": {
     "build": "nest build",
+    "clean": "rimraf dist",
+    "clean:all": "rimraf node_modules",
+    "preclean:all": "npm run clean",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "nest start --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -19,38 +23,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
-  "dependencies": {
-    "@nestjs/common": "*",
-    "@nestjs/core": "*",
-    "@nestjs/platform-express": "*",
-    "@nestjs/swagger": "*",
-    "class-transformer": "*",
-    "class-validator": "*",
-    "reflect-metadata": "*",
-    "rxjs": "*"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@scrypt-swiss/nest-templates": "*",
-    "@nestjs/cli": "*",
-    "@nestjs/testing": "*",
-    "@types/express": "*",
-    "@types/jest": "*",
-    "@types/node": "*",
-    "@types/supertest": "*",
-    "@typescript-eslint/eslint-plugin": "*",
-    "@typescript-eslint/parser": "*",
-    "eslint": "*",
-    "eslint-config-prettier": "*",
-    "eslint-plugin-prettier": "*",
-    "jest": "*",
-    "prettier": "*",
-    "source-map-support": "*",
-    "supertest": "*",
-    "ts-jest": "*",
-    "ts-loader": "*",
-    "ts-node": "*",
-    "tsconfig-paths": "*",
-    "typescript": "*"
+    "backends": "*"
   },
   "jest": {
     "moduleFileExtensions": [

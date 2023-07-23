@@ -1,9 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
-  "language": "js",
+  "language": "ts",
   "collection": "@scrypt-swiss/nest-templates",
   "sourceRoot": "src",
   "compilerOptions": {
+    "webpack": false,
     "plugins": [
       {
         "name": "@nestjs/swagger",

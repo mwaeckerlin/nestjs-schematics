@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.nest.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./",
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./migrations/*.ts"
+  ],
+  "assets": [
+    "mikro-orm.config.js"
+  ]
+}

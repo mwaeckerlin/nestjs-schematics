@@ -47,5 +47,5 @@ export interface ControllerOptions {
    */
   flat?: boolean
 
-  functions: any
+  functions?: any
 }

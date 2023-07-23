@@ -3,9 +3,6 @@ import { camelize, classify, dasherize } from '@angular-devkit/core/src/utils/st
 import { apply, branchAndMerge, chain, DirEntry, filter, mergeWith, move, noop, Rule, SchematicContext, template, Tree, url } from '@angular-devkit/schematics'
 import * as yaml from 'js-yaml'
 import { DeclarationOptions, Location, ModuleDeclarator, ModuleFinder, NameParser } from '../../utils'
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
-import { DEFAULT_LANGUAGE } from '../defaults'
-import { OpenAPIOptions } from './openapi.schema'
 import { main as createController } from '../controller/controller.factory'
 import { ControllerOptions } from '../controller/controller.schema'
 
