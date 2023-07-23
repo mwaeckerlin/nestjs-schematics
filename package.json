@@ -1,5 +1,5 @@
 {
-  "name": "@scrypt-swiss/nest-templates",
+  "name": "@mwaeckerlin/schematics",
   "version": "1.7.1",
   "description": "Nest - modern, fast, powerful node.js web framework (@schematics)",
   "main": "dist/index.js",

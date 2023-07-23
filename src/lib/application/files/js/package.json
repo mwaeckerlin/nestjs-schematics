@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@nestjs/testing": "*",
-    "@scrypt-swiss/nest-templates": "*",
+    "@mwaeckerlin/schematics": "*",
     "@babel/core": "*",
     "@babel/node": "*",
     "@babel/plugin-proposal-decorators": "*",
