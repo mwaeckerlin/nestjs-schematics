@@ -30,7 +30,7 @@
     "rxjs": "*"
   },
   "devDependencies": {
-    "@scrypt-swiss/nest-templates": "*",
+    "@mwaeckerlin/schematics": "*",
     "@nestjs/cli": "*",
     "@nestjs/testing": "*",
     "@types/express": "*",

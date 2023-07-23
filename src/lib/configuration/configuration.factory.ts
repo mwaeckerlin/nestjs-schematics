@@ -20,7 +20,7 @@ function transform(options: ConfigurationOptions): ConfigurationOptions {
   target.language =
     target.language !== undefined ? target.language : DEFAULT_LANGUAGE
   target.collection =
-    target.collection !== undefined ? target.collection : '@scrypt-swiss/nest-templates'
+    target.collection !== undefined ? target.collection : '@mwaeckerlin/schematics'
   return target
 }
 
