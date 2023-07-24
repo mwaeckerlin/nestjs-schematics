@@ -3,7 +3,7 @@ import {
   UnitTestTree,
 } from '@angular-devkit/schematics/testing'
 import * as path from 'path'
-import { ApplicationOptions } from './application.schema'
+import {ApplicationOptions} from './application.schema'
 
 const expected_files = [
   '.eslintrc.js',
@@ -16,7 +16,7 @@ const expected_files = [
   '.gitignore',
   '.prettierrc',
   'Dockerfile',
-  'docker-compose.yml',
+  'docker-compose.yaml',
   'src/app.module.ts',
   'src/exception-filter.ts',
   'src/main.ts',
@@ -36,7 +36,7 @@ const expected_jsfiles = [
   ".gitignore",
   ".prettierrc",
   'Dockerfile',
-  'docker-compose.yml',
+  'docker-compose.yaml',
   "src/app.module.js",
   "src/exception-filter.js",
   "src/main.js",

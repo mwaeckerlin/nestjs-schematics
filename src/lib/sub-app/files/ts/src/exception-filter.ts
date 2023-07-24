@@ -1,5 +1,5 @@
-import { Logger, Injectable, ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
-import { Request, Response } from 'express'
+import {Logger, Injectable, ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus} from '@nestjs/common'
+import {Request, Response} from 'express'
 
 @Injectable()
 @Catch()
@@ -16,9 +16,9 @@ export class AllExceptionFilter implements ExceptionFilter {
                 : HttpStatus.INTERNAL_SERVER_ERROR
         response
             .status(httpStatus)
-            .json(exception.response ?? {
+            .json(exception?.response ?? {
                 statusCode: httpStatus,
-                message: exception.message,
+                message: exception?.message ?? 'UNDEFINED EXCEPTION',
                 timestamp: new Date().toISOString(),
                 path: request.url,
             })

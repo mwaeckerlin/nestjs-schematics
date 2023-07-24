@@ -32,7 +32,7 @@ Additional generators:
 Also Generates:
 
   - `Dockerfile`
-  - `docker-compose.yml`
+  - `docker-compose.yaml`
 
 ### Install:
 

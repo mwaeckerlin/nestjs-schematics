@@ -1,5 +1,5 @@
-import { join, strings } from '@angular-devkit/core'
-import { apply, branchAndMerge, chain, DirEntry, filter, mergeWith, move, noop, Rule, SchematicContext, template, Tree, url } from '@angular-devkit/schematics'
+import {join, strings} from '@angular-devkit/core'
+import {apply, branchAndMerge, chain, DirEntry, filter, mergeWith, move, noop, Rule, SchematicContext, template, Tree, url} from '@angular-devkit/schematics'
 import * as yaml from 'js-yaml'
 
 export function main(options: any): Rule {
@@ -17,23 +17,23 @@ export function change(options: any): Rule {
     return (tree: Tree, _context: SchematicContext) => {
         // update main.ts
         {
-            const { path, content } = read(tree, options, /^main\.[tj]s$/, '/src')
-            addLine(content, '  app.get(MikroORM).getMigrator().up()', { after: /^\s*const\s+app\s+=/ })
+            const {path, content} = read(tree, options, /^main\.[tj]s$/, '/src')
+            addLine(content, '  app.get(MikroORM).getMigrator().up()', {after: /^\s*const\s+app\s+=/})
             addImport(content, "import { MikroORM } from '@mikro-orm/core'")
             tree.overwrite(path, content.join('\n'))
         }
 
         // update exception-filter.ts
         {
-            const { path, content } = read(tree, options, /^exception-filter\.[tj]s$/, '/src')
+            const {path, content} = read(tree, options, /^exception-filter\.[tj]s$/, '/src')
             addImport(content, "import { NotFoundError } from '@mikro-orm/core'")
-            addLine(content, '        if (exception instanceof NotFoundError) exception = new NotFoundException(exception)', { after: /this\.logger/ })
+            addLine(content, '        if (exception instanceof NotFoundError) exception = new NotFoundException(exception)', {after: /this\.logger/})
             tree.overwrite(path, content.join('\n'))
         }
 
         // update tsconfig.json
         {
-            const { path, content } = readJson(tree, options, /^package.json$/)
+            const {path, content} = readJson(tree, options, /^package.json$/)
             const dependencies = {
                 ...{
                     "@mikro-orm/core": "*",
@@ -46,7 +46,7 @@ export function change(options: any): Rule {
             }
             dependencies["@mikro-orm/" + options.type] ??= "*"
             const devDependencies = {
-                ...{ "@mikro-orm/cli": "*" },
+                ...{"@mikro-orm/cli": "*"},
                 ...content.devDependencies
             }
             const scripts = {
@@ -56,13 +56,13 @@ export function change(options: any): Rule {
                 },
                 ...content.scripts
             }
-            tree.overwrite(path, JSON.stringify({ ...content, dependencies, devDependencies, scripts }, null, 4))
+            tree.overwrite(path, JSON.stringify({...content, dependencies, devDependencies, scripts}, null, 4))
         }
 
-        // update docker-compose.yml
+        // update docker-compose.yaml
         let config
         {
-            const { path, content } = readYaml(tree, options, /^docker-compose.yml$/)
+            const {path, content} = readYaml(tree, options, /^docker-compose.yaml$/)
             content.services.backend.environment = {
                 ...{
                     "DB_TYPE": options.type,
@@ -97,7 +97,7 @@ export function change(options: any): Rule {
                             "db-network"
                         ]
                     }
-                    break;
+                    break
                 case 'mysql':
                     content.services.db = {
                         image: content.services.backend.environment.DB_TYPE,
@@ -119,7 +119,7 @@ export function change(options: any): Rule {
                             "db-network"
                         ]
                     }
-                    break;
+                    break
                 case 'mariadb':
                     content.services.db = {
                         image: content.services.backend.environment.DB_TYPE,
@@ -141,7 +141,7 @@ export function change(options: any): Rule {
                             "db-network"
                         ]
                     }
-                    break;
+                    break
                 case 'mongo':
                     content.services.db = {
                         image: content.services.backend.environment.DB_TYPE,
@@ -158,40 +158,40 @@ export function change(options: any): Rule {
                             "db-network"
                         ]
                     }
-                    break;
+                    break
                 case 'sqlite':
-                    break;
+                    break
                 default:
                     throw new Error('Unknown Database Type: ' + content.services.backend.environment.DB_TYPE)
-                    break;
+                    break
             }
             content.volumes = {
-                ...{ "db-volume": {} },
+                ...{"db-volume": {}},
                 ...content.volumes
             }
             content.networks = {
-                ...{ "db-network": {} },
+                ...{"db-network": {}},
                 ...content.networks
             }
-            tree.overwrite(path, yaml.dump({ ...content }))
+            tree.overwrite(path, yaml.dump({...content}))
             config = content.services.backend.environment
         }
 
         // set local test environment in .env
         {
-            const { path, content } = read(tree, options, /^.env$/)
-            addLine(content, 'DB_TYPE=' + config.DB_TYPE, { last: true })
-            addLine(content, 'DB_NAME=' + config.DB_NAME, { last: true })
-            addLine(content, 'DB_HOST="127.0.0.1"', { last: true })
-            addLine(content, 'DB_USER=' + config.DB_USER, { last: true })
-            addLine(content, 'DB_PASSWORD=' + config.DB_PASSWORD, { last: true })
-            addLine(content, 'DB_PORT=' + config.DB_PORT, { last: true })
+            const {path, content} = read(tree, options, /^.env$/)
+            addLine(content, 'DB_TYPE=' + config.DB_TYPE, {last: true})
+            addLine(content, 'DB_NAME=' + config.DB_NAME, {last: true})
+            addLine(content, 'DB_HOST="127.0.0.1"', {last: true})
+            addLine(content, 'DB_USER=' + config.DB_USER, {last: true})
+            addLine(content, 'DB_PASSWORD=' + config.DB_PASSWORD, {last: true})
+            addLine(content, 'DB_PORT=' + config.DB_PORT, {last: true})
             tree.overwrite(path, content.join('\n'))
         }
 
         // update app.module.ts, add import
         {
-            const { path, content } = read(tree, options, /^app\.module\.[tj]s$/, '/src')
+            const {path, content} = read(tree, options, /^app\.module\.[tj]s$/, '/src')
             addImport(content, "import { MikroOrmModule } from '@mikro-orm/nestjs'")
             addText(content, 'MikroOrmModule.forRoot(),', /\s+imports:\s*\[/)
             tree.overwrite(path, content.join('\n'))
@@ -202,17 +202,17 @@ export function change(options: any): Rule {
 
 const read = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
     const path = find(tree, options, name, dir)
-    return { path, content: tree.read(path).toString().split('\n') }
+    return {path, content: tree.read(path).toString().split('\n')}
 }
 
 const readJson = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
     const path = find(tree, options, name, dir)
-    return { path, content: JSON.parse(tree.read(path).toString()) }
+    return {path, content: JSON.parse(tree.read(path).toString())}
 }
 
 const readYaml = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
     const path = find(tree, options, name, dir)
-    return { path, content: yaml.load(tree.read(path).toString()) }
+    return {path, content: yaml.load(tree.read(path).toString())}
 }
 
 const find = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
@@ -221,9 +221,9 @@ const find = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
 }
 
 const addImport = (content: string[], line: string) =>
-    addLine(content, line, { afterLast: /^\s*import\s+/ })
+    addLine(content, line, {afterLast: /^\s*import\s+/})
 
-const addLine = (content: string[], line: string, where: { after?: RegExp, afterLast?: RegExp, first?, last?}) =>
+const addLine = (content: string[], line: string, where: {after?: RegExp, afterLast?: RegExp, first?, last?}) =>
     content.find(l => l.includes(line.trim()))
         ? content
         : where.after
