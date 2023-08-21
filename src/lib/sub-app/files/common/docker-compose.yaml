@@ -1,9 +1,11 @@
 version: '3.5'
 services:
   backend:
+    image: ${DOCKER_REPOSITORY}/<%= name %>
     build:
-      context: ../..
-      dockerfile: <%= path %>/<%= name %>/Dockerfile
+      context: .
+      args:
+        DOCKER_REPOSITORY:
     ports:
       - '4000:4000'
     deploy:
