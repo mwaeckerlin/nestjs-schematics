@@ -2,7 +2,7 @@
 
 Change the port to an unused number between 4000 and 4999 in:
  - main.ts
- - genDoc.ts
+ - genApiDocs.ts
  - docker-compose.yaml
  - Dockerfile
 

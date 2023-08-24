@@ -3,7 +3,7 @@
 const Naming = (crud && type !== 'graphql-code-first' && type !== 'graphql-schema-first') ? 'Dto' : crud ? 'Input' : 'Dto'
 const naming = (crud && type !== 'graphql-code-first' && type !== 'graphql-schema-first') ? 'dto' : crud ? 'input' : 'dto'
 
-%>import { Injectable } from '@nestjs/common'
+%>import { Injectable, Logger } from '@nestjs/common'
 <% if (crud) { %>import { EntityManager } from '@mikro-orm/core'
 import { <%= singular(classify(name)) %> } from './entities/<%= singular(name) %>.entity'
 import { Create<%= singular(classify(name)) %><%= Naming %> } from './dto/create-<%= singular(name) %>.<%= naming %>'
@@ -11,6 +11,7 @@ import { Update<%= singular(classify(name)) %><%= Naming %> } from './dto/update
 <% } %>
 @Injectable()
 export class <%= classify(name) %>Service {<% if (crud) { %>
+  private readonly logger = new Logger('<%= classify(name) %>Service')
   constructor(private readonly em: EntityManager) {}
 
   async create(<% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>create<%= singular(classify(name)) %><%= Naming %>: Create<%= singular(classify(name)) %><%= Naming %><% } else { %>create<%= singular(classify(name)) %>Input: Create<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
