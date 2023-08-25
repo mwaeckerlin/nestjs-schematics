@@ -1,4 +1,4 @@
-import { TsMorphMetadataProvider } from "@mikro-orm/reflection"
+import {TsMorphMetadataProvider} from "@mikro-orm/reflection"
 
 export default {
     entities: [
@@ -8,7 +8,7 @@ export default {
         'src/**/entities/*.entity.ts'
     ],
     type: process.env.DB_TYPE ?? '<%= type %>',
-    dbName: process.env.DB_NAME ?? 'database.'+(process.env.DB_TYPE ?? '<%= type %>'),
+    dbName: process.env.DB_NAME ?? 'database.' + (process.env.DB_TYPE ?? '<%= type %>'),
     host: process.env.DB_HOST,
     port: process.env.DB_PORT ? +process.env.DB_PORT : null,
     user: process.env.DB_USER,
