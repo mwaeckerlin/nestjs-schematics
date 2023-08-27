@@ -5,9 +5,10 @@ import {ValidationPipe} from '@nestjs/common'
 import {AllExceptionFilter} from './exception-filter'
 import {rawBody} from './rawbody.middleware'
 import {requestLogger} from './logger.middleware'
+import {Logger} from './logger'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {bodyParser: false, logger: ['log', 'error', 'warn', 'debug', 'verbose']})
+  const app = await NestFactory.create(AppModule, {bodyParser: false, logger: new Logger('<%= classify(name) %>', {timestamp: true, logLevels: process.env.LOG_LEVELS ? JSON.parse(process.env.LOG_LEVELS) : process.env.NODE_ENV === 'production' ? ['error', 'warn', 'log'] : ['error', 'warn', 'log', 'debug']})})
   app.enableCors()
   app.use(rawBody, requestLogger)
   app.useGlobalPipes(new ValidationPipe())

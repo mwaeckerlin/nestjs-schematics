@@ -1,4 +1,4 @@
-<% if (crud && type === 'rest') { %>import { Controller, UseInterceptors, ClassSerializerInterceptor, Get, Post, Body, Query, Patch, Param, Delete } from '@nestjs/common'<%
+<% if (crud && type === 'rest') { %>import { Controller, UseInterceptors, ClassSerializerInterceptor, UsePipes, ValidationPipe, Get, Post, Body, Query, Patch, Param, Delete } from '@nestjs/common'<%
 } else if (crud && type === 'microservice') { %>import { Controller } from '@nestjs/common'
 import { MessagePattern, Payload } from '@nestjs/microservices'<%
 } else { %>import { Controller } from '@nestjs/common'<%
@@ -9,6 +9,7 @@ import { Update<%= singular(classify(name)) %>Dto } from './dto/update-<%= singu
 
 <% if (type === 'rest') { %>@Controller('<%= dasherize(name) %>')<% } else { %>@Controller()<% } %>
 @UseInterceptors(ClassSerializerInterceptor)
+@UsePipes(new ValidationPipe({transform: true}))
 export class <%= classify(name) %>Controller {
   constructor(private readonly <%= lowercased(name) %>Service: <%= classify(name) %>Service) {}<% if (type === 'rest' && crud) { %>
 
