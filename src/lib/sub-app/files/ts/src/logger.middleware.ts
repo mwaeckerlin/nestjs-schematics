@@ -1,5 +1,19 @@
-import {InternalServerErrorException, Logger} from '@nestjs/common'
+import {Logger} from '@nestjs/common'
 import {NextFunction, Request, Response} from 'express'
+import {crop} from '@scrypt-swiss/lib'
+import axios from 'axios'
+
+axios.interceptors.request.use(request => {
+    const logger = new Logger('Axios-Request')
+    logger.debug(`curl -X '${(request.method ?? 'get').toUpperCase()}' ${request.baseURL ?? ''}${request.url ?? ''} ${Object.keys(request.headers)?.map(k => `-H '${k}: ${request.headers[k]}'`).join(' ')} -d '${JSON.stringify(request.data ?? '')}'`)
+    return request
+})
+
+axios.interceptors.response.use(response => {
+    const logger = new Logger('Axios-Response')
+    logger.debug({status: `${response.status} ${response.statusText}`, data: crop(JSON.stringify(response.data))})
+    return response
+})
 
 export function requestLogger(req: Request, res: Response, next: NextFunction): any {
     const logger = new Logger('Request')
@@ -18,7 +32,10 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
     }
     res.on('finish', () => {
         logger.log(`${res.statusCode} ${JSON.stringify(res.getHeaders())}`)
-        logger.verbose({code: res.statusCode, headers: res.getHeaders(), response: res.locals.body})
+        logger.debug({
+            status: `${res.statusCode} ${res.statusMessage}`, data: crop(JSON.stringify(res.locals.body))
+        })
+        logger.verbose({code: res.statusCode, headers: res.getHeaders(), response: crop(JSON.stringify(res.locals.body))})
     })
     next()
 }
