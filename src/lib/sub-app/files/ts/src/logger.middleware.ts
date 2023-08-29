@@ -1,24 +1,41 @@
 import {Logger} from '@nestjs/common'
 import {NextFunction, Request, Response} from 'express'
-import {crop} from '@scrypt-swiss/lib'
 import axios from 'axios'
 
 axios.interceptors.request.use(request => {
-    const logger = new Logger('Axios-Request')
-    logger.debug(`curl -X '${(request.method ?? 'get').toUpperCase()}' ${request.baseURL ?? ''}${request.url ?? ''} ${Object.keys(request.headers)?.map(k => `-H '${k}: ${request.headers[k]}'`).join(' ')} -d '${JSON.stringify(request.data ?? '')}'`)
+    const logger = new Logger('Axios')
+    logger.debug(`${request.method} ${(request.baseURL ?? '') + request.url} …`)
+    logger.verbose({
+        request: `${request.method} ${(request.baseURL ?? '') + request.url}`,
+        body: request.data,
+        headers: request.headers
+    })
     return request
 })
 
 axios.interceptors.response.use(response => {
-    const logger = new Logger('Axios-Response')
-    logger.debug({status: `${response.status} ${response.statusText}`, data: crop(JSON.stringify(response.data))})
+    const logger = new Logger('Axios')
+    logger.debug(`${response.request.method} ${(response.request.baseURL ?? '') + response.request.url} → ${response.status} ${response.statusText}`)
+    logger.verbose({
+        request: `${response.request.method} ${(response.request.baseURL ?? '') + response.request.url}`,
+        status: `${response.status} ${response.statusText}`,
+        data: response.data
+    })
     return response
 })
 
 export function requestLogger(req: Request, res: Response, next: NextFunction): any {
     const logger = new Logger('Request')
-    logger.log(req.method + ' ' + req.url)
-    logger.verbose({method: req.method, url: req.url, query: req.query, params: req.params, body: req.body, headers: req.headers, cookies: req.cookies})
+    logger.log(`${req.method} ${req.method} …`)
+    logger.verbose({
+        request: req.method,
+        url: req.url,
+        query: req.query,
+        params: req.params,
+        body: req.body,
+        headers: req.headers,
+        cookies: req.cookies
+    })
     const oldJson = res.json
     res.json = (body) => {
         try {
@@ -31,11 +48,14 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
         }
     }
     res.on('finish', () => {
-        logger.log(`${res.statusCode} ${JSON.stringify(res.getHeaders())}`)
+        logger.log(`${req.method} ${req.url} → ${res.statusCode}}`)
         logger.debug({
-            status: `${res.statusCode} ${res.statusMessage}`, data: crop(JSON.stringify(res.locals.body))
         })
-        logger.verbose({code: res.statusCode, headers: res.getHeaders(), response: crop(JSON.stringify(res.locals.body))})
+        logger.verbose({
+            request: `${req.method} ${req.url}`,
+            status: `${res.statusCode} ${res.statusMessage}`,
+            data: res.locals.body
+        })
     })
     next()
 }
