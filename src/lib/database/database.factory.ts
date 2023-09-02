@@ -18,16 +18,7 @@ export function change(options: any): Rule {
         // update main.ts
         {
             const {path, content} = read(tree, options, /^main\.[tj]s$/, '/src')
-            addLine(content, '  app.get(MikroORM).getMigrator().up()', {after: /^\s*const\s+app\s+=/})
-            addImport(content, "import { MikroORM } from '@mikro-orm/core'")
-            tree.overwrite(path, content.join('\n'))
-        }
-
-        // update exception-filter.ts
-        {
-            const {path, content} = read(tree, options, /^exception-filter\.[tj]s$/, '/src')
-            addImport(content, "import { NotFoundError } from '@mikro-orm/core'")
-            addLine(content, '        if (exception instanceof NotFoundError) exception = new NotFoundException(exception)', {after: /this\.logger/})
+            content.join('\n').replace(/(bootstrap\(AppModule, name, port)(, *{(.*)}( *))?\)/, (a, p1, p2, p3) => `${p1}, {${'orb: true' + (p3 ? ', ' + p3 : '')}})`).split('\n')
             tree.overwrite(path, content.join('\n'))
         }
 
@@ -35,18 +26,16 @@ export function change(options: any): Rule {
         {
             const {path, content} = readJson(tree, options, /^package.json$/)
             const dependencies = {
-                ...{
-                    "@mikro-orm/core": "*",
-                    "@mikro-orm/nestjs": "*",
-                    "@mikro-orm/migrations": "*",
-                    "@mikro-orm/reflection": "*",
-                    "uuid": "*"
-                },
+                "@mikro-orm/core": "*",
+                "@mikro-orm/nestjs": "*",
+                "@mikro-orm/migrations": "*",
+                "@mikro-orm/reflection": "*",
+                "uuid": "*",
                 ...content.dependencies
             }
             dependencies["@mikro-orm/" + options.type] ??= "*"
             const devDependencies = {
-                ...{"@mikro-orm/cli": "*"},
+                "@mikro-orm/cli": "*",
                 ...content.devDependencies
             }
             const scripts = {
