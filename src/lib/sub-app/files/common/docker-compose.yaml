@@ -1,11 +1,12 @@
 version: '3.5'
 services:
   backend:
-    image: ${DOCKER_REPOSITORY}/<%= name %>
+    image: ${DOCKER_REPOSITORY}/<%= name %>:${DOCKER_TAG:-latest}
     build:
       context: .
       args:
         DOCKER_REPOSITORY:
+        DOCKER_TAG:
     ports:
       - '4000:4000' CHANGEME
     deploy:

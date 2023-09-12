@@ -1,5 +1,6 @@
 ARG DOCKER_REPOSITORY
-FROM ${DOCKER_REPOSITORY}/base AS build
+ARG DOCKER_TAG
+FROM ${DOCKER_REPOSITORY}/base:${DOCKER_TAG:-latest} AS build
 COPY --chown=${BUILD_USER} . <%= path %>/<%= name %>
 RUN npm install
 RUN npx nx run <%= name %>:build
