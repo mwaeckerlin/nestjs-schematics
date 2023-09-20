@@ -1,6 +1,5 @@
 <%
 
-const Naming = (crud && type !== 'graphql-code-first' && type !== 'graphql-schema-first') ? 'Dto' : crud ? 'Input' : 'Dto'
 const naming = (crud && type !== 'graphql-code-first' && type !== 'graphql-schema-first') ? 'dto' : crud ? 'input' : 'dto'
 
 %>import {Injectable, Inject, Logger} from '@nestjs/common'
