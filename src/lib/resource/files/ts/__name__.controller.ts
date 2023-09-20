@@ -4,8 +4,8 @@ import { MessagePattern, Payload } from '@nestjs/microservices'<%
 } else { %>import { Controller } from '@nestjs/common'<%
 } %>
 import { <%= classify(name) %>Service } from './<%= name %>.service'<% if (crud) { %>
-import { Create<%= singular(classify(name)) %>Dto } from './dto/create-<%= singular(name) %>.dto'
-import { Update<%= singular(classify(name)) %>Dto } from './dto/update-<%= singular(name) %>.dto'<% } %>
+import { Create<%= singular(classify(name)) %> } from './dto/create-<%= singular(name) %>.dto'
+import { Update<%= singular(classify(name)) %> } from './dto/update-<%= singular(name) %>.dto'<% } %>
 
 <% if (type === 'rest') { %>@Controller('<%= dasherize(name) %>')<% } else { %>@Controller()<% } %>
 @UseInterceptors(ClassSerializerInterceptor)
@@ -14,8 +14,8 @@ export class <%= classify(name) %>Controller {
   constructor(private readonly <%= lowercased(name) %>Service: <%= classify(name) %>Service) {}<% if (type === 'rest' && crud) { %>
 
   @Post()
-  create(@Body() create<%= singular(classify(name)) %>Dto: Create<%= singular(classify(name)) %>Dto) {
-    return this.<%= lowercased(name) %>Service.create(create<%= singular(classify(name)) %>Dto)
+  create(@Body() create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %>) {
+    return this.<%= lowercased(name) %>Service.create(create<%= singular(classify(name)) %>)
   }
 
   @Get()
@@ -34,13 +34,13 @@ export class <%= classify(name) %>Controller {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() update<%= singular(classify(name)) %>Dto: Update<%= singular(classify(name)) %>Dto) {
-    return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>Dto)
+  update(@Param('id') id: string, @Body() update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %>) {
+    return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>)
   }
 
   @Patch()
-  updateQuery(@Query() query?: Record<string, any>, @Body() update<%= singular(classify(name)) %>Dto: Update<%= singular(classify(name)) %>Dto) {
-    return this.<%= lowercased(name) %>Service.update(query, update<%= singular(classify(name)) %>Dto)
+  updateQuery(@Body() update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %>, @Query() query?: Record<string, any>) {
+    return this.<%= lowercased(name) %>Service.update(query, update<%= singular(classify(name)) %>)
   }
 
   @Delete(':id')
@@ -54,8 +54,8 @@ export class <%= classify(name) %>Controller {
   }<% } else if (type === 'microservice' && crud) { %>
   
   @MessagePattern('create<%= singular(classify(name)) %>')
-  create(@Payload() create<%= singular(classify(name)) %>Dto: Create<%= singular(classify(name)) %>Dto) {
-    return this.<%= lowercased(name) %>Service.create(create<%= singular(classify(name)) %>Dto)
+  create(@Payload() create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %>) {
+    return this.<%= lowercased(name) %>Service.create(create<%= singular(classify(name)) %>)
   }
 
   @MessagePattern('findAll<%= classify(name) %>')
@@ -69,8 +69,8 @@ export class <%= classify(name) %>Controller {
   }
 
   @MessagePattern('update<%= singular(classify(name)) %>')
-  update(@Payload()id: string | Record<string, any>, @Payload() update<%= singular(classify(name)) %>Dto: Update<%= singular(classify(name)) %>Dto) {
-    return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>Dto)
+  update(@Payload()id: string | Record<string, any>, @Payload() update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %>) {
+    return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>)
   }
 
   @MessagePattern('remove<%= singular(classify(name)) %>')

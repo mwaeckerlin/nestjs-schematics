@@ -104,17 +104,17 @@ describe('Resource Factory', () => {
     it('should generate "UsersController" class', () => {
       expect(tree.readContent('/users/users.controller.ts'))
         .toEqual(`import { Controller, Get, Post, Body, Query, Patch, Param, Delete } from '@nestjs/common'
-import { UsersService } from './users.service'
-import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
+import {UsersService} from './users.service'
+import {CreateUser} from './dto/create-user.dto'
+import {UpdateUser} from './dto/update-user.dto'
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto)
+  create(@Body() createUser: CreateUser) {
+    return this.usersService.create(createUser)
   }
 
   @Get()
@@ -128,8 +128,8 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto)
+  update(@Param('id') id: string, @Body() updateUser: UpdateUser) {
+    return this.usersService.update(id, updateUser)
   }
 
   @Delete(':id')
@@ -145,15 +145,15 @@ export class UsersController {
         .toEqual(`import { Injectable } from '@nestjs/common'
 import { EntityManager } from '@mikro-orm/core'
 import { User } from './entities/user.entity'
-import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
+import { CreateUser } from './dto/create-user.dto'
+import { UpdateUser } from './dto/update-user.dto'
 
 @Injectable()
 export class UsersService {
   constructor(private readonly em: EntityManager) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const newUser = new User(createUserDto)
+  async create(createUser: CreateUser): Promise<User> {
+    const newUser = new User(createUser)
     await this.em.persistAndFlush(newUser)
     return newUser
   }
@@ -166,10 +166,10 @@ export class UsersService {
     return this.em.findOneOrFail(User, id)
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, updateUser: UpdateUser): Promise<User> {
     return await this.em.transactional(async (em) => {
       const user = await em.findOneOrFail(User, id)
-      Object.assign(user, updateUserDto, { merge: true })
+      Object.assign(user, updateUser, { merge: true })
       await em.persistAndFlush(user)
       return user
     })
