@@ -75,9 +75,9 @@ export function change(options: any): Rule {
                             '${' + NAME + '_DB_PORT}:${' + NAME + '_DB_PORT}'
                         ],
                         environment: {
-                            [NAME + "POSTGRES_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
-                            [NAME + "POSTGRES_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
-                            [NAME + "POSTGRES_DB"]: content.services.backend.environment[NAME + "_DB_NAME"]
+                            ["POSTGRES_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
+                            ["POSTGRES_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
+                            ["POSTGRES_DB"]: content.services.backend.environment[NAME + "_DB_NAME"]
                         },
                         volumes: [{
                             type: "volume",
@@ -96,10 +96,10 @@ export function change(options: any): Rule {
                             content.services.backend.environment[NAME + "_DB_PORT"] + ':' + content.services.backend.environment[NAME + "_DB_PORT"]
                         ],
                         environment: {
-                            [NAME + "MYSQL_ROOT_PASSWORD"]: pwgen(40),
-                            [NAME + "MYSQL_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
-                            [NAME + "MYSQL_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
-                            [NAME + "MYSQL_DATABASE"]: content.services.backend.environment[NAME + "_DB_NAME"]
+                            ["MYSQL_ROOT_PASSWORD"]: pwgen(40),
+                            ["MYSQL_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
+                            ["MYSQL_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
+                            ["MYSQL_DATABASE"]: content.services.backend.environment[NAME + "_DB_NAME"]
                         },
                         volumes: [{
                             type: "volume",
@@ -118,10 +118,10 @@ export function change(options: any): Rule {
                             content.services.backend.environment[NAME + "_DB_PORT"] + ':' + content.services.backend.environment[NAME + "_DB_PORT"]
                         ],
                         environment: {
-                            [NAME + "MARIADB_ROOT_PASSWORD"]: pwgen(40),
-                            [NAME + "MARIADB_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
-                            [NAME + "MARIADB_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
-                            [NAME + "MARIADB_DATABASE"]: content.services.backend.environment[NAME + "_DB_NAME"]
+                            ["MARIADB_ROOT_PASSWORD"]: pwgen(40),
+                            ["MARIADB_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
+                            ["MARIADB_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
+                            ["MARIADB_DATABASE"]: content.services.backend.environment[NAME + "_DB_NAME"]
                         },
                         volumes: [{
                             type: "volume",
@@ -137,8 +137,8 @@ export function change(options: any): Rule {
                     content.services.db = {
                         image: content.services.backend.environment[NAME + "_DB_TYPE"],
                         environment: {
-                            [NAME + "MONGO_INITDB_ROOT_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
-                            [NAME + "MONGO_INITDB_ROOT_USERNAME"]: content.services.backend.environment[NAME + "_DB_USER"],
+                            ["MONGO_INITDB_ROOT_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
+                            ["MONGO_INITDB_ROOT_USERNAME"]: content.services.backend.environment[NAME + "_DB_USER"],
                         },
                         volumes: [{
                             type: "volume",
