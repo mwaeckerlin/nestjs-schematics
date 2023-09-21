@@ -18,10 +18,10 @@ export class <%= classify(name) %>Service {<% if (crud) { %>
 ) {}
 
   async create(<% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %><% } else { %>create<%= singular(classify(name)) %>Input: Create<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
-    const <%= singular(name) %> = new <%= singular(classify(name)) %>(create<%= singular(classify(name)) %>)
-    await this.em.persistAndFlush(<%= singular(name) %>)
-    this.kafka.emit('<%= singular(name) %> created', <%= singular(name) %>)
-    return <%= singular(name) %>
+    const <%= lowercased(singular(name)) %> = new <%= singular(classify(name)) %>(create<%= singular(classify(name)) %>)
+    await this.em.persistAndFlush(<%= lowercased(singular(name)) %>)
+    this.kafka.emit('<%= lowercased(singular(name)) %> created', <%= lowercased(singular(name)) %>)
+    return <%= lowercased(singular(name)) %>
   }
 
   async findAll(query: Record<string, any> = {}): Promise<<%= singular(classify(name)) %>[]> {
@@ -34,18 +34,18 @@ export class <%= classify(name) %>Service {<% if (crud) { %>
 
   async update(id: string | Record<string, any> = {}, <% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %><% } else { %>update<%= singular(classify(name)) %>Input: Update<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
     return await this.em.transactional(async (em) => {
-      const <%= singular(name) %> = await em.findOneOrFail(<%= singular(classify(name)) %>, id)
-      Object.assign(<%= singular(name) %>, update<%= singular(classify(name)) %>, {merge: true})
-      await em.persistAndFlush(<%= singular(name) %>)
-      this.kafka.emit('<%= singular(name) %> updated', <%= singular(classify(name)) %>)
-      return <%= singular(name) %>
+      const <%= lowercased(singular(name)) %> = await em.findOneOrFail(<%= singular(classify(name)) %>, id)
+      Object.assign(<%= lowercased(singular(name)) %>, update<%= singular(classify(name)) %>, {merge: true})
+      await em.persistAndFlush(<%= lowercased(singular(name)) %>)
+      this.kafka.emit('<%= lowercased(singular(name)) %> updated', <%= singular(classify(name)) %>)
+      return <%= lowercased(singular(name)) %>
     })
   }
 
   async remove(id: string | Record<string, any> = {}): Promise<<%= singular(classify(name)) %>> {
-    const <%= singular(name) %> = await this.em.findOneOrFail(<%= singular(classify(name)) %>, id)
-    await this.em.removeAndFlush(<%= singular(name) %>)
-    this.kafka.emit('<%= singular(name) %> deleted', <%= singular(classify(name)) %>)
-    return <%= singular(name) %>
+    const <%= lowercased(singular(name)) %> = await this.em.findOneOrFail(<%= singular(classify(name)) %>, id)
+    await this.em.removeAndFlush(<%= lowercased(singular(name)) %>)
+    this.kafka.emit('<%= lowercased(singular(name)) %> deleted', <%= singular(classify(name)) %>)
+    return <%= lowercased(singular(name)) %>
   }
 <% } %>}
