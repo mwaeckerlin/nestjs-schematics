@@ -72,7 +72,7 @@ export function change(options: any): Rule {
                     content.services.db = {
                         image: content.services.backend.environment[NAME + "_DB_TYPE"],
                         ports: [
-                            '${' + NAME + '_DB_PORT}:${' + NAME + '_DB_PORT}'
+                            '${' + NAME + '_DB_PORT}:5432'
                         ],
                         environment: {
                             ["POSTGRES_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
