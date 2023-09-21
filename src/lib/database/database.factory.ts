@@ -70,7 +70,7 @@ export function change(options: any): Rule {
             switch (content.services.backend.environment[NAME + "_DB_TYPE"]) {
                 case 'postgresql':
                     content.services.db = {
-                        image: content.services.backend.environment[NAME + "_DB_TYPE"],
+                        image: 'postgres',
                         ports: [
                             '${' + NAME + '_DB_PORT}:5432'
                         ],
