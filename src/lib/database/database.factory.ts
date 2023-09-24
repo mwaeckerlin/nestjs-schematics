@@ -1,5 +1,5 @@
 import {strings} from '@angular-devkit/core'
-import {apply, branchAndMerge, chain, DirEntry, filter, mergeWith, move, noop, Rule, SchematicContext, template, Tree, url} from '@angular-devkit/schematics'
+import {apply, branchAndMerge, chain, mergeWith, move, Rule, SchematicContext, template, Tree, url} from '@angular-devkit/schematics'
 import {read, readJson, readYaml, addImport, addLine, addText} from '../../utils/scrypt.utils'
 import * as yaml from 'js-yaml'
 
@@ -20,7 +20,7 @@ export function change(options: any): Rule {
         // update main.ts
         {
             const {path, content} = read(tree, options, /^main\.[tj]s$/, '/src')
-            content.join('\n').replace(/(bootstrap\(AppModule, name, port)(, *{(.*)}( *))?\)/, (a, p1, p2, p3) => `${p1}, {${'orb: true' + (p3 ? ', ' + p3 : '')}})`).split('\n')
+            content.join('\n').replace(/(bootstrap\(AppModule, name, port)(, *{(.*)}( *))?\)/, (a, p1, p2, p3) => `${p1}, {${'orm: true' + (p3 ? ', ' + p3 : '')}})`).split('\n')
             tree.overwrite(path, content.join('\n'))
         }
 
