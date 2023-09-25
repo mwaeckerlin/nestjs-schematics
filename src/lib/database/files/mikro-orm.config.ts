@@ -16,6 +16,7 @@ export default {
     allowGlobalContext: true,
     metadataProvider: TsMorphMetadataProvider,
     cache: {enabled: false},
+    discovery: {disableDynamicFileAccess: true},
     migrations: {
         path: './migrations',
         discovery: {

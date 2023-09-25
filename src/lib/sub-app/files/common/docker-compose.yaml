@@ -1,6 +1,6 @@
 version: '3.5'
 services:
-  backend:
+  <%= name %>:
     image: ${DOCKER_REPOSITORY}/<%= name %>:${DOCKER_TAG:-latest}
     build:
       context: .

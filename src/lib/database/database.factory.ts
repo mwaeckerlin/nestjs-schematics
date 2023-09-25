@@ -54,28 +54,33 @@ export function change(options: any): Rule {
         }
 
         // update docker-compose.yaml
-        let config
+        options.port =
+            options.type === 'postgresql' ? 5432
+                : options.type === 'mysql' || options.type === 'mariadb' ? 3306
+                    : options.type === 'mongo' ? 27017
+                        : null
+        options.password = pwgen(40)
         {
             const {path, content} = readYaml(tree, options, /^docker-compose.yaml$/)
-            content.services.backend.environment = {
+            content.services[name].environment = {
                 ...{
                     [NAME + "_DB_TYPE"]: null,
                     [NAME + "_DB_NAME"]: null,
-                    [NAME + "_DB_HOST"]: null,
+                    [NAME + "_DB_HOST"]: name + '-db',
                     [NAME + "_DB_USER"]: null,
                     [NAME + "_DB_PASSWORD"]: null,
-                    [NAME + "_DB_PORT"]: null
+                    [NAME + "_DB_PORT"]: options.port
                 },
-                ...content.services.backend.environment
+                ...content.services[name].environment
             }
-            content.services.backend.networks ??= []
-            content.services.backend.networks.push('db-network')
+            content.services[name].networks ??= []
+            content.services[name].networks.push(name + 'db-network')
             switch (options.type) {
                 case 'postgresql':
-                    content.services.db = {
+                    content.services[name + '-db'] = {
                         image: 'postgres',
                         ports: [
-                            '${' + NAME + '_DB_PORT}:5432'
+                            '${' + NAME + '_DB_PORT}:' + options.port
                         ],
                         environment: {
                             ["POSTGRES_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
@@ -93,10 +98,10 @@ export function change(options: any): Rule {
                     }
                     break
                 case 'mysql':
-                    content.services.db = {
+                    content.services[name + '-db'] = {
                         image: 'mysql',
                         ports: [
-                            '${' + NAME + '_DB_PORT}:3306'
+                            '${' + NAME + '_DB_PORT}:' + options.port
                         ],
                         environment: {
                             ["MYSQL_ROOT_PASSWORD"]: pwgen(40),
@@ -115,10 +120,10 @@ export function change(options: any): Rule {
                     }
                     break
                 case 'mariadb':
-                    content.services.db = {
+                    content.services[name + '-db'] = {
                         image: 'mariadb',
                         ports: [
-                            '${' + NAME + '_DB_PORT}:3306'
+                            '${' + NAME + '_DB_PORT}:' + options.port
                         ],
                         environment: {
                             ["MARIADB_ROOT_PASSWORD"]: pwgen(40),
@@ -137,10 +142,10 @@ export function change(options: any): Rule {
                     }
                     break
                 case 'mongo':
-                    content.services.db = {
+                    content.services[name + '-db'] = {
                         image: 'mongo',
                         ports: [
-                            '${' + NAME + '_DB_PORT}:27017'
+                            '${' + NAME + '_DB_PORT}:' + options.port
                         ],
                         environment: {
                             ["MONGO_INITDB_ROOT_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
@@ -160,7 +165,6 @@ export function change(options: any): Rule {
                     break
                 default:
                     throw new Error('Unknown Database Type: ' + options.type)
-                    break
             }
             content.volumes = {
                 ...{
@@ -175,8 +179,6 @@ export function change(options: any): Rule {
                 ...content.networks
             }
             tree.overwrite(path, yaml.dump({...content}, {styles: {'!!null': 'empty'}}))
-            options.port = options.type === 'postgresql' ? 5432 : options.type === 'mysql' || options.type === 'mariadb' ? 3306 : options.type === 'mongo' ? 27017 : null
-            options.password = pwgen(40)
         }
 
         // set local test environment in .env
@@ -207,7 +209,7 @@ export function change(options: any): Rule {
             const {path, content} = read(tree, options, /^app\.module\.[tj]s$/, '/src')
             addImport(content, "import { MikroOrmModule } from '@mikro-orm/nestjs'")
             addImport(content, "import mikroOrmConfig from '../mikro-orm.config'")
-            addText(content, 'MikroOrmModule.forRoot({...(mikroOrmConfig as {})}),', /\s+imports:\s*\[/)
+            addText(content, 'MikroOrmModule.forRoot({...(mikroOrmConfig as {}), migrations: {...mikroOrmConfig.migrations, path: "./ dist / migrations"}}),', /\s+imports:\s*\[/)
             tree.overwrite(path, content.join('\n'))
         }
         return tree
