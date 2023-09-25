@@ -5,9 +5,9 @@ const naming = (crud && type !== 'graphql-code-first' && type !== 'graphql-schem
 %>import {Injectable, Inject, Logger} from '@nestjs/common'
 import {ClientKafka} from '@nestjs/microservices'
 <% if (crud) { %>import {EntityManager} from '@mikro-orm/core'
-import { <%= singular(classify(name)) %> } from './entities/<%= singular(name) %>.entity'
-import {Create<%= singular(classify(name)) %> } from './dto/create-<%= singular(name) %>.<%= naming %>'
-import {Update<%= singular(classify(name)) %> } from './dto/update-<%= singular(name) %>.<%= naming %>'
+import { <%= singular(classify(name)) %> } from './<%= singular(name) %>.entity'
+import {Create<%= singular(classify(name)) %> } from './<%= singular(name) %>.create.<%= naming %>'
+import {Update<%= singular(classify(name)) %> } from './<%= singular(name) %>.update.<%= naming %>'
 <% } %>
 @Injectable()
 export class <%= classify(name) %>Service {<% if (crud) { %>

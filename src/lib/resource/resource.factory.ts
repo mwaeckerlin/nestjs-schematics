@@ -31,7 +31,7 @@ export function change(options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     {
       const {path, content} = read(tree, options, /^mikro-orm\.config\.[tj]s$/, '/')
-      addImport(content, "import {" + classify(singular(options.name)) + "} from './src/" + options.name + "/entities/" + singular(options.name) + ".entity'")
+      addImport(content, "import {" + classify(singular(options.name)) + "} from './src/" + options.name + '/' + singular(options.name) + ".entity'")
       addText(content, classify(singular(options.name)) + ',', /\s+entities:\s*\[/, RegExp('\s+entities:\s*\[[^\]]*' + classify(singular(options.name)) + ','))
       addText(content, classify(singular(options.name)) + ',', /\s+entitiesTs:\s*\[/, RegExp('\s+entitiesTs:\s*\[[^\]]*' + classify(singular(options.name)) + ','))
       tree.overwrite(path, content.join('\n'))

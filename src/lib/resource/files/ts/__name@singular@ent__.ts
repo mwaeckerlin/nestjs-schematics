@@ -5,8 +5,8 @@ export class <%= singular(classify(name)) %> {
   @Field(() => Int, { description: 'Example field (placeholder)' })
   exampleField: number
 }<% } else { %>import { Entity } from '@mikro-orm/core'
-import { Base } from '../../base/entities/base.entity'
-import { Create<%= singular(classify(name)) %> } from '../dto/create-<%= singular(name) %>.dto'
+import { Base } from '../base/base.entity'
+import { Create<%= singular(classify(name)) %> } from './<%= singular(name) %>.create.dto'
 
 @Entity()
 export class <%= singular(classify(name)) %> extends Base {

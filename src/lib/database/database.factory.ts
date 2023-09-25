@@ -20,8 +20,7 @@ export function change(options: any): Rule {
         // update main.ts
         {
             const {path, content} = read(tree, options, /^main\.[tj]s$/, '/src')
-            content.join('\n').replace(/(bootstrap\(AppModule, name, port)(, *{(.*)}( *))?\)/, (a, p1, p2, p3) => `${p1}, {${'orm: true' + (p3 ? ', ' + p3 : '')}})`).split('\n')
-            tree.overwrite(path, content.join('\n'))
+            tree.overwrite(path, content.join('\n').replace(/(bootstrap\(AppModule, name, port)(, *{(.*)}( *))?\)/, (a, p1, p2, p3) => `${p1}, {${'orm: true' + (p3 ? ', ' + p3 : '')}})`))
         }
 
         // update package.json
@@ -41,6 +40,10 @@ export function change(options: any): Rule {
             }
             tree.overwrite(path, JSON.stringify({
                 ...content, scripts,
+                devDependencies: {
+                    "@mikro-orm/cli": "",
+                    ...content.devDependencies,
+                },
                 "mikro-orm": {
                     "useTsNode": true,
                     "configPaths": [
@@ -56,18 +59,18 @@ export function change(options: any): Rule {
             const {path, content} = readYaml(tree, options, /^docker-compose.yaml$/)
             content.services.backend.environment = {
                 ...{
-                    [NAME + "_DB_TYPE"]: options.type,
-                    [NAME + "_DB_NAME"]: "database",
-                    [NAME + "_DB_HOST"]: "db",
-                    [NAME + "_DB_USER"]: "user",
-                    [NAME + "_DB_PASSWORD"]: pwgen(),
-                    [NAME + "_DB_PORT"]: options.type === 'postgresql' ? 5432 : options.type === 'mysql' || options.type === 'mariadb' ? 3306 : null
+                    [NAME + "_DB_TYPE"]: null,
+                    [NAME + "_DB_NAME"]: null,
+                    [NAME + "_DB_HOST"]: null,
+                    [NAME + "_DB_USER"]: null,
+                    [NAME + "_DB_PASSWORD"]: null,
+                    [NAME + "_DB_PORT"]: null
                 },
                 ...content.services.backend.environment
             }
             content.services.backend.networks ??= []
             content.services.backend.networks.push('db-network')
-            switch (content.services.backend.environment[NAME + "_DB_TYPE"]) {
+            switch (options.type) {
                 case 'postgresql':
                     content.services.db = {
                         image: 'postgres',
@@ -75,9 +78,9 @@ export function change(options: any): Rule {
                             '${' + NAME + '_DB_PORT}:5432'
                         ],
                         environment: {
-                            ["POSTGRES_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
-                            ["POSTGRES_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
-                            ["POSTGRES_DB"]: content.services.backend.environment[NAME + "_DB_NAME"]
+                            ["POSTGRES_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
+                            ["POSTGRES_USER"]: '${' + NAME + "_DB_USER" + '}',
+                            ["POSTGRES_DB"]: '${' + NAME + "_DB_NAME" + '}'
                         },
                         volumes: [{
                             type: "volume",
@@ -91,15 +94,15 @@ export function change(options: any): Rule {
                     break
                 case 'mysql':
                     content.services.db = {
-                        image: content.services.backend.environment[NAME + "_DB_TYPE"],
+                        image: 'mysql',
                         ports: [
-                            content.services.backend.environment[NAME + "_DB_PORT"] + ':' + content.services.backend.environment[NAME + "_DB_PORT"]
+                            '${' + NAME + '_DB_PORT}:3306'
                         ],
                         environment: {
                             ["MYSQL_ROOT_PASSWORD"]: pwgen(40),
-                            ["MYSQL_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
-                            ["MYSQL_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
-                            ["MYSQL_DATABASE"]: content.services.backend.environment[NAME + "_DB_NAME"]
+                            ["MYSQL_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
+                            ["MYSQL_USER"]: '${' + NAME + "_DB_USER" + '}',
+                            ["MYSQL_DATABASE"]: '${' + NAME + "_DB_NAME" + '}'
                         },
                         volumes: [{
                             type: "volume",
@@ -113,15 +116,15 @@ export function change(options: any): Rule {
                     break
                 case 'mariadb':
                     content.services.db = {
-                        image: content.services.backend.environment[NAME + "_DB_TYPE"],
+                        image: 'mariadb',
                         ports: [
-                            content.services.backend.environment[NAME + "_DB_PORT"] + ':' + content.services.backend.environment[NAME + "_DB_PORT"]
+                            '${' + NAME + '_DB_PORT}:3306'
                         ],
                         environment: {
                             ["MARIADB_ROOT_PASSWORD"]: pwgen(40),
-                            ["MARIADB_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
-                            ["MARIADB_USER"]: content.services.backend.environment[NAME + "_DB_USER"],
-                            ["MARIADB_DATABASE"]: content.services.backend.environment[NAME + "_DB_NAME"]
+                            ["MARIADB_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
+                            ["MARIADB_USER"]: '${' + NAME + "_DB_USER" + '}',
+                            ["MARIADB_DATABASE"]: '${' + NAME + "_DB_NAME" + '}'
                         },
                         volumes: [{
                             type: "volume",
@@ -135,10 +138,13 @@ export function change(options: any): Rule {
                     break
                 case 'mongo':
                     content.services.db = {
-                        image: content.services.backend.environment[NAME + "_DB_TYPE"],
+                        image: 'mongo',
+                        ports: [
+                            '${' + NAME + '_DB_PORT}:27017'
+                        ],
                         environment: {
-                            ["MONGO_INITDB_ROOT_PASSWORD"]: content.services.backend.environment[NAME + "_DB_PASSWORD"],
-                            ["MONGO_INITDB_ROOT_USERNAME"]: content.services.backend.environment[NAME + "_DB_USER"],
+                            ["MONGO_INITDB_ROOT_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
+                            ["MONGO_INITDB_ROOT_USERNAME"]: '${' + NAME + "_DB_USER" + '}',
                         },
                         volumes: [{
                             type: "volume",
@@ -153,7 +159,7 @@ export function change(options: any): Rule {
                 case 'sqlite':
                     break
                 default:
-                    throw new Error('Unknown Database Type: ' + content.services.backend.environment[NAME + "_DB_TYPE"])
+                    throw new Error('Unknown Database Type: ' + options.type)
                     break
             }
             content.volumes = {
@@ -168,20 +174,31 @@ export function change(options: any): Rule {
                 },
                 ...content.networks
             }
-            tree.overwrite(path, yaml.dump({...content}))
-            config = content.services.backend.environment
+            tree.overwrite(path, yaml.dump({...content}, {styles: {'!!null': 'empty'}}))
+            options.port = options.type === 'postgresql' ? 5432 : options.type === 'mysql' || options.type === 'mariadb' ? 3306 : options.type === 'mongo' ? 27017 : null
+            options.password = pwgen(40)
         }
 
         // set local test environment in .env
         {
             if (!tree.exists('/.env')) tree.create('/.env', '')
             const {path, content} = read(tree, options, /^.env$/)
-            addLine(content, NAME + '_DB_TYPE=' + config[NAME + "_DB_TYPE"], {last: true})
-            addLine(content, NAME + '_DB_NAME=' + config[NAME + "_DB_NAME"], {last: true})
+            addLine(content, NAME + '_DB_TYPE=' + options.type, {last: true})
+            addLine(content, NAME + '_DB_NAME=' + name, {last: true})
             addLine(content, NAME + '_DB_HOST="127.0.0.1"', {last: true})
-            addLine(content, NAME + '_DB_USER=' + config[NAME + "_DB_USER"], {last: true})
-            addLine(content, NAME + '_DB_PASSWORD=' + config[NAME + "_DB_PASSWORD"], {last: true})
-            addLine(content, NAME + '_DB_PORT=' + config[NAME + "_DB_PORT"], {last: true})
+            addLine(content, NAME + '_DB_USER=' + name, {last: true})
+            addLine(content, NAME + '_DB_PASSWORD=' + options.password, {last: true})
+            addLine(content, NAME + '_DB_PORT=' + options.port, {last: true})
+            tree.overwrite(path, content.join('\n'))
+        } { // add same to .env.sample
+            if (!tree.exists('/.env.sample')) tree.create('/.env.sample', '')
+            const {path, content} = read(tree, options, /^.env.sample$/)
+            addLine(content, NAME + '_DB_TYPE=' + options.type, {last: true})
+            addLine(content, NAME + '_DB_NAME=' + name, {last: true})
+            addLine(content, NAME + '_DB_HOST="127.0.0.1"', {last: true})
+            addLine(content, NAME + '_DB_USER=' + name, {last: true})
+            addLine(content, NAME + '_DB_PASSWORD=' + options.password, {last: true})
+            addLine(content, NAME + '_DB_PORT=' + options.port, {last: true})
             tree.overwrite(path, content.join('\n'))
         }
 
