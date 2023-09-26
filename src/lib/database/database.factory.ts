@@ -59,6 +59,7 @@ export function change(options: any): Rule {
                 : options.type === 'mysql' || options.type === 'mariadb' ? 3306
                     : options.type === 'mongo' ? 27017
                         : null
+        options.randomport = 5000 + Math.floor(Math.random() * 1000)
         options.password = pwgen(40)
         {
             const {path, content} = readYaml(tree, options, /^docker-compose.yaml$/)
@@ -190,7 +191,7 @@ export function change(options: any): Rule {
             addLine(content, NAME + '_DB_HOST="127.0.0.1"', {last: true})
             addLine(content, NAME + '_DB_USER=' + name, {last: true})
             addLine(content, NAME + '_DB_PASSWORD=' + options.password, {last: true})
-            addLine(content, NAME + '_DB_PORT=' + options.port, {last: true})
+            addLine(content, NAME + '_DB_PORT=' + options.randomport, {last: true})
             tree.overwrite(path, content.join('\n'))
         } { // add same to .env.sample
             if (!tree.exists('/.env.sample')) tree.create('/.env.sample', '')
@@ -200,7 +201,7 @@ export function change(options: any): Rule {
             addLine(content, NAME + '_DB_HOST="127.0.0.1"', {last: true})
             addLine(content, NAME + '_DB_USER=' + name, {last: true})
             addLine(content, NAME + '_DB_PASSWORD=' + options.password, {last: true})
-            addLine(content, NAME + '_DB_PORT=' + options.port, {last: true})
+            addLine(content, NAME + '_DB_PORT=' + options.randomport, {last: true})
             tree.overwrite(path, content.join('\n'))
         }
 
@@ -209,7 +210,7 @@ export function change(options: any): Rule {
             const {path, content} = read(tree, options, /^app\.module\.[tj]s$/, '/src')
             addImport(content, "import { MikroOrmModule } from '@mikro-orm/nestjs'")
             addImport(content, "import mikroOrmConfig from '../mikro-orm.config'")
-            addText(content, 'MikroOrmModule.forRoot({...(mikroOrmConfig as {}), migrations: {...mikroOrmConfig.migrations, path: "./ dist / migrations"}}),', /\s+imports:\s*\[/)
+            addText(content, 'MikroOrmModule.forRoot({...(mikroOrmConfig as {})}),', /\s+imports:\s*\[/)
             tree.overwrite(path, content.join('\n'))
         }
         return tree

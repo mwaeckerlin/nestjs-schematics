@@ -16,15 +16,15 @@ export default {
     allowGlobalContext: true,
     metadataProvider: TsMorphMetadataProvider,
     cache: {enabled: false},
-    discovery: {disableDynamicFileAccess: true},
     migrations: {
-        path: './migrations',
-        discovery: {
-            disableDynamicFileAccess: true,
-            getMappedType(type, platform) {
-                if (type === 'string') return Type.getType(TextType)
-                return platform.getDefaultMappedType(type)
-            }
+        path: './dist/migrations',
+        pathTs: './migrations'
+    },
+    discovery: {
+        disableDynamicFileAccess: true,
+        getMappedType(type, platform) {
+            if (type === 'string') return Type.getType(TextType)
+            return platform.getDefaultMappedType(type)
         }
     }
 } 
