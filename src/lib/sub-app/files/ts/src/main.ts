@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import {AppModule} from './app.module'
-import {bootstrap, generateApiDoc} from '@scrypt-swiss/lib'
+import {bootstrap, generateApiDoc} from '@scrypt-swiss/nest'
 import {name, version, description} from '../package.json'
 
 const port = <%= port %>
