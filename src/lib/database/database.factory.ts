@@ -28,7 +28,7 @@ export function change(options: any): Rule {
         {
             const {path, content} = readJson(tree, options, /^package.json$/)
             NAME = content.name.toUpperCase().replace(/-/g, '_').replace(/.*\//g, '')
-            name = NAME.toLowerCase()
+            name = content.name.replace(/.*\//g, '').toLowerCase()
             const scripts = {
                 ...{
                     "migration": "mikro-orm migration:create",
