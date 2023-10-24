@@ -7,7 +7,7 @@ import { <%= classify(name) %>Service } from './<%= name %>.service'
   imports: [
     ClientsModule.register([
       {
-        name: 'KAFKA_SERVICE',
+        name: 'kafka',
         transport: Transport.KAFKA,
         options: {
           client: {

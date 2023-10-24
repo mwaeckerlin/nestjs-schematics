@@ -13,7 +13,7 @@ import {Update<%= singular(classify(name)) %> } from './<%= singular(name) %>.up
 export class <%= classify(name) %>Service {<% if (crud) { %>
   private readonly logger = new Logger('<%= classify(name) %>Service')
   constructor(
-    @Inject('KAFKA_SERVICE') private kafka: ClientKafka,
+    @Inject('kafka') private kafka: ClientKafka,
     private readonly em: EntityManager
 ) {}
 
