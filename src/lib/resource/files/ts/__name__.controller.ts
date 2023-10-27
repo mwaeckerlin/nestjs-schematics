@@ -53,27 +53,27 @@ export class <%= classify(name) %>Controller {
     return this.<%= lowercased(name) %>Service.remove(query)
   }<% } else if (type === 'microservice' && crud) { %>
   
-  @MessagePattern('create<%= singular(classify(name)) %>')
+  @MessagePattern(Topic.'create<%= singular(classify(name)) %>')
   async create(@Payload() create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %>) {
     return this.<%= lowercased(name) %>Service.create(create<%= singular(classify(name)) %>)
   }
 
-  @MessagePattern('findAll<%= classify(name) %>')
+  @MessagePattern(Topic.'findAll<%= classify(name) %>')
   async findAll(@Payload query?: Record<string, any>) {
     return this.<%= lowercased(name) %>Service.findAll(query)
   }
 
-  @MessagePattern('findOne<%= singular(classify(name)) %>')
+  @MessagePattern(Topic.'findOne<%= singular(classify(name)) %>')
   async findOne(@Payload() id: string | Record<string, any>) {
     return this.<%= lowercased(name) %>Service.findOne(id)
   }
 
-  @MessagePattern('update<%= singular(classify(name)) %>')
+  @MessagePattern(Topic.'update<%= singular(classify(name)) %>')
   async update(@Payload()id: string | Record<string, any>, @Payload() update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %>) {
     return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>)
   }
 
-  @MessagePattern('remove<%= singular(classify(name)) %>')
+  @MessagePattern(Topic.'remove<%= singular(classify(name)) %>')
   async remove(@Payload() id: string | Record<string, any>) {
     return this.<%= lowercased(name) %>Service.remove(id)
   }<% } %>

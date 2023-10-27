@@ -1,7 +1,8 @@
 import 'dotenv/config'
-import {AppModule} from './app.module'
-import {bootstrap, generateApiDoc} from '@scrypt-swiss/nest'
+import {bootstrap, generateApiDoc, kafkaOptions} from '@scrypt-swiss/nest'
 import {name, version, description} from '../package.json'
+export const kafka = kafkaOptions(name)
+import {AppModule} from './app.module'
 
 const port = <%= port %>
 if (process.argv.includes('-d'))

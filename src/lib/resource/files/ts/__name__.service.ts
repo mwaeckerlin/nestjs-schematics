@@ -12,10 +12,7 @@ import {Update<%= singular(classify(name)) %> } from './<%= singular(name) %>.up
 @Injectable()
 export class <%= classify(name) %>Service {<% if (crud) { %>
   private readonly logger = new Logger('<%= classify(name) %>Service')
-  constructor(
-    @Inject('kafka') private kafka: ClientKafka,
-    private readonly em: EntityManager
-) {}
+  constructor(@Inject('kafka') private kafka: ClientKafka, private readonly em: EntityManager) {}
 
   async create(<% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %><% } else { %>create<%= singular(classify(name)) %>Input: Create<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
     const <%= lowercased(singular(name)) %> = new <%= singular(classify(name)) %>(create<%= singular(classify(name)) %>)
