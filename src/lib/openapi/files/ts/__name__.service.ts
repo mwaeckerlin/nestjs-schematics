@@ -1,9 +1,9 @@
-import { Logger, Injectable } from '@nestjs/common'
+import {Logger, Injectable} from '@nestjs/common'
 import { <%= functions.dtoImports.join(', ') %> } from '../<%= functions.dtoFileName %>'
 
 @Injectable()
 export class <%= classify(name) %>Service {
-  private readonly logger = new Logger(<%= classify(dasherize(name).toLowerCase()) %>Service.name)<%=
+  private readonly logger = new Logger(this.constructor.name)
 
   Object.keys(functions.paths).map(path =>
       Object.keys(functions.paths[path]).map(req =>

@@ -276,7 +276,7 @@ import { Author } from '../author/entities/author.entity'
 
 @Injectable()
 export class BookService {
-  private readonly logger = new Logger(BookService.name)
+  private readonly logger = new Logger(this.constructor.name)
   constructor(private readonly em: EntityManager) { }
 
   async create(createBookDto: CreateBookDto): Promise<Book> {
