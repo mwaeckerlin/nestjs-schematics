@@ -75,7 +75,7 @@ export function change(options: any): Rule {
                 ...content.services[name].environment
             }
             content.services[name].networks ??= []
-            content.services[name].networks.push(name + 'db-network')
+            content.services[name].networks.push(name + '-db')
             switch (options.type) {
                 case 'postgresql':
                     content.services[name + '-db'] = {
@@ -90,11 +90,11 @@ export function change(options: any): Rule {
                         },
                         volumes: [{
                             type: "volume",
-                            source: name + "-db-volume",
+                            source: name + "-db",
                             target: "/var/lib/postgresql/data"
                         }],
                         networks: [
-                            name + "-db-network"
+                            name + "-db"
                         ]
                     }
                     break
@@ -112,11 +112,11 @@ export function change(options: any): Rule {
                         },
                         volumes: [{
                             type: "volume",
-                            source: name + "-db-volume",
+                            source: name + "-db",
                             target: "/var/lib/mysql"
                         }],
                         networks: [
-                            name + "-db-network"
+                            name + "-db"
                         ]
                     }
                     break
@@ -134,11 +134,11 @@ export function change(options: any): Rule {
                         },
                         volumes: [{
                             type: "volume",
-                            source: name + "-db-volume",
+                            source: name + "-db",
                             target: "/var/lib/mysql"
                         }],
                         networks: [
-                            name + "db-network"
+                            name + "-db"
                         ]
                     }
                     break
@@ -154,11 +154,11 @@ export function change(options: any): Rule {
                         },
                         volumes: [{
                             type: "volume",
-                            source: name + "-db-volume",
+                            source: name + "-db",
                             target: "/data/db"
                         }],
                         networks: [
-                            name + "-db-network"
+                            name + "-db"
                         ]
                     }
                     break
@@ -169,13 +169,13 @@ export function change(options: any): Rule {
             }
             content.volumes = {
                 ...{
-                    [name + "-db-volume"]: {}
+                    [name + "-db"]: {}
                 },
                 ...content.volumes
             }
             content.networks = {
                 ...{
-                    [name + "-db-network"]: {driver_opts: {encrypted: 1}}
+                    [name + "-db"]: {driver_opts: {encrypted: 1}}
                 },
                 ...content.networks
             }
