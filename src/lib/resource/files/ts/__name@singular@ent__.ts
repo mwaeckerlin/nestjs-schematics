@@ -1,12 +1,12 @@
-<% if (type === 'graphql-code-first') { %>import { ObjectType, Field, Int } from '@nestjs/graphql'
+<% if (type === 'graphql-code-first') { %>import {ObjectType, Field, Int} from '@nestjs/graphql'
 
 @ObjectType()
 export class <%= singular(classify(name)) %> {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
+  @Field(() => Int, {description: 'Example field (placeholder)'})
   exampleField: number
-}<% } else { %>import { Entity } from '@mikro-orm/core'
-import { Base } from '../base/base.entity'
-import { Create<%= singular(classify(name)) %> } from './<%= singular(name) %>.create.dto'
+}<% } else { %>import {Entity} from '@mikro-orm/core'
+import {Base} from '../base/base.entity'
+import {Create<%= singular(classify(name)) %>} from './<%= singular(name) %>.create.dto'
 
 @Entity()
 export class <%= singular(classify(name)) %> extends Base {

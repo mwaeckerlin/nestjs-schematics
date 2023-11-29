@@ -5,7 +5,8 @@ const naming = (crud && type !== 'graphql-code-first' && type !== 'graphql-schem
 %>import {Injectable, Inject, Logger} from '@nestjs/common'
 import {ClientKafka} from '@nestjs/microservices'
 <% if (crud) { %>import {EntityManager} from '@mikro-orm/core'
-import { <%= singular(classify(name)) %> } from './<%= singular(name) %>.entity'
+import {Topic} from '@scrypt-swiss/nest'
+import {<%= singular(classify(name)) %>} from './<%= singular(name) %>.entity'
 import {Create<%= singular(classify(name)) %> } from './<%= singular(name) %>.create.<%= naming %>'
 import {Update<%= singular(classify(name)) %> } from './<%= singular(name) %>.update.<%= naming %>'
 <% } %>
@@ -17,7 +18,7 @@ export class <%= classify(name) %>Service {<% if (crud) { %>
   async create(<% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %><% } else { %>create<%= singular(classify(name)) %>Input: Create<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
     const <%= lowercased(singular(name)) %> = new <%= singular(classify(name)) %>(create<%= singular(classify(name)) %>)
     await this.em.persistAndFlush(<%= lowercased(singular(name)) %>)
-    this.kafka.emit('<%= lowercased(singular(name)) %> created', <%= lowercased(singular(name)) %>)
+    this.kafka.emit(Topic.<%= uppercased(singular(name)) %>_CREATED, <%= lowercased(singular(name)) %>)
     return <%= lowercased(singular(name)) %>
   }
 
@@ -34,7 +35,7 @@ export class <%= classify(name) %>Service {<% if (crud) { %>
       const <%= lowercased(singular(name)) %> = await em.findOneOrFail(<%= singular(classify(name)) %>, id)
       Object.assign(<%= lowercased(singular(name)) %>, update<%= singular(classify(name)) %>, {merge: true})
       await em.persistAndFlush(<%= lowercased(singular(name)) %>)
-      this.kafka.emit('<%= lowercased(singular(name)) %> updated', <%= singular(classify(name)) %>)
+      this.kafka.emit(Topic.<%= uppercased(singular(name)) %>_UPDATED, <%= lowercased(singular(name)) %>)
       return <%= lowercased(singular(name)) %>
     })
   }
@@ -42,7 +43,7 @@ export class <%= classify(name) %>Service {<% if (crud) { %>
   async remove(id: string | Record<string, any> = {}): Promise<<%= singular(classify(name)) %>> {
     const <%= lowercased(singular(name)) %> = await this.em.findOneOrFail(<%= singular(classify(name)) %>, id)
     await this.em.removeAndFlush(<%= lowercased(singular(name)) %>)
-    this.kafka.emit('<%= lowercased(singular(name)) %> deleted', <%= singular(classify(name)) %>)
+    this.kafka.emit(Topic.<%= uppercased(singular(name)) %>_DELETED, <%= lowercased(singular(name)) %>)
     return <%= lowercased(singular(name)) %>
   }
 <% } %>}

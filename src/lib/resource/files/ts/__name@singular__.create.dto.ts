@@ -1,1 +1,5 @@
-export class Create<%= singular(classify(name)) %> {}
+export class Create<%= singular(classify(name)) %> {
+
+  
+
+}

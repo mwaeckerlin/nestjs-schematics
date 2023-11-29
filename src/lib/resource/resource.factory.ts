@@ -10,6 +10,7 @@ import {Location, NameParser} from '../../utils/name.parser'
 import {mergeSourceRoot} from '../../utils/source-root.helpers'
 import {ResourceOptions} from './resource.schema'
 import {addImport, addText, read, singular} from '../../utils/scrypt.utils'
+import {resolve} from 'path'
 
 export function main(options: ResourceOptions): Rule {
   options = transform(options)
@@ -123,11 +124,15 @@ function generate(options: ResourceOptions): Source {
       template({
         ...strings,
         ...options,
+        parentname: resolve(options.path).replace(/.*\/([^/]+)\/src\/.*/, '$1'),
         lowercased: (name: string) => {
           const classifiedName = classify(name)
           return (
             classifiedName.charAt(0).toLowerCase() + classifiedName.slice(1)
           )
+        },
+        uppercased: (name: string) => {
+          return name.toUpperCase().replace(/-/, '_')
         },
         singular: (name: string) => pluralize.singular(name),
         ent: (name: string) => name + '.entity',

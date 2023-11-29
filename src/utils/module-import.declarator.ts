@@ -1,6 +1,6 @@
-import { normalize, Path } from '@angular-devkit/core'
-import { DeclarationOptions } from './module.declarator'
-import { PathSolver } from './path.solver'
+import {normalize, Path} from '@angular-devkit/core'
+import {DeclarationOptions} from './module.declarator'
+import {PathSolver} from './path.solver'
 
 export class ModuleImportDeclarator {
   constructor(private solver: PathSolver = new PathSolver()) {}
@@ -25,7 +25,7 @@ export class ModuleImportDeclarator {
   }
 
   private buildLineToInsert(options: DeclarationOptions): string {
-    return `import { ${options.symbol} } from '${this.computeRelativePath(
+    return `import {${options.symbol}} from '${this.computeRelativePath(
       options,
     )}'`
   }

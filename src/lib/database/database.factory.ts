@@ -20,7 +20,7 @@ export function change(options: any): Rule {
         // update main.ts
         {
             const {path, content} = read(tree, options, /^main\.[tj]s$/, '/src')
-            tree.overwrite(path, content.join('\n').replace(/(bootstrap\(AppModule, name, port)(, *{(.*)}( *))?\)/, (a, p1, p2, p3) => `${p1}, {${'orm: true' + (p3 ? ', ' + p3 : '')}})`))
+            tree.overwrite(path, content.join('\n').replace(/(bootstrap\(AppModule, name, port)(, *{(.*)}( *))?\)/, (a, p1, p2, p3) => `${p1}, {${'orm: true, kafka: kafka.main' + (p3 ? ', ' + p3 : '')}})`))
         }
 
         // update package.json
