@@ -1,21 +1,15 @@
-<%
-
-const naming = (crud && type !== 'graphql-code-first' && type !== 'graphql-schema-first') ? 'dto' : crud ? 'input' : 'dto'
-
-%>import {Injectable, Inject, Logger} from '@nestjs/common'
+import {Injectable, Inject, Logger} from '@nestjs/common'
 import {ClientKafka} from '@nestjs/microservices'
 <% if (crud) { %>import {EntityManager} from '@mikro-orm/core'
 import {Topic} from '@scrypt-swiss/nest'
-import {<%= singular(classify(name)) %>} from './<%= singular(name) %>.entity'
-import {Create<%= singular(classify(name)) %> } from './<%= singular(name) %>.create.<%= naming %>'
-import {Update<%= singular(classify(name)) %> } from './<%= singular(name) %>.update.<%= naming %>'
+import {<%= singular(classify(name)) %>, Create<%= singular(classify(name)) %>, Update<%= singular(classify(name)) %>} from './<%= singular(name) %>.entity'
 <% } %>
 @Injectable()
 export class <%= classify(name) %>Service {<% if (crud) { %>
   private readonly logger = new Logger(this.constructor.name)
   constructor(@Inject('kafka') private kafka: ClientKafka, private readonly em: EntityManager) {}
 
-  async create(<% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %><% } else { %>create<%= singular(classify(name)) %>Input: Create<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
+  async create(<% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %><% } else { %><%= singular(classify(name)) %>Input: <%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
     const <%= lowercased(singular(name)) %> = new <%= singular(classify(name)) %>(create<%= singular(classify(name)) %>)
     await this.em.persistAndFlush(<%= lowercased(singular(name)) %>)
     this.kafka.emit(Topic.<%= uppercased(singular(name)) %>_CREATED, <%= lowercased(singular(name)) %>)
