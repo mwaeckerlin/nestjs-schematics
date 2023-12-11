@@ -34,7 +34,9 @@ export function change(options: any): Rule {
                     "migration": "mikro-orm migration:create",
                     "migration:initial": "mikro-orm migration:create --initial",
                     "migration:up": "mikro-orm migration:up",
-                    "migration:down": "mikro-orm migration:down"
+                    "migration:down": "mikro-orm migration:down",
+                    "postbuild": "mikro-orm cache:generate",
+                    "clean:all": "rimraf node_modules temp",
                 },
                 ...content.scripts
             }

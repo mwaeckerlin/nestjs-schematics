@@ -9,7 +9,7 @@
   "scripts": {
     "build": "nest build",
     "clean": "rimraf dist",
-    "clean:all": "rimraf node_modules",
+    "clean:all": "rimraf node_modules temp",
     "preclean:all": "npm run clean",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start --watch",
