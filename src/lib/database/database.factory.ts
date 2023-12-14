@@ -31,12 +31,18 @@ export function change(options: any): Rule {
             name = content.name.replace(/.*\//g, '').toLowerCase()
             const scripts = {
                 ...{
+                    "premigration": "npm run build",
                     "migration": "mikro-orm migration:create",
                     "migration:initial": "mikro-orm migration:create --initial",
                     "migration:up": "mikro-orm migration:up",
                     "migration:down": "mikro-orm migration:down",
-                    "postbuild": "mikro-orm cache:generate",
                     "clean:all": "rimraf node_modules temp",
+                    "migration:reset": "rimraf migrations; git checkout migrations; npm run migration",
+                    "db:cache": "mikro-orm cache:generate",
+                    "postdb:cache": "npm run doc",
+                    "postbuild": "npm run db:cache",
+                    "predoc": "node ../../scripts/mikroorm2puml.js",
+                    "doc": "plantuml -tpng -o img doc"
                 },
                 ...content.scripts
             }
