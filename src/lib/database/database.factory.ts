@@ -39,7 +39,7 @@ export function change(options: any): Rule {
                     "clean:all": "rimraf node_modules temp",
                     "migration:reset": "rimraf migrations; git checkout migrations; npm run migration",
                     "db:cache": "mikro-orm cache:generate",
-                    "postdb:cache": "npm run doc",
+                    "postmigration": "npm run doc",
                     "postbuild": "npm run db:cache",
                     "predoc": "node ../../scripts/mikroorm2puml.js",
                     "doc": "plantuml -tpng -o img doc"
