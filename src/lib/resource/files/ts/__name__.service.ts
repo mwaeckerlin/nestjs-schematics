@@ -27,7 +27,7 @@ export class <%= classify(name) %>Service {<% if (crud) { %>
   async update(id: string | FilterQuery<<%= singular(classify(name)) %>> = {}, <% if (type !== 'graphql-code-first' && type !== 'graphql-schema-first') { %>update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %><% } else { %>update<%= singular(classify(name)) %>Input: Update<%= singular(classify(name)) %>Input<% } %>): Promise<<%= singular(classify(name)) %>> {
     return await this.em.transactional(async (em) => {
       const <%= lowercased(singular(name)) %> = await em.findOneOrFail(<%= singular(classify(name)) %>, id)
-      Object.assign(<%= lowercased(singular(name)) %>, update<%= singular(classify(name)) %>, {merge: true})
+      Object.assign(<%= lowercased(singular(name)) %>, update<%= singular(classify(name)) %>)
       await em.persistAndFlush(<%= lowercased(singular(name)) %>)
       this.kafka.emit(Topic.<%= uppercased(singular(name)) %>_UPDATED, <%= lowercased(singular(name)) %>)
       return <%= lowercased(singular(name)) %>
