@@ -94,7 +94,7 @@ export function change(options: any): Rule {
                         environment: {
                             ["POSTGRES_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
                             ["POSTGRES_USER"]: '${' + NAME + "_DB_USER" + '}',
-                            ["POSTGRES_DB"]: '${' + NAME + "_DB_NAME" + '}'
+                            ["POSTGRES_DB"]: '${' + NAME + "_DB_NAME" + '}${ENVIRONMENT}'
                         },
                         volumes: [{
                             type: "volume",
@@ -116,7 +116,7 @@ export function change(options: any): Rule {
                             ["MYSQL_ROOT_PASSWORD"]: pwgen(40),
                             ["MYSQL_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
                             ["MYSQL_USER"]: '${' + NAME + "_DB_USER" + '}',
-                            ["MYSQL_DATABASE"]: '${' + NAME + "_DB_NAME" + '}'
+                            ["MYSQL_DATABASE"]: '${' + NAME + "_DB_NAME" + '}${ENVIRONMENT}'
                         },
                         volumes: [{
                             type: "volume",
@@ -138,7 +138,7 @@ export function change(options: any): Rule {
                             ["MARIADB_ROOT_PASSWORD"]: pwgen(40),
                             ["MARIADB_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
                             ["MARIADB_USER"]: '${' + NAME + "_DB_USER" + '}',
-                            ["MARIADB_DATABASE"]: '${' + NAME + "_DB_NAME" + '}'
+                            ["MARIADB_DATABASE"]: '${' + NAME + "_DB_NAME" + '}${ENVIRONMENT}'
                         },
                         volumes: [{
                             type: "volume",
