@@ -47,11 +47,17 @@
       "default": "",
       "description": "Author."
     },
+    "port": {
+      "type": "number",
+      "description": "Application's port number."
+    },
     "version": {
       "type": "string",
       "default": "0.0.1",
       "description": "Version."
     }
   },
-  "required": ["name"]
+  "required": [
+    "name"
+  ]
 }

@@ -1,8 +1,10 @@
-import { Controller, <%= functions.imports.join(', ') %> } from '@nestjs/common'
+import { Controller, UseInterceptors, ClassSerializerInterceptor, UsePipes, ValidationPipe, <%= functions.imports.join(', ') %> } from '@nestjs/common'
 import { <%= functions.dtoImports.join(', ') %> } from '../<%= functions.dtoFileName %>'
 import { <%= classify(dasherize(name).toLowerCase()) %>Service } from './<%= name %>.service'
 
 @Controller('<%= dasherize(functions.base) %>')
+@UseInterceptors(ClassSerializerInterceptor)
+@UsePipes(new ValidationPipe({transform: true}))
 export class <%= classify(dasherize(name).toLowerCase()) %>Controller {
     constructor(private readonly <%= camelize(classify(dasherize(name).toLowerCase())) %>Service: <%= classify(dasherize(name).toLowerCase()) %>Service) { }
     <%=

@@ -1,16 +1,11 @@
-import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
-import { ValidationPipe } from '@nestjs/common'
-import { AllExceptionFilter } from './exception-filter'
-import { rawBody } from './rawbody.middleware'
-import { requestLogger } from './logger.middleware'
+import 'dotenv/config'
+import {bootstrap, generateApiDoc, kafkaOptions} from '@scrypt-swiss/nest'
+import {name, version, description} from '../package.json'
+export const kafka = kafkaOptions(name)
+import {AppModule} from './app.module'
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bodyParser: false, logger: ['log', 'error', 'warn', 'debug', 'verbose'] })
-  app.enableCors()
-  app.use(rawBody, requestLogger)
-  app.useGlobalPipes(new ValidationPipe())
-  app.useGlobalFilters(new AllExceptionFilter())
-  await app.listen(Number(process.env.PORT ?? 4000), '0.0.0.0')
-}
-bootstrap()
+const port = <%= port %>
+if (process.argv.includes('-d'))
+  generateApiDoc(AppModule, name, version, description, port)
+else
+  bootstrap(AppModule, name, port)

@@ -32,7 +32,7 @@ Additional generators:
 Also Generates:
 
   - `Dockerfile`
-  - `docker-compose.yml`
+  - `docker-compose.yaml`
 
 ### Install:
 
@@ -182,8 +182,8 @@ The book is a little bit more complex, since it refers to Author and Publisher:
 
 ```typescript
 import { Collection, Entity, ManyToMany, Property } from '@mikro-orm/core'
-import { Author } from 'src/author/entities/author.entity'
-import { Publisher } from 'src/publisher/entities/publisher.entity'
+import { Author } from '../author/entities/author.entity'
+import { Publisher } from '../publisher/entities/publisher.entity'
 import { Base } from '../../base/entities/base.entity'
 import { CreateBookDto } from '../dto/create-book.dto'
 
@@ -276,7 +276,7 @@ import { Author } from '../author/entities/author.entity'
 
 @Injectable()
 export class BookService {
-  private readonly logger = new Logger(BookService.name)
+  private readonly logger = new Logger(this.constructor.name)
   constructor(private readonly em: EntityManager) { }
 
   async create(createBookDto: CreateBookDto): Promise<Book> {

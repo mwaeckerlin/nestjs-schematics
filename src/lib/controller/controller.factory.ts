@@ -1,4 +1,5 @@
-import { join, Path, strings } from '@angular-devkit/core'
+import {join, Path, strings} from '@angular-devkit/core'
+import {classify} from '@angular-devkit/core/src/utils/strings'
 import {
   apply,
   branchAndMerge,
@@ -13,16 +14,16 @@ import {
   Tree,
   url,
 } from '@angular-devkit/schematics'
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
+import {normalizeToKebabOrSnakeCase} from '../../utils/formatting'
 import {
   DeclarationOptions,
   ModuleDeclarator,
 } from '../../utils/module.declarator'
-import { ModuleFinder } from '../../utils/module.finder'
-import { Location, NameParser } from '../../utils/name.parser'
-import { mergeSourceRoot } from '../../utils/source-root.helpers'
-import { DEFAULT_LANGUAGE } from '../defaults'
-import { ControllerOptions } from './controller.schema'
+import {ModuleFinder} from '../../utils/module.finder'
+import {Location, NameParser} from '../../utils/name.parser'
+import {mergeSourceRoot} from '../../utils/source-root.helpers'
+import {DEFAULT_LANGUAGE} from '../defaults'
+import {ControllerOptions} from './controller.schema'
 
 const ELEMENT_METADATA = 'controllers'
 const ELEMENT_TYPE = 'controller'
@@ -67,7 +68,7 @@ function generate(options: ControllerOptions) {
       options.spec
         ? noop()
         : filter((path) => {
-          console.log({ path })
+          console.log({path})
           const languageExtension = options.language || 'ts'
           const suffix = `.__specFileSuffix__.${languageExtension}`
           return !path.endsWith(suffix)
@@ -75,6 +76,12 @@ function generate(options: ControllerOptions) {
       template({
         ...strings,
         ...options,
+        lowercased: (name: string) => {
+          const classifiedName = classify(name)
+          return (
+            classifiedName.charAt(0).toLowerCase() + classifiedName.slice(1)
+          )
+        }
       }),
       move(options.path),
     ])(context)

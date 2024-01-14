@@ -1,33 +1,10 @@
-import { join, normalize, Path, strings } from '@angular-devkit/core'
-import {
-  apply,
-  branchAndMerge,
-  chain,
-  FileEntry,
-  mergeWith,
-  move,
-  noop,
-  Rule,
-  SchematicsException,
-  Source,
-  template,
-  Tree,
-  url,
-} from '@angular-devkit/schematics'
+import {join, normalize, Path, strings} from '@angular-devkit/core'
+import {apply, branchAndMerge, chain, FileEntry, mergeWith, move, noop, Rule, SchematicsException, Source, template, Tree, url} from '@angular-devkit/schematics'
 import * as fse from 'fs-extra'
-import { parse } from 'jsonc-parser'
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
-import {
-  DEFAULT_APPS_PATH,
-  DEFAULT_APP_NAME,
-  DEFAULT_DIR_ENTRY_APP,
-  DEFAULT_LANGUAGE,
-  DEFAULT_LIB_PATH,
-  DEFAULT_PATH_NAME,
-  PROJECT_TYPE,
-  TEST_ENV,
-} from '../defaults'
-import { SubAppOptions } from './sub-app.schema'
+import {parse} from 'jsonc-parser'
+import {normalizeToKebabOrSnakeCase} from '../../utils/formatting'
+import {DEFAULT_APPS_PATH, DEFAULT_APP_NAME, DEFAULT_DIR_ENTRY_APP, DEFAULT_LANGUAGE, DEFAULT_LIB_PATH, DEFAULT_PATH_NAME, PROJECT_TYPE, TEST_ENV} from '../defaults'
+import {SubAppOptions} from './sub-app.schema'
 
 type UpdateJsonFn<T> = (obj: T) => T | void
 interface TsConfigPartialType {
@@ -40,6 +17,7 @@ interface TsConfigPartialType {
 }
 
 export function main(options: SubAppOptions): Rule {
+  options.port ??= 4000 + Math.floor(Math.random() * 1000)
   const appName = getAppNameFromPackageJson()
   options = transform(options)
   return chain([

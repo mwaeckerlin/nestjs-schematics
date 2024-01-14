@@ -1,33 +1,15 @@
-import { join, Path, strings } from '@angular-devkit/core'
-import { classify } from '@angular-devkit/core/src/utils/strings'
-import {
-  apply,
-  branchAndMerge,
-  chain,
-  filter,
-  mergeWith,
-  move,
-  noop,
-  Rule,
-  SchematicContext,
-  SchematicsException,
-  Source,
-  template,
-  Tree,
-  url,
-} from '@angular-devkit/schematics'
-import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks'
+import {join, Path, strings} from '@angular-devkit/core'
+import {classify} from '@angular-devkit/core/src/utils/strings'
+import {apply, branchAndMerge, chain, filter, mergeWith, move, noop, Rule, SchematicContext, SchematicsException, Source, template, Tree, url} from '@angular-devkit/schematics'
+import {NodePackageInstallTask} from '@angular-devkit/schematics/tasks'
 import * as pluralize from 'pluralize'
-import { DeclarationOptions, ModuleDeclarator, ModuleFinder } from '../..'
-import {
-  addPackageJsonDependency,
-  getPackageJsonDependency,
-  NodeDependencyType,
-} from '../../utils/dependencies.utils'
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
-import { Location, NameParser } from '../../utils/name.parser'
-import { mergeSourceRoot } from '../../utils/source-root.helpers'
-import { ResourceOptions } from './resource.schema'
+import {DeclarationOptions, ModuleDeclarator, ModuleFinder} from '../..'
+import {addPackageJsonDependency, getPackageJsonDependency, NodeDependencyType} from '../../utils/dependencies.utils'
+import {normalizeToKebabOrSnakeCase} from '../../utils/formatting'
+import {Location, NameParser} from '../../utils/name.parser'
+import {mergeSourceRoot} from '../../utils/source-root.helpers'
+import {ResourceOptions} from './resource.schema'
+import {addImport, addText, read, singular} from '../../utils/scrypt.utils'
 
 export function main(options: ResourceOptions): Rule {
   options = transform(options)
@@ -39,8 +21,21 @@ export function main(options: ResourceOptions): Rule {
         mergeSourceRoot(options),
         addDeclarationToModule(options),
         mergeWith(generate(options)),
+        change(options)
       ]),
     )(tree, context)
+  }
+}
+
+export function change(options: any): Rule {
+  return (tree: Tree, _context: SchematicContext) => {
+    {
+      const {path, content} = read(tree, options, /^mikro-orm\.config\.[tj]s$/, '/')
+      addImport(content, "import {" + classify(singular(options.name)) + "} from './src/" + options.name + '/' + singular(options.name) + ".entity'")
+      addText(content, classify(singular(options.name)) + ',', /\s+entities:\s*\[/, RegExp('\s+entities:\s*\[[^\]]*' + classify(singular(options.name)) + ','))
+      addText(content, classify(singular(options.name)) + ',', /\s+entitiesTs:\s*\[/, RegExp('\s+entitiesTs:\s*\[[^\]]*' + classify(singular(options.name)) + ','))
+      tree.overwrite(path, content.join('\n'))
+    }
   }
 }
 
@@ -119,11 +114,11 @@ function generate(options: ResourceOptions): Source {
         }
         return true
       }),
-      options.spec 
-        ? noop() 
+      options.spec
+        ? noop()
         : filter((path) => {
-            const suffix = `.__specFileSuffix__.ts`
-            return !path.endsWith(suffix)
+          const suffix = `.__specFileSuffix__.ts`
+          return !path.endsWith(suffix)
         }),
       template({
         ...strings,

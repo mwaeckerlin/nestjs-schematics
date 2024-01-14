@@ -1,15 +1,15 @@
 import { WebSocketGateway<% if (crud) { %>, SubscribeMessage, MessageBody<% } %> } from '@nestjs/websockets'
 import { <%= classify(name) %>Service } from './<%= name %>.service'<% if (crud) { %>
-import { Create<%= singular(classify(name)) %>Dto } from './dto/create-<%= singular(name) %>.dto'
-import { Update<%= singular(classify(name)) %>Dto } from './dto/update-<%= singular(name) %>.dto'<% } %>
+import { Create<%= singular(classify(name)) %> } from '.<%= singular(name) %>.create.dto'
+import { Update<%= singular(classify(name)) %> } from '.<%= singular(name) %>.update.dto'<% } %>
 
 @WebSocketGateway()
 export class <%= classify(name) %>Gateway {
   constructor(private readonly <%= lowercased(name) %>Service: <%= classify(name) %>Service) {}<% if (crud) { %>
 
   @SubscribeMessage('create<%= singular(classify(name)) %>')
-  create(@MessageBody() create<%= singular(classify(name)) %>Dto: Create<%= singular(classify(name)) %>Dto) {
-    return this.<%= lowercased(name) %>Service.create(create<%= singular(classify(name)) %>Dto)
+  create(@MessageBody() create<%= singular(classify(name)) %>: Create<%= singular(classify(name)) %>) {
+    return this.<%= lowercased(name) %>Service.create(create<%= singular(classify(name)) %>)
   }
 
   @SubscribeMessage('findAll<%= classify(name) %>')
@@ -23,8 +23,8 @@ export class <%= classify(name) %>Gateway {
   }
 
   @SubscribeMessage('update<%= singular(classify(name)) %>')
-  update(@MessageBody() update<%= singular(classify(name)) %>Dto: Update<%= singular(classify(name)) %>Dto) {
-    return this.<%= lowercased(name) %>Service.update(update<%= singular(classify(name)) %>Dto.id, update<%= singular(classify(name)) %>Dto)
+  update(@MessageBody() update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %>) {
+    return this.<%= lowercased(name) %>Service.update(update<%= singular(classify(name)) %>.id, update<%= singular(classify(name)) %>)
   }
 
   @SubscribeMessage('remove<%= singular(classify(name)) %>')

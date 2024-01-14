@@ -1,8 +1,10 @@
-import { join, strings } from '@angular-devkit/core'
-import { apply, branchAndMerge, chain, DirEntry, filter, mergeWith, move, noop, Rule, SchematicContext, template, Tree, url } from '@angular-devkit/schematics'
+import {strings} from '@angular-devkit/core'
+import {apply, branchAndMerge, chain, mergeWith, move, Rule, SchematicContext, template, Tree, url} from '@angular-devkit/schematics'
+import {read, readJson, readYaml, addImport, addLine, addText} from '../../utils/scrypt.utils'
 import * as yaml from 'js-yaml'
 
 export function main(options: any): Rule {
+    options.name ??= options.sourceRoot?.split('/')?.[1] ?? process.cwd()?.split('/')?.pop()
     return (tree: Tree, _context: SchematicContext) =>
         chain([
             branchAndMerge(
@@ -17,227 +19,203 @@ export function change(options: any): Rule {
     return (tree: Tree, _context: SchematicContext) => {
         // update main.ts
         {
-            const { path, content } = read(tree, options, /^main\.[tj]s$/, '/src')
-            addLine(content, '  app.get(MikroORM).getMigrator().up()', { after: /^\s*const\s+app\s+=/ })
-            addImport(content, "import { MikroORM } from '@mikro-orm/core'")
-            tree.overwrite(path, content.join('\n'))
+            const {path, content} = read(tree, options, /^main\.[tj]s$/, '/src')
+            tree.overwrite(path, content.join('\n').replace(/(bootstrap\(AppModule, name, port)(, *{(.*)}( *))?\)/, (a, p1, p2, p3) => `${p1}, {${'orm: true' + (p3 ? ', ' + p3 : '')}})`))
         }
 
-        // update exception-filter.ts
+        // update package.json
+        let NAME, name
         {
-            const { path, content } = read(tree, options, /^exception-filter\.[tj]s$/, '/src')
-            addImport(content, "import { NotFoundError } from '@mikro-orm/core'")
-            addLine(content, '        if (exception instanceof NotFoundError) exception = new NotFoundException(exception)', { after: /this\.logger/ })
-            tree.overwrite(path, content.join('\n'))
-        }
-
-        // update tsconfig.json
-        {
-            const { path, content } = readJson(tree, options, /^package.json$/)
-            const dependencies = {
-                ...{
-                    "@mikro-orm/core": "*",
-                    "@mikro-orm/nestjs": "*",
-                    "@mikro-orm/migrations": "*",
-                    "@mikro-orm/reflection": "*",
-                    "uuid": "*"
-                },
-                ...content.dependencies
-            }
-            dependencies["@mikro-orm/" + options.type] ??= "*"
-            const devDependencies = {
-                ...{ "@mikro-orm/cli": "*" },
-                ...content.devDependencies
-            }
+            const {path, content} = readJson(tree, options, /^package.json$/)
+            NAME = content.name.toUpperCase().replace(/-/g, '_').replace(/.*\//g, '')
+            name = content.name.replace(/.*\//g, '').toLowerCase()
             const scripts = {
                 ...{
                     "migration": "mikro-orm migration:create",
-                    "migration:initial": "mikro-orm migration:create --initial"
+                    "migration:initial": "mikro-orm migration:create --initial",
+                    "migration:up": "mikro-orm migration:up",
+                    "migration:down": "mikro-orm migration:down"
                 },
                 ...content.scripts
             }
-            tree.overwrite(path, JSON.stringify({ ...content, dependencies, devDependencies, scripts }, null, 4))
+            tree.overwrite(path, JSON.stringify({
+                ...content, scripts,
+                devDependencies: {
+                    "@mikro-orm/cli": "",
+                    ...content.devDependencies,
+                },
+                "mikro-orm": {
+                    "useTsNode": true,
+                    "configPaths": [
+                        "./dist/mikro-orm.config.js",
+                    ]
+                }
+            }, null, 4))
         }
 
-        // update docker-compose.yml
-        let config
+        // update docker-compose.yaml
+        options.port =
+            options.type === 'postgresql' ? 5432
+                : options.type === 'mysql' || options.type === 'mariadb' ? 3306
+                    : options.type === 'mongo' ? 27017
+                        : null
+        options.randomport = 5000 + Math.floor(Math.random() * 1000)
+        options.password = pwgen(40)
         {
-            const { path, content } = readYaml(tree, options, /^docker-compose.yml$/)
-            content.services.backend.environment = {
+            const {path, content} = readYaml(tree, options, /^docker-compose.yaml$/)
+            content.services[name].environment = {
                 ...{
-                    "DB_TYPE": options.type,
-                    "DB_NAME": "database",
-                    "DB_HOST": "db",
-                    "DB_USER": "user",
-                    "DB_PASSWORD": pwgen(),
-                    "DB_PORT": options.type === 'postgresql' ? 5432 : options.type === 'mysql' || options.type === 'mariadb' ? 3306 : null
+                    [NAME + "_DB_TYPE"]: null,
+                    [NAME + "_DB_NAME"]: null,
+                    [NAME + "_DB_HOST"]: name + '-db',
+                    [NAME + "_DB_USER"]: null,
+                    [NAME + "_DB_PASSWORD"]: null,
+                    [NAME + "_DB_PORT"]: options.port
                 },
-                ...content.services.backend.environment
+                ...content.services[name].environment
             }
-            content.services.backend.networks ??= []
-            content.services.backend.networks.push('db-network')
-            switch (content.services.backend.environment.DB_TYPE) {
+            content.services[name].networks ??= []
+            content.services[name].networks.push(name + '-db')
+            switch (options.type) {
                 case 'postgresql':
-                    content.services.db = {
-                        image: content.services.backend.environment.DB_TYPE,
+                    content.services[name + '-db'] = {
+                        image: 'postgres',
                         ports: [
-                            content.services.backend.environment.DB_PORT + ':' + content.services.backend.environment.DB_PORT
+                            '${' + NAME + '_DB_PORT}:' + options.port
                         ],
                         environment: {
-                            POSTGRES_PASSWORD: content.services.backend.environment.DB_PASSWORD,
-                            POSTGRES_USER: content.services.backend.environment.DB_USER,
-                            POSTGRES_DB: content.services.backend.environment.DB_NAME
+                            ["POSTGRES_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
+                            ["POSTGRES_USER"]: '${' + NAME + "_DB_USER" + '}',
+                            ["POSTGRES_DB"]: '${' + NAME + "_DB_NAME" + '}'
                         },
                         volumes: [{
                             type: "volume",
-                            source: "db-volume",
+                            source: name + "-db",
                             target: "/var/lib/postgresql/data"
                         }],
                         networks: [
-                            "db-network"
+                            name + "-db"
                         ]
                     }
-                    break;
+                    break
                 case 'mysql':
-                    content.services.db = {
-                        image: content.services.backend.environment.DB_TYPE,
+                    content.services[name + '-db'] = {
+                        image: 'mysql',
                         ports: [
-                            content.services.backend.environment.DB_PORT + ':' + content.services.backend.environment.DB_PORT
+                            '${' + NAME + '_DB_PORT}:' + options.port
                         ],
                         environment: {
-                            MYSQL_ROOT_PASSWORD: pwgen(40),
-                            MYSQL_PASSWORD: content.services.backend.environment.DB_PASSWORD,
-                            MYSQL_USER: content.services.backend.environment.DB_USER,
-                            MYSQL_DATABASE: content.services.backend.environment.DB_NAME
+                            ["MYSQL_ROOT_PASSWORD"]: pwgen(40),
+                            ["MYSQL_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
+                            ["MYSQL_USER"]: '${' + NAME + "_DB_USER" + '}',
+                            ["MYSQL_DATABASE"]: '${' + NAME + "_DB_NAME" + '}'
                         },
                         volumes: [{
                             type: "volume",
-                            source: "db-volume",
+                            source: name + "-db",
                             target: "/var/lib/mysql"
                         }],
                         networks: [
-                            "db-network"
+                            name + "-db"
                         ]
                     }
-                    break;
+                    break
                 case 'mariadb':
-                    content.services.db = {
-                        image: content.services.backend.environment.DB_TYPE,
+                    content.services[name + '-db'] = {
+                        image: 'mariadb',
                         ports: [
-                            content.services.backend.environment.DB_PORT + ':' + content.services.backend.environment.DB_PORT
+                            '${' + NAME + '_DB_PORT}:' + options.port
                         ],
                         environment: {
-                            MARIADB_ROOT_PASSWORD: pwgen(40),
-                            MARIADB_PASSWORD: content.services.backend.environment.DB_PASSWORD,
-                            MARIADB_USER: content.services.backend.environment.DB_USER,
-                            MARIADB_DATABASE: content.services.backend.environment.DB_NAME
+                            ["MARIADB_ROOT_PASSWORD"]: pwgen(40),
+                            ["MARIADB_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
+                            ["MARIADB_USER"]: '${' + NAME + "_DB_USER" + '}',
+                            ["MARIADB_DATABASE"]: '${' + NAME + "_DB_NAME" + '}'
                         },
                         volumes: [{
                             type: "volume",
-                            source: "db-volume",
+                            source: name + "-db",
                             target: "/var/lib/mysql"
                         }],
                         networks: [
-                            "db-network"
+                            name + "-db"
                         ]
                     }
-                    break;
+                    break
                 case 'mongo':
-                    content.services.db = {
-                        image: content.services.backend.environment.DB_TYPE,
+                    content.services[name + '-db'] = {
+                        image: 'mongo',
+                        ports: [
+                            '${' + NAME + '_DB_PORT}:' + options.port
+                        ],
                         environment: {
-                            MONGO_INITDB_ROOT_PASSWORD: content.services.backend.environment.DB_PASSWORD,
-                            MONGO_INITDB_ROOT_USERNAME: content.services.backend.environment.DB_USER,
+                            ["MONGO_INITDB_ROOT_PASSWORD"]: '${' + NAME + "_DB_PASSWORD" + '}',
+                            ["MONGO_INITDB_ROOT_USERNAME"]: '${' + NAME + "_DB_USER" + '}',
                         },
                         volumes: [{
                             type: "volume",
-                            source: "db-volume",
+                            source: name + "-db",
                             target: "/data/db"
                         }],
                         networks: [
-                            "db-network"
+                            name + "-db"
                         ]
                     }
-                    break;
+                    break
                 case 'sqlite':
-                    break;
+                    break
                 default:
-                    throw new Error('Unknown Database Type: ' + content.services.backend.environment.DB_TYPE)
-                    break;
+                    throw new Error('Unknown Database Type: ' + options.type)
             }
             content.volumes = {
-                ...{ "db-volume": {} },
+                ...{
+                    [name + "-db"]: {}
+                },
                 ...content.volumes
             }
             content.networks = {
-                ...{ "db-network": {} },
+                ...{
+                    [name + "-db"]: {driver_opts: {encrypted: 1}}
+                },
                 ...content.networks
             }
-            tree.overwrite(path, yaml.dump({ ...content }))
-            config = content.services.backend.environment
+            tree.overwrite(path, yaml.dump({...content}, {styles: {'!!null': 'empty'}}))
         }
 
         // set local test environment in .env
         {
-            const { path, content } = read(tree, options, /^.env$/)
-            addLine(content, 'DB_TYPE=' + config.DB_TYPE, { last: true })
-            addLine(content, 'DB_NAME=' + config.DB_NAME, { last: true })
-            addLine(content, 'DB_HOST="127.0.0.1"', { last: true })
-            addLine(content, 'DB_USER=' + config.DB_USER, { last: true })
-            addLine(content, 'DB_PASSWORD=' + config.DB_PASSWORD, { last: true })
-            addLine(content, 'DB_PORT=' + config.DB_PORT, { last: true })
+            if (!tree.exists('/.env')) tree.create('/.env', '')
+            const {path, content} = read(tree, options, /^.env$/)
+            addLine(content, NAME + '_DB_TYPE=' + options.type, {last: true})
+            addLine(content, NAME + '_DB_NAME=' + name, {last: true})
+            addLine(content, NAME + '_DB_HOST="127.0.0.1"', {last: true})
+            addLine(content, NAME + '_DB_USER=' + name, {last: true})
+            addLine(content, NAME + '_DB_PASSWORD=' + options.password, {last: true})
+            addLine(content, NAME + '_DB_PORT=' + options.randomport, {last: true})
+            tree.overwrite(path, content.join('\n'))
+        } { // add same to .env.sample
+            if (!tree.exists('/.env.sample')) tree.create('/.env.sample', '')
+            const {path, content} = read(tree, options, /^.env.sample$/)
+            addLine(content, NAME + '_DB_TYPE=' + options.type, {last: true})
+            addLine(content, NAME + '_DB_NAME=' + name, {last: true})
+            addLine(content, NAME + '_DB_HOST="127.0.0.1"', {last: true})
+            addLine(content, NAME + '_DB_USER=' + name, {last: true})
+            addLine(content, NAME + '_DB_PASSWORD=' + options.password, {last: true})
+            addLine(content, NAME + '_DB_PORT=' + options.randomport, {last: true})
             tree.overwrite(path, content.join('\n'))
         }
 
         // update app.module.ts, add import
         {
-            const { path, content } = read(tree, options, /^app\.module\.[tj]s$/, '/src')
+            const {path, content} = read(tree, options, /^app\.module\.[tj]s$/, '/src')
             addImport(content, "import { MikroOrmModule } from '@mikro-orm/nestjs'")
-            addText(content, 'MikroOrmModule.forRoot(),', /\s+imports:\s*\[/)
+            addImport(content, "import mikroOrmConfig from '../mikro-orm.config'")
+            addText(content, 'MikroOrmModule.forRoot({...(mikroOrmConfig as {})}),', /\s+imports:\s*\[/)
             tree.overwrite(path, content.join('\n'))
         }
         return tree
     }
 }
-
-const read = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
-    const path = find(tree, options, name, dir)
-    return { path, content: tree.read(path).toString().split('\n') }
-}
-
-const readJson = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
-    const path = find(tree, options, name, dir)
-    return { path, content: JSON.parse(tree.read(path).toString()) }
-}
-
-const readYaml = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
-    const path = find(tree, options, name, dir)
-    return { path, content: yaml.load(tree.read(path).toString()) }
-}
-
-const find = (tree: Tree, options: any, name: RegExp, dir: string = '') => {
-    const entry: DirEntry = tree.getDir((options.dir ?? '') + (dir))
-    return join(entry.path, entry.subfiles.find(f => name.test(f))?.valueOf())
-}
-
-const addImport = (content: string[], line: string) =>
-    addLine(content, line, { afterLast: /^\s*import\s+/ })
-
-const addLine = (content: string[], line: string, where: { after?: RegExp, afterLast?: RegExp, first?, last?}) =>
-    content.find(l => l.includes(line.trim()))
-        ? content
-        : where.after
-            ? content.splice(content.findIndex(e => where.after.test(e)) + 1, 0, line)
-            : where.afterLast
-                ? content.splice(content.findLastIndex(e => where.afterLast.test(e)) + 1, 0, line)
-                : where.first
-                    ? content.unshift(line)
-                    : content.push(line)
-
-const addText = (content: string[], line: string, after: RegExp) =>
-    content.find(l => l.includes(line.trim()))
-        ? content
-        : content.splice(0, content.length, ...content.join('\n').replace(after, x => x + line).split('\n'))
 
 const generate = (options: any) =>
     (context: SchematicContext) =>

@@ -1,13 +1,13 @@
-import { Logger, Injectable, ExceptionFilter, Catch, ArgumentsHost, NotFoundException, HttpAdapterHost, HttpException, HttpStatus } from '@nestjs/common'
+import {Logger, Injectable, ExceptionFilter, Catch, ArgumentsHost, NotFoundException, HttpAdapterHost, HttpException, HttpStatus} from '@nestjs/common'
 
 @Injectable()
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
-    private readonly logger = new Logger(AllExceptionFilter.name)
-    constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
+    private readonly logger = new Logger(this.constructor.name)
+    constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
     catch(exception, host: ArgumentsHost) {
         this.logger.warn('EXCEPTION', exception)
-        const { httpAdapter } = this.httpAdapterHost
+        const {httpAdapter} = this.httpAdapterHost
         const ctx = host.switchToHttp()
         const httpStatus =
             exception instanceof HttpException

@@ -3,7 +3,7 @@ import {
   UnitTestTree,
 } from '@angular-devkit/schematics/testing'
 import * as path from 'path'
-import { SubAppOptions } from './sub-app.schema'
+import {SubAppOptions} from './sub-app.schema'
 
 describe('SubApp Factory', () => {
   const runner: SchematicTestRunner = new SchematicTestRunner(
@@ -27,7 +27,7 @@ describe('SubApp Factory', () => {
       "/backends/project/.prettierrc",
       "/backends/project/Dockerfile",
       "/backends/project/README.md",
-      "/backends/project/docker-compose.yml",
+      "/backends/project/docker-compose.yaml",
       "/backends/project/nest-cli.json",
       "/backends/project/package.json",
       "/backends/project/src/app.module.ts",
@@ -53,7 +53,7 @@ describe('SubApp Factory', () => {
       "/backends/awesome-project/.prettierrc",
       "/backends/awesome-project/Dockerfile",
       "/backends/awesome-project/README.md",
-      "/backends/awesome-project/docker-compose.yml",
+      "/backends/awesome-project/docker-compose.yaml",
       "/backends/awesome-project/nest-cli.json",
       "/backends/awesome-project/package.json",
       "/backends/awesome-project/src/app.module.ts",
@@ -82,7 +82,7 @@ describe('SubApp Factory', () => {
       "/backends/_project/.prettierrc",
       "/backends/_project/Dockerfile",
       "/backends/_project/README.md",
-      "/backends/_project/docker-compose.yml",
+      "/backends/_project/docker-compose.yaml",
       "/backends/_project/nest-cli.json",
       "/backends/_project/package.json",
       "/backends/_project/src/app.module.ts",
@@ -111,7 +111,7 @@ describe('SubApp Factory', () => {
       "/backends/project/.prettierrc",
       "/backends/project/Dockerfile",
       "/backends/project/README.md",
-      "/backends/project/docker-compose.yml",
+      "/backends/project/docker-compose.yaml",
       "/backends/project/index.js",
       "/backends/project/jsconfig.json",
       "/backends/project/nest-cli.json",
@@ -144,7 +144,7 @@ describe('SubApp Factory', () => {
       "/backends/project/.prettierrc",
       "/backends/project/Dockerfile",
       "/backends/project/README.md",
-      "/backends/project/docker-compose.yml",
+      "/backends/project/docker-compose.yaml",
       "/backends/project/nest-cli.json",
       "/backends/project/package.json",
       "/backends/project/src/app.module.ts",

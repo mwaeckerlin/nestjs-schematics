@@ -1,4 +1,4 @@
-import { Path } from '@angular-devkit/core'
+import {Path} from '@angular-devkit/core'
 
 export interface SubAppOptions {
   /**
@@ -27,4 +27,5 @@ export interface SubAppOptions {
   description?: string
   version?: string
   author?: string
+  port?: number
 }
