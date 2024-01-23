@@ -1,6 +1,6 @@
 {
   "name": "@scrypt-swiss/nest-templates",
-  "version": "1.7.1",
+  "version": "2.0.0",
   "description": "Nest - modern, fast, powerful node.js web framework (@schematics)",
   "main": "dist/index.js",
   "files": [
