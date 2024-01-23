@@ -8,4 +8,4 @@ const port = 4000
 if (process.argv.includes('-d'))
   generateApiDoc(AppModule, name, version, description, port)
 else
-  bootstrap(AppModule, name, port)
+  bootstrap(AppModule, name, version, port)
