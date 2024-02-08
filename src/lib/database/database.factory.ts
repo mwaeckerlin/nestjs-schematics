@@ -37,7 +37,7 @@ export function change(options: any): Rule {
                     "migration:up": "mikro-orm migration:up",
                     "migration:down": "mikro-orm migration:down",
                     "clean:all": "rimraf node_modules temp",
-                    "migration:reset": "rimraf migrations; git checkout migrations; npm run migration",
+                    "migration:reset": "rimraf migrations dist; git checkout migrations",
                     "db:cache": "mikro-orm cache:generate",
                     "postmigration": "npm run doc",
                     "postbuild": "npm run db:cache",
