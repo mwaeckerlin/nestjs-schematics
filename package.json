@@ -12,7 +12,7 @@
   "scripts": {
     "postbuild": "npm run copy:collection && npm run copy:lib",
     "build": "rm -rf dist && tsc --project tsconfig.lib.json",
-    "clean": "gulp clean:src && npm run clean:dist",
+    "clean": "npm run clean:dist",
     "clean:all": "rimraf node_modules",
     "preclean:all": "npm run clean",
     "clean:dist": "rimraf dist",
