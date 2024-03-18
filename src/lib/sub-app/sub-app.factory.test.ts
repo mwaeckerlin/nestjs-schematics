@@ -22,7 +22,6 @@ describe('SubApp Factory', () => {
       '/nest-cli.json',
       '/backends/scrypt-swiss-nest-templates/tsconfig.json',
       "/backends/project/.dockerignore",
-      "/backends/project/.eslintrc.js",
       "/backends/project/.gitignore",
       "/backends/project/.prettierrc",
       "/backends/project/Dockerfile",
@@ -48,7 +47,6 @@ describe('SubApp Factory', () => {
     const files: string[] = tree.files
     expect(files.sort()).toEqual([
       "/backends/awesome-project/.dockerignore",
-      "/backends/awesome-project/.eslintrc.js",
       "/backends/awesome-project/.gitignore",
       "/backends/awesome-project/.prettierrc",
       "/backends/awesome-project/Dockerfile",
@@ -77,7 +75,6 @@ describe('SubApp Factory', () => {
     const files: string[] = tree.files
     expect(files.sort()).toEqual([
       "/backends/_project/.dockerignore",
-      "/backends/_project/.eslintrc.js",
       "/backends/_project/.gitignore",
       "/backends/_project/.prettierrc",
       "/backends/_project/Dockerfile",
@@ -139,7 +136,6 @@ describe('SubApp Factory', () => {
     const files: string[] = tree.files
     expect(files.sort()).toEqual([
       "/backends/project/.dockerignore",
-      "/backends/project/.eslintrc.js",
       "/backends/project/.gitignore",
       "/backends/project/.prettierrc",
       "/backends/project/Dockerfile",

@@ -1,7 +1,7 @@
 import {Injectable, Inject, Logger} from '@nestjs/common'
 import {ClientKafka} from '@nestjs/microservices'
 <% if (crud) { %>import {EntityManager, FilterQuery} from '@mikro-orm/core'
-import {Topic} from '@scrypt-swiss/nest'
+import {Topic} from '@scrypt-swiss/api'
 import {<%= singular(classify(name)) %>, Create<%= singular(classify(name)) %>, Update<%= singular(classify(name)) %>} from './<%= singular(name) %>.entity'
 <% } %>
 @Injectable()

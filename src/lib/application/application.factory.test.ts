@@ -6,7 +6,6 @@ import * as path from 'path'
 import {ApplicationOptions} from './application.schema'
 
 const expected_files = [
-  '.eslintrc.js',
   'README.md',
   'nest-cli.json',
   'package.json',

@@ -208,7 +208,7 @@ export function change(options: any): Rule {
             addLine(content, NAME + '_DB_NAME=' + name, {last: true})
             addLine(content, NAME + '_DB_HOST="127.0.0.1"', {last: true})
             addLine(content, NAME + '_DB_USER=' + name, {last: true})
-            addLine(content, NAME + '_DB_PASSWORD=' + options.password, {last: true})
+            addLine(content, NAME + '_DB_PASSWORD=RANDOM_PASSWORD', {last: true})
             addLine(content, NAME + '_DB_PORT=' + options.randomport, {last: true})
             tree.overwrite(path, content.join('\n'))
         }
