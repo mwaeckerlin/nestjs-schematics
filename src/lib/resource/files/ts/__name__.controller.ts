@@ -1,4 +1,4 @@
-<% if (crud && type === 'rest') { %>import {Controller, UseInterceptors, ClassSerializerInterceptor, UsePipes, ValidationPipe, Get, Post, Body, Query, Patch, Param, Delete} from '@nestjs/common'<%
+<% if (crud && type === 'rest') { %>import {Controller, UseInterceptors, ClassSerializerInterceptor, UsePipes, ValidationPipe, Get, Post, Body, Query, Patch, Param, Delete, Logger} from '@nestjs/common'<%
 } else if (crud && type === 'microservice') { %>import {Controller} from '@nestjs/common'
 import {MessagePattern, Payload} from '@nestjs/microservices'<%
 } else { %>import {Controller} from '@nestjs/common'<%
@@ -12,6 +12,7 @@ import {ApiQuery} from '@nestjs/swagger'
 @UseInterceptors(ClassSerializerInterceptor)
 @UsePipes(new ValidationPipe({transform: true}))
 export class <%= classify(name) %>Controller {
+  private readonly logger = new Logger(this.constructor.name)
   constructor(private readonly <%= lowercased(name) %>Service: <%= classify(name) %>Service) {}<% if (type === 'rest' && crud) { %>
 
   @Post()
