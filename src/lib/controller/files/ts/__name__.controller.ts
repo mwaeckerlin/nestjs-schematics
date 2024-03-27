@@ -1,10 +1,10 @@
 import {Controller, UseInterceptors, ClassSerializerInterceptor, UsePipes, ValidationPipe, Logger} from '@nestjs/common'
-import {<%= classify(name) %>Service} from './<%= dasherize(name) %>.service'
+import {<%= classify(name) %> Service} from './<%= dasherize(name) %>.service'
 
 @Controller('<%= dasherize(name) %>')
 @UsePipes(new ValidationPipe({transform: true}))
 @UseInterceptors(ClassSerializerInterceptor)
 export class <%= classify(name) %> Controller {
-  private readonly logger = new Logger(this.constructor.name)
-  constructor(private readonly <%= lowercased(name) %>Service: <%= classify(name) %>Service) {}
+  readonly logger = new Logger(this.constructor.name)
+  constructor(private readonly <%= lowercased(name) %> Service: <%= classify(name) %> Service) {}
 }
