@@ -12,7 +12,7 @@
     "clean:all": "rimraf node_modules temp",
     "preclean:all": "npm run clean",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "while ! nest start --watch; do :; done",
+    "start": "npx nodemon -V -w src -w $(realpath .env) $(realpath ../../libs/*/dist | grep -v 'components\\|style' | sed 's/^/-w /') -e '*' -x 'while :; do nest start; done'",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
