@@ -1,4 +1,4 @@
-import { Path } from '@angular-devkit/core'
+import {Path} from '@angular-devkit/core'
 
 export interface ControllerOptions {
   /**
@@ -10,7 +10,11 @@ export interface ControllerOptions {
    */
   path?: string | Path
   /**
-   * The path to insert the controller declaration.
+   * Project Name
+   */
+  project?: String
+  /**
+   * Directive to insert declaration in module.
    */
   module?: Path
   /**

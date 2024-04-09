@@ -24,6 +24,7 @@ import {Location, NameParser} from '../../utils/name.parser'
 import {mergeSourceRoot} from '../../utils/source-root.helpers'
 import {DEFAULT_LANGUAGE} from '../defaults'
 import {ControllerOptions} from './controller.schema'
+import * as path from 'path'
 
 const ELEMENT_METADATA = 'controllers'
 const ELEMENT_TYPE = 'controller'
@@ -55,6 +56,9 @@ function transform(source: ControllerOptions): ControllerOptions {
   target.specFileSuffix = normalizeToKebabOrSnakeCase(
     source.specFileSuffix || 'spec',
   )
+
+  //const match = target.path.match(/\/([^\/]+)\/src\//)
+  //target.project = match ? match[1] : path.basename(process.cwd())
 
   target.path = target.flat
     ? target.path
