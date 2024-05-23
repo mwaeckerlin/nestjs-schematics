@@ -190,18 +190,8 @@ export function change(options: any): Rule {
             tree.overwrite(path, yaml.dump({...content}, {styles: {'!!null': 'empty'}}))
         }
 
-        // set local test environment in .env
+        // set local test environment in .env.sample
         {
-            if (!tree.exists('/.env')) tree.create('/.env', '')
-            const {path, content} = read(tree, options, /^.env$/)
-            addLine(content, NAME + '_DB_TYPE=' + options.type, {last: true})
-            addLine(content, NAME + '_DB_NAME=' + name, {last: true})
-            addLine(content, NAME + '_DB_HOST="127.0.0.1"', {last: true})
-            addLine(content, NAME + '_DB_USER=' + name, {last: true})
-            addLine(content, NAME + '_DB_PASSWORD=' + options.password, {last: true})
-            addLine(content, NAME + '_DB_PORT=' + options.randomport, {last: true})
-            tree.overwrite(path, content.join('\n'))
-        } { // add same to .env.sample
             if (!tree.exists('/.env.sample')) tree.create('/.env.sample', '')
             const {path, content} = read(tree, options, /^.env.sample$/)
             addLine(content, NAME + '_DB_TYPE=' + options.type, {last: true})
