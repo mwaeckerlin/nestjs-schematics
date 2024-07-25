@@ -12,7 +12,7 @@
     "clean:all": "rimraf node_modules temp",
     "preclean:all": "npm run clean",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nodemon -V --delay 3s -w src $(realpath ../../libs/*/dist | grep -v 'components\\|style' | sed 's/^/-w /') -e '*' -x 'while :; do nest start; kill $(lsof -ti:$(sed -n \"s/const port = //p\" src/main.ts)); done'",
+    "start": "nodemon -V --delay 3s -w src $(realpath ../../libs/*/dist | grep -v 'client-api\\|components\\|style' | sed 's/^/-w /') -e '*' -x 'while :; do nest start; kill $(lsof -ti:$(sed -n \"s/const port = //p\" src/main.ts)); done'",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
