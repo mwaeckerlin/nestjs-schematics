@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import {bootstrap, generateApiDoc, kafkaOptions} from '@scrypt-swiss/nest'
+import {bootstrap, generateApiDoc, getHealth, kafkaOptions} from '@scrypt-swiss/nest'
 import {name, version, description} from '../package.json'
 export const kafka = kafkaOptions(name)
 import {AppModule} from './app.module'
@@ -7,5 +7,7 @@ import {AppModule} from './app.module'
 const port = 4000
 if (process.argv.includes('-d'))
   generateApiDoc(AppModule, name, version, description, port)
+else if (process.argv.includes('--health'))
+  getHealth(port)
 else
   bootstrap(AppModule, name, version, port)
