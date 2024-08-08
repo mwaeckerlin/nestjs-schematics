@@ -13,4 +13,5 @@ RUN nexe --build --python=$(which python3) -r "temp" -r "dist/migrations" -o app
 FROM mwaeckerlin/nodejs as production
 EXPOSE <%= port %>
 COPY --from=build /app/<%= path %>/<%= name %>/app /app/app
+HEALTHCHECK CMD ["/app/app", "--trace-uncaught", "--health"]
 CMD ["/app/app", "--trace-uncaught"]

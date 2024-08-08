@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common'
+import {Module} from '@nestjs/common'
+import {HealthModule} from '@scrypt-swiss/nest'
 
 @Module({
-  imports: [],
+  imports: [HealthModule],
   controllers: [],
   providers: [],
 })

@@ -1,8 +1,8 @@
 import {Module} from '@nestjs/common'
-import {ShutdownModule} from '@scrypt-swiss/nest'
+import {HealthModule, ShutdownModule} from '@scrypt-swiss/nest'
 
 @Module({
-  imports: [ShutdownModule],
+  imports: [ShutdownModule, HealthModule],
   controllers: [],
   providers: [],
 })
