@@ -31,12 +31,6 @@ export class <%= classify(name) %>Controller {
     return this.<%= lowercased(name) %>Service.findOne(id)
   }
 
-  @Get()
-  @ApiQuery({name: 'query', required: false, type: 'object'})
-  async findOneQuery(@Query('query') query?: FilterQuery<<%= singular(classify(name)) %>>): Promise<<%= singular(classify(name)) %>> {
-    return this.<%= lowercased(name) %>Service.findOne(query)
-  }
-
   @Patch(':id')
   async update(@Param('id') id: string, @Body() update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %>): Promise<<%= singular(classify(name)) %>> {
     return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>)
