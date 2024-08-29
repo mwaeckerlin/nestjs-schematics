@@ -3,9 +3,10 @@ import {Entity, Property} from '@mikro-orm/core'
 @Entity({abstract: true})
 export abstract class Manipulation {
 
-  @Property()
-  createdAt: Date = new Date()
+  @Property({ defaultRaw: 'now()' })
+  createdAt: Date
 
-  @Property({onUpdate: () => new Date()})
-  updatedAt: Date = new Date()
+  @Property({ defaultRaw: 'now()', onUpdate: () => new Date() })
+  updatedAt: Date
+
 }
