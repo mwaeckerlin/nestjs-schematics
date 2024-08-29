@@ -4,7 +4,7 @@ import {Manipulation} from './manipulation.entity'
 @Entity({abstract: true})
 export abstract class Base extends Manipulation {
 
-  @PrimaryKey({ type: 'uuid', defaultRaw: 'gen_random_uuid()' })
-  id: string
+  @PrimaryKey({type: 'uuid', defaultRaw: 'gen_random_uuid()'})
+  id!: string
 
 }
