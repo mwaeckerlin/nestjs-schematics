@@ -1,4 +1,4 @@
-<% if (crud && type === 'rest') { %>import {Controller, UseInterceptors, ClassSerializerInterceptor, UsePipes, ValidationPipe, Get, Post, Body, Query, Patch, Param, Delete, Logger} from '@nestjs/common'<%
+<% if (crud && type === 'rest') { %>import {Controller, Get, Post, Body, Query, Patch, Delete, Logger} from '@nestjs/common'<%
 } else if (crud && type === 'microservice') { %>import {Controller} from '@nestjs/common'
 import {MessagePattern, Payload} from '@nestjs/microservices'<%
 } else { %>import {Controller} from '@nestjs/common'<%
@@ -7,10 +7,11 @@ import {<%= classify(name) %>Service} from './<%= name %>.service'<% if (crud) {
 import {<%= singular(classify(name)) %>, Create<%= singular(classify(name)) %>, Update<%= singular(classify(name)) %>} from './<%= singular(name) %>.entity'<% } %>
 import {FilterQuery} from '@mikro-orm/core'
 import {ApiQuery} from '@nestjs/swagger'
+import {UseValidation, UseClassSerializer, UUIDParam} from '@scrypt-swiss/nest'
 
 <% if (type === 'rest') { %>@Controller('<%= dasherize(parentname) %>/<%= dasherize(name) %>')<% } else { %>@Controller()<% } %>
-@UseInterceptors(ClassSerializerInterceptor)
-@UsePipes(new ValidationPipe({transform: true}))
+@UseClassSerializer()
+@UseValidation()
 export class <%= classify(name) %>Controller {
   readonly logger = new Logger(this.constructor.name)
   constructor(private readonly <%= lowercased(name) %>Service: <%= classify(name) %>Service) {}<% if (type === 'rest' && crud) { %>
@@ -27,12 +28,12 @@ export class <%= classify(name) %>Controller {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<<%= singular(classify(name)) %>> {
+  async findOne(@UUIDParam('id') id: string): Promise<<%= singular(classify(name)) %>> {
     return this.<%= lowercased(name) %>Service.findOne(id)
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %>): Promise<<%= singular(classify(name)) %>> {
+  async update(@UUIDParam('id') id: string, @Body() update<%= singular(classify(name)) %>: Update<%= singular(classify(name)) %>): Promise<<%= singular(classify(name)) %>> {
     return this.<%= lowercased(name) %>Service.update(id, update<%= singular(classify(name)) %>)
   }
 
@@ -43,7 +44,7 @@ export class <%= classify(name) %>Controller {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<<%= singular(classify(name)) %>> {
+  async remove(@UUIDParam('id') id: string): Promise<<%= singular(classify(name)) %>> {
     return this.<%= lowercased(name) %>Service.remove(id)
   }<% } else if (type === 'microservice' && crud) { %>
 
