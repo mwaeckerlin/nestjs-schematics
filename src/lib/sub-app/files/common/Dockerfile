@@ -10,8 +10,6 @@ RUN npm install
 WORKDIR <%= path %>/<%= name %>
 RUN nexe --build --python=$(which python3) -r "temp" -r "dist/migrations" -o app dist/src/main.js
 
-FROM mwaeckerlin/nodejs as production
+FROM mwaeckerlin/nexe as production
 EXPOSE <%= port %>
 COPY --from=build /app/<%= path %>/<%= name %>/app /app/app
-HEALTHCHECK CMD ["/app/app", "--trace-uncaught", "--health"]
-CMD ["/app/app", "--trace-uncaught"]
