@@ -1,29 +1,12 @@
-import { join, Path, strings } from '@angular-devkit/core'
-import {
-  apply,
-  branchAndMerge,
-  chain,
-  filter,
-  mergeWith,
-  move,
-  noop,
-  Rule,
-  SchematicContext,
-  SchematicsException,
-  template,
-  Tree,
-  url,
-} from '@angular-devkit/schematics'
-import { isNullOrUndefined } from 'util'
-import { normalizeToKebabOrSnakeCase } from '../../utils/formatting'
-import {
-  DeclarationOptions,
-  ModuleDeclarator,
-} from '../../utils/module.declarator'
-import { ModuleFinder } from '../../utils/module.finder'
-import { Location, NameParser } from '../../utils/name.parser'
-import { mergeSourceRoot } from '../../utils/source-root.helpers'
-import { ServiceOptions } from './service.schema'
+import {join, Path, strings} from '@angular-devkit/core'
+import {apply, branchAndMerge, chain, filter, mergeWith, move, noop, Rule, SchematicContext, SchematicsException, template, Tree, url, } from '@angular-devkit/schematics'
+import {isNullOrUndefined} from 'util'
+import {normalizeToKebabOrSnakeCase} from '../../utils/formatting'
+import {DeclarationOptions, ModuleDeclarator, } from '../../utils/module.declarator'
+import {ModuleFinder} from '../../utils/module.finder'
+import {Location, NameParser} from '../../utils/name.parser'
+import {mergeSourceRoot} from '../../utils/source-root.helpers'
+import {ServiceOptions} from './service.schema'
 
 export function main(options: ServiceOptions): Rule {
   options = transform(options)
@@ -63,12 +46,12 @@ function transform(source: ServiceOptions): ServiceOptions {
 function generate(options: ServiceOptions) {
   return (context: SchematicContext) =>
     apply(url(join('./files' as Path, options.language)), [
-      options.spec 
-        ? noop() 
+      options.spec
+        ? noop()
         : filter((path) => {
-            const languageExtension = options.language || 'ts'
-            const suffix = `.__specFileSuffix__.${languageExtension}`
-            return !path.endsWith(suffix)
+          const languageExtension = options.language || 'ts'
+          const suffix = `.__specFileSuffix__.${languageExtension}`
+          return !path.endsWith(suffix)
         }),
       template({
         ...strings,
