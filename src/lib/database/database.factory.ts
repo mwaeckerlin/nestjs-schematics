@@ -208,7 +208,7 @@ export function change(options: any): Rule {
             const {path, content} = read(tree, options, /^app\.module\.[tj]s$/, '/src')
             addImport(content, "import { MikroOrmModule } from '@mikro-orm/nestjs'")
             addImport(content, "import mikroOrmConfig from '../mikro-orm.config'")
-            addText(content, 'MikroOrmModule.forRoot({...(mikroOrmConfig as {})}),', /\s+imports:\s*\[/)
+            addText(content, 'MikroOrmModule.forRoot({...mikroOrmConfig}),', /\s+imports:\s*\[/)
             tree.overwrite(path, content.join('\n'))
         }
         return tree
