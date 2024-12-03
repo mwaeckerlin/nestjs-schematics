@@ -1,6 +1,5 @@
 import {join, Path, strings} from '@angular-devkit/core'
 import {apply, branchAndMerge, chain, filter, mergeWith, move, noop, Rule, SchematicContext, SchematicsException, template, Tree, url, } from '@angular-devkit/schematics'
-import {isNullOrUndefined} from 'util'
 import {normalizeToKebabOrSnakeCase} from '../../utils/formatting'
 import {DeclarationOptions, ModuleDeclarator, } from '../../utils/module.declarator'
 import {ModuleFinder} from '../../utils/module.finder'
@@ -26,7 +25,7 @@ function transform(source: ServiceOptions): ServiceOptions {
   target.metadata = 'providers'
   target.type = 'service'
 
-  if (isNullOrUndefined(target.name)) {
+  if (target.name === null || target.name === undefined) {
     throw new SchematicsException('Option (name) is required.')
   }
   const location: Location = new NameParser().parse(target)
